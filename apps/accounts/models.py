@@ -40,7 +40,7 @@ class CustomUserManager(BaseUserManager, BaseModel):
         return self.create_user(email, password, **extra_fields)
 
 
-class CustomerUser(AbstractUser, BaseModel):
+class Member(AbstractUser, BaseModel):
     CUSTOMERUSER_EMPLOYEE = 'e'
     CUSTOMERUSER_CUSTOMER = 'c'
     CUSTOMERUSER_MANAGER = 'm'
