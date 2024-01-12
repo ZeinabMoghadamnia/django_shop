@@ -1,5 +1,6 @@
 from django.db import models
 from FinalProject.apps.core.models import BaseModel
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 class Category(BaseModel):
@@ -21,6 +22,7 @@ class Product(BaseModel):
     main_image = models.ImageField(upload_to='')
     category = models.ForeignKey(Category, on_delete=models, related_name='products')
     brand = models.ForeignKey()
+    slug = models.SlugField(unique=True)
     class Meta:
         ordering = ['name']
 
@@ -36,6 +38,11 @@ class Discount(BaseModel):
     product = models.ForeignKey(Product, on_delete=models)
     discount_type = models.CharField(max_length=)
     discount_code = models.CharField(max_length=6)
+    # amount = models.IntegerField()
+    # def clean(self):
+    #     if self.amount>100:
+    #         raise ValidationError({'amount': ('must be less than 100')})
+
 
 class Comment(BaseModel):
     product = models.ForeignKey(Product, on_delete=models)
