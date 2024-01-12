@@ -1,5 +1,5 @@
 from django.db import models
-from FinalProject.apps.core.models import BaseModel
+from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
 # Create your models here.
 
@@ -36,7 +36,7 @@ class Discount(BaseModel):
     title = models.CharField(max_length=50)
     # costumer =
     product = models.ForeignKey(Product, on_delete=models)
-    discount_type = models.CharField(max_length=)
+    # discount_type = models.CharField(max_length=)
     discount_code = models.CharField(max_length=6)
     # amount = models.IntegerField()
     # def clean(self):
