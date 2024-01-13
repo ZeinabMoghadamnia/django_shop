@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 # from social_core.backends import username
 
 from ..core.models import BaseModel
@@ -64,7 +64,8 @@ class Address(BaseModel):
 class OtpCode(models.Model):
     phone_number = models.CharField(max_length=11)
     code = models.PositiveSmallIntegerField()
-    created = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now=True)
+    expired_at = models.DateTimeField()
 
     def __str__(self):
         return f'{self.phone_number} - {self.code} - {self.created}'
