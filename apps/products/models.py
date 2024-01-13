@@ -18,6 +18,7 @@ class Discount(BaseModel):
         if self.discount_type=='percentage' and self.value < 100:
             raise ValidationError({'amount': ('must be less than 100!')})
 
+
     # def apply_discount(request, discount_code):
     #     # یافتن تخفیف با استفاده از کد
     #     discount = get_object_or_404(Discount, code=discount_code)
@@ -69,12 +70,13 @@ class Product(BaseModel):
         ordering = ['name']
 
     def calculate_discounted_price(self):
-        if self.discount.discount_type == 'percentage':
+        if self.discount.discount_type == 'percentage' or self.category.discount.discount_type == 'percentage':
             self.discounted_price = self.price - ((self.discount.value / 100) * self.price)
 
-        elif self.discount.discount_type == 'amount':
+        elif self.discount.discount_type == 'amount' or self.category.discount.discount_type == 'amount':
             self.discounted_price = self.price - (self.discount.value)
 
+        self.save()
         return self.discounted_price
 
     def like_count(self):
