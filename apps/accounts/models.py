@@ -63,7 +63,7 @@ class Member(AbstractUser, BaseModel):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-    # user_create = CustomUserManager()
+    user_create = CustomUserManager()
 
     objects = CustomUserManager()
 
