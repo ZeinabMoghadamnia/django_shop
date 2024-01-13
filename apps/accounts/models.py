@@ -1,12 +1,8 @@
 from django.db import models
-from ..core.models import BaseModel
-from django.contrib.auth.models import AbstractUser, AbstractBaseUser
-from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
-# Create your models here.
-
-# class Member(AbstractUser, BaseModel):
-#     phone = models.CharField(max_length=11, unique=True)
+from django.contrib.auth.base_user import BaseUserManager
+from ..core.models import BaseModel
 
 class CustomUserManager(BaseUserManager):
     """
@@ -33,14 +29,14 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
 
-        if not extra_fields.get("is_staff"):
+        if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
-        if not extra_fields.get("is_superuser"):
+        if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email, password, **extra_fields)
 
 
-class Member(AbstractUser, BaseModel):
+class CustomerUser(AbstractUser, BaseModel):
     CUSTOMERUSER_EMPLOYEE = 'e'
     CUSTOMERUSER_CUSTOMER = 'c'
     CUSTOMERUSER_MANAGER = 'm'
@@ -63,7 +59,7 @@ class Member(AbstractUser, BaseModel):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-    user_create = CustomUserManager()
+    # user_create = CustomUserManager()
 
     objects = CustomUserManager()
 
