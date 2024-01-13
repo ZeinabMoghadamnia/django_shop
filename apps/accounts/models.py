@@ -8,7 +8,7 @@ from django.core.validators import RegexValidator
 # class Member(AbstractUser, BaseModel):
 #     phone = models.CharField(max_length=11, unique=True)
 
-class CustomUserManager(BaseUserManager, BaseModel):
+class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
     for authentication instead of usernames.

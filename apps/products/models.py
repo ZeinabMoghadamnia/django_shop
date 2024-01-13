@@ -53,9 +53,9 @@ class Discount(models.Model):
 
 class Category(BaseModel):
     name = models.CharField(max_length=50)
-    parent = models.ForeignKey('self', on_delete=models.PROTECT(), null=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True)
     category_image = models.ImageField(upload_to='categories/', null=True, blank=True)
-    discount = models.ForeignKey(Discount, on_delete=models, null=True)
+    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='')
 
@@ -69,9 +69,9 @@ class Product(BaseModel):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.PositiveIntegerField()
     main_image = models.ImageField(upload_to='products/', null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT(), related_name='products')
-    brand = models.ForeignKey()
-    discount = models.ForeignKey(Discount, on_delete=models)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories')
+    # brand = models.ForeignKey()
+    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, related_name='discounts')
     slug = models.SlugField(unique=True)
     class Meta:
         ordering = ['name']
@@ -93,5 +93,5 @@ class Comment(BaseModel):
         ordering = ['create_at']
 
 class Like(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models, related_name='likes')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes')
     user = models.ForeignKey(Member, on_delete=models.PROTECT, related_name='user_who_liked')
