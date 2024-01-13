@@ -22,7 +22,7 @@ class User(AbstractUser):
     # user_permissions = models.ManyToManyField(Permission, related_name='user_accounts_permissions')
 
     # USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phone', 'first_name', 'last_name', 'email']
+    REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'email']
 
     # class Meta:
     #     verbose_name = _('User')
@@ -68,4 +68,4 @@ class OtpCode(models.Model):
     expired_at = models.DateTimeField()
 
     def __str__(self):
-        return f'{self.phone_number} - {self.code} - {self.created}'
+        return f'{self.phone_number}  {self.code}'

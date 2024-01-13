@@ -4,18 +4,19 @@ from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
 # Create your models here.
 
-
-from django.db import models
-
 class Discount(BaseModel):
     DISCOUNT_TYPES = (
-        ('percentage', 'درصدی'),
-        ('amount', 'هزینه ای'),
+        ('percentage', 'percentage'),
+        ('amount', 'amount'),
     )
 
     code = models.CharField(max_length=50, unique=True)
     discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES)
-    value = models.DecimalField(max_digits=10, decimal_places=2)
+    value = models.PositiveIntegerField()
+
+    def clean(self):
+        if self.discount_type=='percentage' and self.value < 100:
+            raise ValidationError({'amount': ('must be less than 100!')})
 
     # def apply_discount(request, discount_code):
     #     # یافتن تخفیف با استفاده از کد
@@ -41,40 +42,40 @@ class Discount(BaseModel):
     def __str__(self):
         return self.code
 
-# class Discount(BaseModel):
-#     title = models.CharField(max_length=50)
-#     # costumer =
-#     # discount_type = models.CharField(max_length=)
-#     discount_code = models.CharField(max_length=6)
-#     # amount = models.IntegerField()
-#     # def clean(self):
-#     #     if self.amount>100:
-#     #         raise ValidationError({'amount': ('must be less than 100')})
 
 class Category(BaseModel):
     name = models.CharField(max_length=50)
     parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True)
     category_image = models.ImageField(upload_to='categories/', null=True, blank=True)
-    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True)
+    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True, blank=True)
     slug = models.SlugField(unique=True)
-    image = models.ImageField(upload_to='')
-
     class Meta:
         verbose_name_plural = 'Categories'
+
     def __str__(self):
         return self.name
 
 class Product(BaseModel):
     name = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField()
     main_image = models.ImageField(upload_to='products/', null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories')
+    discounted_price = models.PositiveIntegerField(blank=True, null=True)
     # brand = models.ForeignKey()
     discount = models.ForeignKey(Discount, on_delete=models.PROTECT, related_name='discounts')
     slug = models.SlugField(unique=True)
     class Meta:
         ordering = ['name']
+
+    def calculate_discounted_price(self):
+        if self.discount.discount_type == 'percentage':
+            self.discounted_price = self.price - ((self.discount.value / 100) * self.price)
+
+        elif self.discount.discount_type == 'amount':
+            self.discounted_price = self.price - (self.discount.value)
+
+        return self.discounted_price
 
     def like_count(self):
         return self.likes.count()
