@@ -1,14 +1,63 @@
 from django.db import models
+from ..accounts.models import Member
 from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
 # Create your models here.
 
+
+from django.db import models
+
+class Discount(models.Model):
+    DISCOUNT_TYPES = (
+        ('percentage', 'درصدی'),
+        ('amount', 'هزینه ای'),
+    )
+
+    code = models.CharField(max_length=50, unique=True)
+    discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES)
+    value = models.DecimalField(max_digits=10, decimal_places=2)
+
+    # def apply_discount(request, discount_code):
+    #     # یافتن تخفیف با استفاده از کد
+    #     discount = get_object_or_404(Discount, code=discount_code)
+    #
+    #     # محاسبه مقدار تخفیف بر اساس نوع تخفیف
+    #     if discount.discount_type == 'percentage':
+    #         discount_amount = (Decimal(discount.value) / 100) * total_cart_amount
+    #     else:
+    #         discount_amount = Decimal(discount.value)
+    #
+    #     # اعمال تخفیف به سبد خرید
+    #     total_amount_after_discount = total_cart_amount - discount_amount
+    #
+    #     # افزودن اطلاعات تخفیف به سشن (مثلاً برای نمایش در صفحه پرداخت)
+    #     request.session['discount_details'] = {
+    #         'code': discount.code,
+    #         'amount': discount_amount,
+    #     }
+    #
+    #     return total_amount_after_discount
+
+    def __str__(self):
+        return self.code
+
+# class Discount(BaseModel):
+#     title = models.CharField(max_length=50)
+#     # costumer =
+#     # discount_type = models.CharField(max_length=)
+#     discount_code = models.CharField(max_length=6)
+#     # amount = models.IntegerField()
+#     # def clean(self):
+#     #     if self.amount>100:
+#     #         raise ValidationError({'amount': ('must be less than 100')})
+
 class Category(BaseModel):
     name = models.CharField(max_length=50)
-    sub_category = models.ForeignKey('self', on_delete=models, null=True, blank=True)
-    is_sub_category = models.BooleanField(default=False)
+    parent = models.ForeignKey('self', on_delete=models, null=True, blank=True)
     category_image = models.ImageField(upload_to='')
+    discount = models.ForeignKey(Discount, on_delete=models, null=True)
     slug = models.SlugField(unique=True)
+    image = models.ImageField(upload_to='')
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -22,6 +71,7 @@ class Product(BaseModel):
     main_image = models.ImageField(upload_to='')
     category = models.ForeignKey(Category, on_delete=models, related_name='products')
     brand = models.ForeignKey()
+    discount = models.ForeignKey(Discount, on_delete=models)
     slug = models.SlugField(unique=True)
     class Meta:
         ordering = ['name']
@@ -32,22 +82,10 @@ class Product(BaseModel):
 class Image(BaseModel):
     sub_image = models.ImageField('Menu_Item_Image', upload_to='menu_item_img/', height_field=None, width_field=None, null=True, blank=True)
 
-class Discount(BaseModel):
-    title = models.CharField(max_length=50)
-    # costumer =
-    product = models.ForeignKey(Product, on_delete=models)
-    # discount_type = models.CharField(max_length=)
-    discount_code = models.CharField(max_length=6)
-    # amount = models.IntegerField()
-    # def clean(self):
-    #     if self.amount>100:
-    #         raise ValidationError({'amount': ('must be less than 100')})
-
-
 class Comment(BaseModel):
     product = models.ForeignKey(Product, on_delete=models)
     reply = models.ForeignKey('self', on_delete=models)
-    # author = models.ForeignKey()
+    author = models.ForeignKey(Member, on_delete=models)
     context = models.TextField()
     is_reply = models.BooleanField(default=False)
     class Meta:
