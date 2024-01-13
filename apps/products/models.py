@@ -53,8 +53,8 @@ class Discount(models.Model):
 
 class Category(BaseModel):
     name = models.CharField(max_length=50)
-    parent = models.ForeignKey('self', on_delete=models, null=True, blank=True)
-    category_image = models.ImageField(upload_to='')
+    parent = models.ForeignKey('self', on_delete=models.PROTECT(), null=True, blank=True)
+    category_image = models.ImageField(upload_to='categories/', null=True, blank=True)
     discount = models.ForeignKey(Discount, on_delete=models, null=True)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='')
@@ -68,8 +68,8 @@ class Product(BaseModel):
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.PositiveIntegerField()
-    main_image = models.ImageField(upload_to='')
-    category = models.ForeignKey(Category, on_delete=models, related_name='products')
+    main_image = models.ImageField(upload_to='products/', null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT(), related_name='products')
     brand = models.ForeignKey()
     discount = models.ForeignKey(Discount, on_delete=models)
     slug = models.SlugField(unique=True)
@@ -80,12 +80,13 @@ class Product(BaseModel):
         return self.likes.count()
 
 class Image(BaseModel):
-    sub_image = models.ImageField('Menu_Item_Image', upload_to='menu_item_img/', height_field=None, width_field=None, null=True, blank=True)
+    sub_image = models.ImageField('Product_Image', upload_to='products/', height_field=None, width_field=None, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image')
 
 class Comment(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models)
-    reply = models.ForeignKey('self', on_delete=models)
-    author = models.ForeignKey(Member, on_delete=models)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies')
+    author = models.ForeignKey(Member, on_delete=models.PROTECT, related_name='authors')
     context = models.TextField()
     is_reply = models.BooleanField(default=False)
     class Meta:
@@ -93,4 +94,4 @@ class Comment(BaseModel):
 
 class Like(BaseModel):
     product = models.ForeignKey(Product, on_delete=models, related_name='likes')
-    # user = models.ForeignKey()
+    user = models.ForeignKey(Member, on_delete=models.PROTECT, related_name='user_who_liked')
