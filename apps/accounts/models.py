@@ -18,8 +18,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=40)
     date_of_birth = models.DateField(null=True, blank=True)
     image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True)
-    groups = models.ManyToManyField(Group, related_name='user_accounts')
-    user_permissions = models.ManyToManyField(Permission, related_name='user_accounts_permissions')
+    # groups = models.ManyToManyField(Group, related_name='user_accounts')
+    # user_permissions = models.ManyToManyField(Permission, related_name='user_accounts_permissions')
 
     # USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone', 'first_name', 'last_name', 'email']

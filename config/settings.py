@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #translation
+    'modeltranslation',
+
     #my_apps
     'apps.core',
     'apps.products',
@@ -127,3 +130,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#costomizeation
+AUTH_USER_MODEL = 'accounts.User'
+# LANGUAGE_CODE = 'en'
+# LOCALE_PATHS = (BASE_DIR / 'locale',)
+# TIME_ZONE = 'UTC'
+
+#tranlai
+from django.utils.translation import gettext_lazy as _
+LANGUAGES = [
+    ('en', _('English')),
+    ('fa', _('Persian')),
+]
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
