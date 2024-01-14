@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-14 18:07+0330\n"
+"POT-Creation-Date: 2024-01-14 18:22+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,8 @@ msgstr "نام خانوادگی"
 msgid "birthday"
 msgstr "تاریخ تولد"
 
-#: apps/accounts/models.py:26
+#: apps/accounts/models.py:26 apps/products/models.py:30
+#: apps/products/models.py:52
 msgid "image"
 msgstr "تصویر"
 
@@ -85,3 +86,86 @@ msgstr "تاریخ بازگردانی"
 #: apps/core/models.py:12
 msgid "active status"
 msgstr "وضعیت فعال بودن"
+
+#: apps/orders/models.py:11 apps/products/models.py:120
+#: apps/products/models.py:123 apps/products/models.py:131
+msgid "product"
+msgstr "محصول"
+
+#: apps/orders/models.py:12 apps/products/models.py:51
+msgid "quantity"
+msgstr "تعداد"
+
+#: apps/orders/models.py:13 apps/products/models.py:50
+msgid "price"
+msgstr "قیمت"
+
+#: apps/orders/models.py:16 apps/products/models.py:132
+msgid "user"
+msgstr "کاربر"
+
+#: apps/orders/models.py:17
+msgid "items"
+msgstr "کالاها"
+
+#: apps/orders/models.py:18
+msgid "total price"
+msgstr "قیمت کل"
+
+#: apps/products/models.py:17
+msgid "discount code"
+msgstr "کد تخفیف"
+
+#: apps/products/models.py:18
+msgid "discount type"
+msgstr "نوع تخفیف"
+
+#: apps/products/models.py:19
+msgid "value"
+msgstr "مقدار"
+
+#: apps/products/models.py:29 apps/products/models.py:49
+#, fuzzy
+#| msgid "last name"
+msgid "name"
+msgstr "نام"
+
+#: apps/products/models.py:31 apps/products/models.py:54
+msgid "discount"
+msgstr "تخفیف"
+
+#: apps/products/models.py:32 apps/products/models.py:57
+msgid "slug"
+msgstr "اسلاگ"
+
+#: apps/products/models.py:37
+msgid "parent category"
+msgstr "دسته بندی گنده"
+
+#: apps/products/models.py:53
+msgid "category"
+msgstr "دسته بندی"
+
+#: apps/products/models.py:55
+msgid "discounted price"
+msgstr "قیمت پس از تخفیف"
+
+#: apps/products/models.py:56
+msgid "brand"
+msgstr "برند"
+
+#: apps/products/models.py:119
+msgid "gallery"
+msgstr "گالری"
+
+#: apps/products/models.py:124
+msgid "reply"
+msgstr "پاسخ"
+
+#: apps/products/models.py:125
+msgid "author"
+msgstr "نویسنده"
+
+#: apps/products/models.py:126
+msgid "content"
+msgstr "محتوا"
