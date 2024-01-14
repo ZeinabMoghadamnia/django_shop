@@ -13,7 +13,7 @@ class OrderItem(BaseModel):
 
 class Order(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    items = models.ManyToManyField(Product, blank=True)
+    items = models.ForeignKey(OrderItem, on_delete=models.PROTECT, related_name='orders')
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
 # class Order(BaseModel):
