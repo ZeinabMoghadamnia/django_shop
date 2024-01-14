@@ -29,7 +29,6 @@ class Discount(BaseModel):
 
 class BaseGrouping(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
-    image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
     discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('discount'))
     slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
     class Meta:
@@ -37,6 +36,7 @@ class BaseGrouping(BaseModel):
 
 class Category(BaseGrouping):
     parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('parent category'))
+    image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
         verbose_name_plural = 'Categories'
         verbose_name = _('category')
@@ -46,6 +46,7 @@ class Category(BaseGrouping):
 
 class Brand(BaseGrouping):
     description = models.TextField(verbose_name=_('description'))
+    image = models.ImageField(upload_to='brands/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
         verbose_name = _('brand')
     def __str__(self):
@@ -61,6 +62,7 @@ class Product(BaseModel):
     discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('brand'))
     slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
+
     class Meta:
         ordering = ['name']
         verbose_name = _('product')
