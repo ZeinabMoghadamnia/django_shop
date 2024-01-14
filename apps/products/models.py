@@ -2,18 +2,21 @@ from django.db import models
 from ..accounts.models import User
 from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 # Create your models here.
 
 class Discount(BaseModel):
     DISCOUNT_TYPES = (
-        ('percentage', 'percentage'),
-        ('amount', 'amount'),
+        ('percentage', 'Percent'),
+        ('amount', 'Amount'),
     )
 
     code = models.CharField(max_length=50, unique=True)
     discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES)
     value = models.PositiveIntegerField()
 
+    # print("---------------------------------------",discount_type)
     def clean(self):
         if self.discount_type=='percentage' and self.value < 100:
             raise ValidationError({'amount': ('must be less than 100!')})
@@ -62,25 +65,50 @@ class Product(BaseModel):
     quantity = models.PositiveIntegerField()
     main_image = models.ImageField(upload_to='products/', null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories')
+    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, related_name='discounts')
     discounted_price = models.PositiveIntegerField(blank=True, null=True)
     # brand = models.ForeignKey()
-    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, related_name='discounts')
     slug = models.SlugField(unique=True)
     class Meta:
         ordering = ['name']
 
-    def calculate_discounted_price(self):
-        if self.discount.discount_type == 'percentage' or self.category.discount.discount_type == 'percentage':
-            self.discounted_price = self.price - ((self.discount.value / 100) * self.price)
+    # print("-------------------------------------------------------------",discount.discount_type)
 
-        elif self.discount.discount_type == 'amount' or self.category.discount.discount_type == 'amount':
-            self.discounted_price = self.price - (self.discount.value)
+    # @receiver(post_save, sender='products.Product')
+    # def calculate_discounted_price(self, sender, instance, **kwargs):
+    #     if instance.discount is not None:
+    #         if instance.discount.discount_type == 'percentage' or self.category.discount.discount_type == 'percentage':
+    #             instance.discounted_price = self.price - ((self.discount.value / 100) * self.price)
+    #             # print(self.discounted_price)
+    #
+    #         elif self.discount.discount_type == 'amount' or self.category.discount.discount_type == 'amount':
+    #             self.discounted_price = self.price - int(self.discount.value)
 
-        self.save()
-        return self.discounted_price
+    # @receiver(post_save, sender='products.Product')
+    # def post_save_calculate_discounted_price(cls, sender, instance, **kwargs):
+    #     instance.calculate_discounted_price()
+
+    # def save(self, *args, **kwargs):
+    #     self.calculate_discounted_price()
+    #     super(Product, self).save(*args, **kwargs)
 
     def like_count(self):
         return self.likes.count()
+
+    def clean(self):
+        print(self.discount)
+@receiver(post_save, sender=Product)
+def calculate_discounted_price(sender, instance, **kwargs):
+    if instance.discount is not None:
+        if instance.discount.discount_type == 'percentage' or instance.category.discount.discount_type == 'percentage':
+            instance.discounted_price = instance.price - ((instance.discount.value / 100) * instance.price)
+
+        elif instance.discount.discount_type == 'amount' or instance.category.discount.discount_type == 'amount':
+            instance.discounted_price = instance.price - int(instance.discount.value)
+
+# @receiver(post_save, sender='products.Product')
+# def post_save_calculate_discounted_price(sender, instance, **kwargs):
+#     instance.calculate_discounted_price()
 
 class Image(BaseModel):
     sub_image = models.ImageField('Product_Image', upload_to='products/', height_field=None, width_field=None, null=True, blank=True)
