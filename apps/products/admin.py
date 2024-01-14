@@ -7,3 +7,5 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register([Category, Discount, Image, Comment, Like, Brand])
 admin.site.register(Product, ProductAdmin)
+
+# admin.site.register([Category, Discount, Image, Comment, Like, Brand, Product])

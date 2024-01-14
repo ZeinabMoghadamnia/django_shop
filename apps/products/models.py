@@ -70,57 +70,33 @@ class Product(BaseModel):
     def like_count(self):
         return self.likes.count()
 
+
 @receiver(post_save, sender=Product)
 def calculate_discounted_price(sender, instance, **kwargs):
+    # Disconnect the post_save signal temporarily to avoid recursion
+
+
     if hasattr(instance, 'discount') and instance.discount:
         if instance.discount.discount_type in ['percentage', 'amount']:
             if instance.discount.discount_type == 'percentage':
                 instance.discounted_price = instance.price - ((instance.discount.value / 100) * instance.price)
             elif instance.discount.discount_type == 'amount':
                 instance.discounted_price = instance.price - int(instance.discount.value)
-    else:
-        instance.discounted_price = None
+
 
     if hasattr(instance, 'category') and instance.category and hasattr(instance.category, 'discount') and instance.category.discount:
         if instance.category.discount.discount_type in ['percentage', 'amount']:
             if instance.category.discount.discount_type == 'percentage':
-                instance.discounted_price = instance.price - ((instance.category.discount.value / 100) * instance.price)
+                instance.discounted_price += instance.price - ((instance.category.discount.value / 100) * instance.price)
             elif instance.category.discount.discount_type == 'amount':
-                instance.discounted_price = instance.price - int(instance.category.discount.value)
-    else:
-        instance.discounted_price = None
+                instance.discounted_price += instance.price - int(instance.category.discount.value)
 
-    # instance.save(update_fields=['discounted_price'])
+    post_save.disconnect(calculate_discounted_price, sender=Product)
+    instance.save()
+    post_save.connect(calculate_discounted_price, sender=Product)
 
 
-# @receiver(pre_save, sender=Product)
-# def calculate_discounted_price(sender, instance, **kwargs):
-#     # Disconnect the post_save signal temporarily to avoid recursion
-#     post_save.disconnect(calculate_discounted_price, sender=Product, dispatch_uid='calculate_discounted_price')
-#
-#     if hasattr(instance, 'discount') and instance.discount:
-#         if instance.discount.discount_type in ['percentage', 'amount']:
-#             if instance.discount.discount_type == 'percentage':
-#                 instance.discounted_price = instance.price - ((instance.discount.value / 100) * instance.price)
-#             elif instance.discount.discount_type == 'amount':
-#                 instance.discounted_price = instance.price - int(instance.discount.value)
-#     else:
-#         instance.discounted_price = None
-#
-#     if hasattr(instance, 'category') and instance.category and hasattr(instance.category, 'discount') and instance.category.discount:
-#         if instance.category.discount.discount_type in ['percentage', 'amount']:
-#             if instance.category.discount.discount_type == 'percentage':
-#                 instance.discounted_price = instance.price - ((instance.category.discount.value / 100) * instance.price)
-#             elif instance.category.discount.discount_type == 'amount':
-#                 instance.discounted_price = instance.price - int(instance.category.discount.value)
-#     else:
-#         instance.discounted_price = None
-#
-#     # Reconnect the post_save signal
-#     post_save.connect(calculate_discounted_price, sender=Product, dispatch_uid='calculate_discounted_price')
 
-# Connect the post_save signal initially
-# post_save.connect(calculate_discounted_price, sender=Product, dispatch_uid='calculate_discounted_price')
 
 
 
