@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-14 17:57+0330\n"
+"POT-Creation-Date: 2024-01-14 18:07+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,71 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: apps/accounts/models.py:19
+msgid "user type"
+msgstr ""
+
+#: apps/accounts/models.py:20
 msgid "email address"
 msgstr "آدرس ایمیل"
 
-#: apps/accounts/models.py:21
+#: apps/accounts/models.py:22
 msgid "phone"
 msgstr "شماره تلفن"
 
-#: apps/accounts/models.py:22
+#: apps/accounts/models.py:23
 msgid "first name"
 msgstr "نام"
 
-#: apps/accounts/models.py:23
+#: apps/accounts/models.py:24
 msgid "last name"
 msgstr "نام خانوادگی"
 
-#: apps/accounts/models.py:24
+#: apps/accounts/models.py:25
 msgid "birthday"
 msgstr "تاریخ تولد"
 
-#: apps/accounts/models.py:25
+#: apps/accounts/models.py:26
 msgid "image"
 msgstr "تصویر"
 
-#: apps/accounts/models.py:61
+#: apps/accounts/models.py:62
 msgid "customer"
 msgstr "مشتری"
 
-#: apps/accounts/models.py:62
+#: apps/accounts/models.py:63
 msgid "city"
 msgstr "شهر"
 
-#: apps/accounts/models.py:63
+#: apps/accounts/models.py:64
 msgid "province"
 msgstr "استان"
 
-#: apps/accounts/models.py:64
+#: apps/accounts/models.py:65
 msgid "complete address"
 msgstr "آدرس کامل"
+
+#: apps/core/models.py:7
+msgid "date created"
+msgstr "تاریخ ایجاد"
+
+#: apps/core/models.py:8
+msgid "date updated"
+msgstr "تاریخ به روز رسانی"
+
+#: apps/core/models.py:9
+msgid "delete status"
+msgstr "وضعیت حذف"
+
+#: apps/core/models.py:10
+msgid "date deleted"
+msgstr "تاریخ حذف"
+
+#: apps/core/models.py:11
+msgid "date restored"
+msgstr "تاریخ بازگردانی"
+
+#: apps/core/models.py:12
+msgid "active status"
+msgstr "وضعیت فعال بودن"
