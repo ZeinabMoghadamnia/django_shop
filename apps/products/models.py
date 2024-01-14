@@ -14,9 +14,9 @@ class Discount(BaseModel):
         ('amount', 'Amount'),
     )
 
-    code = models.CharField(max_length=50, unique=True)
-    discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES)
-    value = models.PositiveIntegerField()
+    code = models.CharField(max_length=50, unique=True, verbose_name=_('discount code'))
+    discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES, verbose_name=_('discount type'))
+    value = models.PositiveIntegerField(verbose_name=_('value'))
     def clean(self):
         if self.discount_type=='percentage' and self.value > 100:
             raise ValidationError('must be between 0 and 100')
@@ -26,15 +26,15 @@ class Discount(BaseModel):
 
 
 class BaseGrouping(BaseModel):
-    name = models.CharField(max_length=50)
-    category_image = models.ImageField(upload_to='categories/', null=True, blank=True)
-    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True, blank=True)
-    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=50, verbose_name=_('name'))
+    category_image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
+    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('discount'))
+    slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
     class Meta:
         abstract = True
 
 class Category(BaseGrouping):
-    parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('parent category'))
     class Meta:
         verbose_name_plural = 'Categories'
 
@@ -46,15 +46,15 @@ class Brand(BaseGrouping):
         return f"brand: {self.name}"
 
 class Product(BaseModel):
-    name = models.CharField(max_length=50)
-    price = models.PositiveIntegerField()
-    quantity = models.PositiveIntegerField()
-    main_image = models.ImageField(upload_to='products/', null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories')
-    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, related_name='discounts', null=True, blank=True)
-    discounted_price = models.PositiveIntegerField(blank=True, null=True)
-    brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands')
-    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=50, verbose_name=_('name'))
+    price = models.PositiveIntegerField(verbose_name=_('price'))
+    quantity = models.PositiveIntegerField(verbose_name=_('quantity'))
+    main_image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name=_('image'))
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories', verbose_name=_('category'))
+    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
+    discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
+    brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('brand'))
+    slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
     class Meta:
         ordering = ['name']
 
@@ -116,18 +116,17 @@ def calculate_discounted_price(sender, instance, **kwargs):
 
 
 class Image(BaseModel):
-    sub_image = models.ImageField('Product_Image', upload_to='products/', height_field=None, width_field=None, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image')
+    sub_image = models.ImageField(upload_to='products/', height_field=None, width_field=None, null=True, blank=True, verbose_name=_('gallery'))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image', verbose_name=_('product'))
 
 class Comment(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
-    reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies')
-    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='authors')
-    context = models.TextField()
-    create_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_('product'))
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', verbose_name=_('reply'))
+    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='authors', verbose_name=_('author'))
+    context = models.TextField(verbose_name=_('content'))
     class Meta:
         ordering = ['create_at']
 
 class Like(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes')
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_who_liked')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('product'))
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_who_liked', verbose_name=_('user'))
