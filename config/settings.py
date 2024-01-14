@@ -112,14 +112,22 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa-ir'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('fa', 'Persian'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -133,15 +141,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #costomizeation
 AUTH_USER_MODEL = 'accounts.User'
-# LANGUAGE_CODE = 'en'
-# LOCALE_PATHS = (BASE_DIR / 'locale',)
-# TIME_ZONE = 'UTC'
-
-#tranlai
-from django.utils.translation import gettext_lazy as _
-LANGUAGES = [
-    ('en', _('English')),
-    ('fa', _('Persian')),
-]
-
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'

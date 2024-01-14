@@ -11,13 +11,19 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 
 
 class User(AbstractUser):
-    email = models.EmailField(max_length=100, unique=True)
+    USER_TYPES = (
+        ('employee', 'Employee'),
+        ('customer', 'Customer'),
+        ('customer', 'Customer'),
+    )
+    discount_type = models.CharField(max_length=20, choices=USER_TYPES, default='customer', verbose_name=_('user type'))
+    email = models.EmailField(max_length=100, unique=True, verbose_name=_('email address'))
     phone_regex = RegexValidator(regex='^(\+98|0)?9\d{9}$', message="Phone number must be entered in the format: '+989199999933'.")
-    phone_number = models.CharField(validators=[phone_regex], max_length=11, unique=True)
-    first_name = models.CharField(max_length=40)
-    last_name = models.CharField(max_length=40)
-    date_of_birth = models.DateField(null=True, blank=True)
-    image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True)
+    phone_number = models.CharField(validators=[phone_regex], max_length=11, unique=True, verbose_name=_('phone'))
+    first_name = models.CharField(max_length=40, verbose_name=_('first name'))
+    last_name = models.CharField(max_length=40, verbose_name=_('last name'))
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name=_('birthday'))
+    image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
     # groups = models.ManyToManyField(Group, related_name='user_accounts')
     # user_permissions = models.ManyToManyField(Permission, related_name='user_accounts_permissions')
 
@@ -53,19 +59,9 @@ class User(AbstractUser):
 
 
 class Address(BaseModel):
-    customer_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    City = models.CharField(max_length=30)
-    province = models.CharField(max_length=30)
-    complete_address = models.TextField(max_length=200)
-    # home_plate = models.CharField(max_length=20)
-    # postal_code = models.CharField(max_length=20)
-
-
-class OtpCode(models.Model):
-    phone_number = models.CharField(max_length=11)
-    code = models.PositiveSmallIntegerField()
-    created_at = models.DateTimeField(auto_now=True)
-    expired_at = models.DateTimeField()
-
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', verbose_name=_('customer'))
+    city = models.CharField(max_length=30, verbose_name=_('city'))
+    province = models.CharField(max_length=30, verbose_name=_('province'))
+    complete_address = models.TextField(max_length=200, verbose_name=_('complete address'))
     def __str__(self):
-        return f'{self.phone_number}  {self.code}'
+        return self.city

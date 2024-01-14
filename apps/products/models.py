@@ -4,6 +4,8 @@ from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
+
 # Create your models here.
 
 class Discount(BaseModel):
