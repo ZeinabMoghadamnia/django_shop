@@ -2,7 +2,7 @@ from django.db import models
 from ..accounts.models import User
 from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
@@ -17,17 +17,19 @@ class Discount(BaseModel):
     code = models.CharField(max_length=50, unique=True, verbose_name=_('discount code'))
     discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES, verbose_name=_('discount type'))
     value = models.PositiveIntegerField(verbose_name=_('value'))
+    class Meta:
+        verbose_name = _('discount code')
+
     def clean(self):
         if self.discount_type=='percentage' and self.value > 100:
             raise ValidationError('must be between 0 and 100')
-
     def __str__(self):
         return self.code
 
 
 class BaseGrouping(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
-    category_image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
+    image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
     discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('discount'))
     slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
     class Meta:
@@ -37,11 +39,15 @@ class Category(BaseGrouping):
     parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('parent category'))
     class Meta:
         verbose_name_plural = 'Categories'
+        verbose_name = _('category')
 
     def __str__(self):
         return f"category: {self.name}"
 
 class Brand(BaseGrouping):
+    description = models.TextField(verbose_name=_('description'))
+    class Meta:
+        verbose_name = _('brand')
     def __str__(self):
         return f"brand: {self.name}"
 
@@ -57,6 +63,7 @@ class Product(BaseModel):
     slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
     class Meta:
         ordering = ['name']
+        verbose_name = _('product')
 
     def like_count(self):
         return self.likes.count()
@@ -81,7 +88,7 @@ def calculate_discounted_price(sender, instance, **kwargs):
     else:
         instance.discounted_price = None
 
-    instance.save(update_fields=['discounted_price'])
+    # instance.save(update_fields=['discounted_price'])
 
 
 # @receiver(pre_save, sender=Product)
@@ -118,15 +125,21 @@ def calculate_discounted_price(sender, instance, **kwargs):
 class Image(BaseModel):
     sub_image = models.ImageField(upload_to='products/', height_field=None, width_field=None, null=True, blank=True, verbose_name=_('gallery'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image', verbose_name=_('product'))
+    class Meta:
+        verbose_name = _('images')
 
 class Comment(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_('product'))
     reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', verbose_name=_('reply'))
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='authors', verbose_name=_('author'))
     context = models.TextField(verbose_name=_('content'))
+    # created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('created'))
     class Meta:
-        ordering = ['create_at']
+        ordering = ['created_at']
+        verbose_name = _('comments')
 
 class Like(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('product'))
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_who_liked', verbose_name=_('user'))
+    class Meta:
+        verbose_name = _('likes')
