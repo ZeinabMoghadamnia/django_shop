@@ -6,15 +6,14 @@ from ..products.models import Product
 
 # Create your models here.
 
-# class OrderItem(BaseModel):
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-#     quantity = models.PositiveIntegerField()
-#     price = models.DecimalField(max_digits=8, decimal_places=2)
+class OrderItem(BaseModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=8, decimal_places=2)
 
 class Order(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     items = models.ManyToManyField(Product, blank=True)
-    quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
 # class Order(BaseModel):
