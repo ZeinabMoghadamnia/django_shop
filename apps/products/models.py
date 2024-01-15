@@ -34,6 +34,14 @@ class BaseGrouping(BaseModel):
     class Meta:
         abstract = True
 
+class Brand(BaseGrouping):
+    description = models.TextField(null=True, blank=True, verbose_name=_('description'))
+    image = models.ImageField(upload_to='brands/', null=True, blank=True, verbose_name=_('image'))
+    class Meta:
+        verbose_name = _('brand')
+    def __str__(self):
+        return f"brand: {self.name}"
+
 class Category(BaseGrouping):
     parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('parent category'))
     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
@@ -43,14 +51,6 @@ class Category(BaseGrouping):
 
     def __str__(self):
         return f"category: {self.name}"
-
-class Brand(BaseGrouping):
-    description = models.TextField(verbose_name=_('description'))
-    image = models.ImageField(upload_to='brands/', null=True, blank=True, verbose_name=_('image'))
-    class Meta:
-        verbose_name = _('brand')
-    def __str__(self):
-        return f"brand: {self.name}"
 
 class Product(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
@@ -70,41 +70,120 @@ class Product(BaseModel):
     def like_count(self):
         return self.likes.count()
 
-
 @receiver(post_save, sender=Product)
 def calculate_discounted_price(sender, instance, **kwargs):
-    # Disconnect the post_save signal temporarily to avoid recursion
+    # لیستی برای ذخیره تخفیفات
+    discounts = []
 
-
+    # افزودن تخفیف محصول به لیست
     if hasattr(instance, 'discount') and instance.discount:
-        if instance.discount.discount_type in ['percentage', 'amount']:
-            if instance.discount.discount_type == 'percentage':
-                instance.discounted_price = instance.price - ((instance.discount.value / 100) * instance.price)
-            elif instance.discount.discount_type == 'amount':
-                instance.discounted_price = instance.price - int(instance.discount.value)
+        if instance.discount.discount_type == 'percentage':
+            instance.discounted_price = instance.price - ((instance.discount.value / 100) * instance.price)
+        elif instance.discount.discount_type == 'amount':
+            instance.discounted_price = instance.price - int(instance.discount.value)
+        discounts.append(instance.discounted_price)
 
-
-    if hasattr(instance, 'category') and instance.category and hasattr(instance.category, 'discount') and instance.category.discount:
-        if instance.discount is None and instance.category.discount.discount_type in ['percentage', 'amount']:
-            if instance.category.discount.discount_type == 'percentage':
-                instance.discounted_price = instance.price - ((instance.category.discount.value / 100) * instance.price)
-            elif instance.category.discount.discount_type == 'amount':
-                instance.discounted_price = instance.price - int(instance.category.discount.value)
-
-        elif instance.category.discount.discount_type in ['percentage', 'amount']:
+    # افزودن تخفیف دسته‌بندی به لیست
+    if hasattr(instance, 'category') and instance.category and instance.category.discount:
+        if instance.category.discount and instance.category.discount.discount_type in ['percentage', 'amount']:
             if instance.category.discount.discount_type == 'percentage':
                 instance.discounted_price -= ((instance.category.discount.value / 100) * instance.price)
             elif instance.category.discount.discount_type == 'amount':
                 instance.discounted_price -= int(instance.category.discount.value)
+            discounts.append(instance.discounted_price)
+
+        if instance.category.parent and instance.category.parent.discount and instance.category.parent.discount.discount_type in [
+            'percentage', 'amount']:
+            if instance.category.parent.discount.discount_type == 'percentage':
+                instance.discounted_price = instance.price - ((instance.category.parent.discount.value / 100) * instance.price)
+            elif instance.category.parent.discount.discount_type == 'amount':
+                instance.discounted_price = instance.price - int(instance.category.parent.discount.value)
+            discounts.append(instance.discounted_price)
+
+    if instance.brand.discount and instance.brand.discount.discount_type in ['percentage', 'amount']:
+        if instance.brand.discount.discount_type == 'percentage':
+            instance.discounted_price = instance.price - ((instance.brand.discount.value / 100) * instance.price)
+        elif instance.brand.discount.discount_type == 'amount':
+            instance.discounted_price = instance.price - int(instance.brand.discount.value)
+        discounts.append(instance.discounted_price)
+
+    instance.discounted_price = min(discounts)
 
     post_save.disconnect(calculate_discounted_price, sender=Product)
     instance.save()
     post_save.connect(calculate_discounted_price, sender=Product)
 
+# @receiver(post_save, sender=Product)
+# def calculate_discounted_price(sender, instance, **kwargs):
+#     instance.discounted_price = instance.price
+#     if hasattr(instance, 'discount') and instance.discount:
+#         # محاسبه تخفیف بر اساس تخفیف محصول
+#         if instance.discount.discount_type in ['percentage', 'amount']:
+#             if instance.discount.discount_type == 'percentage':
+#                 instance.discounted_price = instance.price - ((instance.discount.value / 100) * instance.price)
+#             elif instance.discount.discount_type == 'amount':
+#                 instance.discounted_price = instance.price - int(instance.discount.value)
+#
+#     if hasattr(instance, 'category') and instance.category:
+#         # محاسبه تخفیف بر اساس تخفیف دسته‌بندی
+#         if instance.category.discount and instance.category.discount.discount_type in ['percentage', 'amount']:
+#             if instance.category.discount.discount_type == 'percentage':
+#                 instance.discounted_price -= ((instance.category.discount.value / 100) * instance.price)
+#             elif instance.category.discount.discount_type == 'amount':
+#                 instance.discounted_price -= int(instance.category.discount.value)
+#
+#         if instance.category.parent and instance.category.parent.discount and instance.category.parent.discount.discount_type in [
+#             'percentage', 'amount']:
+#             if instance.category.parent.discount.discount_type == 'percentage':
+#                 instance.discounted_price -= ((instance.category.parent.discount.value / 100) * instance.price)
+#             elif instance.category.parent.discount.discount_type == 'amount':
+#                 instance.discounted_price -= int(instance.category.parent.discount.value)
+#
+#
+#     if hasattr(instance, 'brand') and instance.brand:
+#         # محاسبه تخفیف بر اساس تخفیف برند
+#         if instance.brand.discount and instance.brand.discount.discount_type in ['percentage', 'amount']:
+#             if instance.brand.discount.discount_type == 'percentage':
+#                 instance.discounted_price -= ((instance.brand.discount.value / 100) * instance.price)
+#             elif instance.brand.discount.discount_type == 'amount':
+#                 instance.discounted_price -= int(instance.brand.discount.value)
+#
+#
+#     post_save.disconnect(calculate_discounted_price, sender=Product)
+#     instance.save()
+#     post_save.connect(calculate_discounted_price, sender=Product)
 
+    # ...
 
+# @receiver(post_save, sender=Product)
+# def calculate_discounted_price(sender, instance, **kwargs):
+#
+#     if hasattr(instance, 'discount') and instance.discount:
+#         if instance.discount.discount_type in ['percentage', 'amount']:
+#             if instance.discount.discount_type == 'percentage':
+#                 instance.discounted_price = instance.price - ((instance.discount.value / 100) * instance.price)
+#             elif instance.discount.discount_type == 'amount':
+#                 instance.discounted_price = instance.price - int(instance.discount.value)
+#
+#
+#     if hasattr(instance, 'category') and instance.category and hasattr(instance.category, 'discount') and instance.category.discount:
+#         if instance.discount is None and instance.category.discount.discount_type in ['percentage', 'amount']:
+#             if instance.category.discount.discount_type == 'percentage':
+#                 instance.discounted_price = instance.price - ((instance.category.discount.value / 100) * instance.price)
+#             elif instance.category.discount.discount_type == 'amount':
+#                 instance.discounted_price = instance.price - int(instance.category.discount.value)
+#
+#         elif instance.category.discount.discount_type in ['percentage', 'amount']:
+#             if instance.category.discount.discount_type == 'percentage':
+#                 instance.discounted_price -= ((instance.category.discount.value / 100) * instance.price)
+#             elif instance.category.discount.discount_type == 'amount':
+#                 instance.discounted_price -= int(instance.category.discount.value)
+#
+#     post_save.disconnect(calculate_discounted_price, sender=Product)
+#     instance.save()
+#     post_save.connect(calculate_discounted_price, sender=Product)
 
-
+# ...
 
 class Image(BaseModel):
     sub_image = models.ImageField(upload_to='products/', height_field=None, width_field=None, null=True, blank=True, verbose_name=_('gallery'))
