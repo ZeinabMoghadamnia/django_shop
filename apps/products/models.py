@@ -29,7 +29,7 @@ class Discount(BaseModel):
 
 class BaseGrouping(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
-    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('discount'))
+    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('discount'))
     slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
     class Meta:
         abstract = True
@@ -43,7 +43,7 @@ class Brand(BaseGrouping):
         return f"brand: {self.name}"
 
 class Category(BaseGrouping):
-    parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('parent category'))
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('parent category'))
     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
         verbose_name_plural = 'Categories'
@@ -58,7 +58,7 @@ class Product(BaseModel):
     quantity = models.PositiveIntegerField(verbose_name=_('quantity'))
     main_image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name=_('image'))
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories', verbose_name=_('category'))
-    discount = models.ForeignKey(Discount, on_delete=models.PROTECT, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
+    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
     discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('brand'))
     slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
@@ -203,6 +203,6 @@ class Comment(BaseModel):
 
 class Like(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('product'))
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_who_liked', verbose_name=_('user'))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_liked', verbose_name=_('user'))
     class Meta:
         verbose_name = _('likes')
