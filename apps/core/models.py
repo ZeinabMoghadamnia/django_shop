@@ -12,6 +12,7 @@ class BaseModel(models.Model):
     deleted_at = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name=_('date deleted'))
     restored_at = models.DateTimeField(auto_now=True, blank=True, null=True , verbose_name=_('date restored'))
     is_active = models.BooleanField(default=True, verbose_name=_('active status'))
+    # expired_at = models.DateTimeField(null=True, blank=True, verbose_name=_('expired'))
     objects = BaseManager()
     class Meta:
         abstract = True

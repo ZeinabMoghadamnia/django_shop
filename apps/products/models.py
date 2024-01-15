@@ -2,7 +2,7 @@ from django.db import models
 from ..accounts.models import User
 from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
@@ -85,11 +85,17 @@ def calculate_discounted_price(sender, instance, **kwargs):
 
 
     if hasattr(instance, 'category') and instance.category and hasattr(instance.category, 'discount') and instance.category.discount:
-        if instance.category.discount.discount_type in ['percentage', 'amount']:
+        if instance.discount is None and instance.category.discount.discount_type in ['percentage', 'amount']:
             if instance.category.discount.discount_type == 'percentage':
-                instance.discounted_price += instance.price - ((instance.category.discount.value / 100) * instance.price)
+                instance.discounted_price = instance.price - ((instance.category.discount.value / 100) * instance.price)
             elif instance.category.discount.discount_type == 'amount':
-                instance.discounted_price += instance.price - int(instance.category.discount.value)
+                instance.discounted_price = instance.price - int(instance.category.discount.value)
+
+        elif instance.category.discount.discount_type in ['percentage', 'amount']:
+            if instance.category.discount.discount_type == 'percentage':
+                instance.discounted_price -= ((instance.category.discount.value / 100) * instance.price)
+            elif instance.category.discount.discount_type == 'amount':
+                instance.discounted_price -= int(instance.category.discount.value)
 
     post_save.disconnect(calculate_discounted_price, sender=Product)
     instance.save()

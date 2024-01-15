@@ -7,9 +7,9 @@ from .manager import PhoneValidator
 
 class User(AbstractUser):
     USER_TYPES = (
-        ('employee', 'Employee'),
-        ('customer', 'Customer'),
-        ('customer', 'Customer'),
+        ('manager', 'Manager'),
+        ('supervisor', 'Supervisor'),
+        ('operator', 'Operator'),
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPES, verbose_name=_('user type'),null=True, blank=True)
     email = models.EmailField(max_length=100, unique=True, verbose_name=_('email address'))
@@ -20,7 +20,7 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
 
     # USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'email']
     class Meta:
         verbose_name = _('user')
     def __str__(self):
