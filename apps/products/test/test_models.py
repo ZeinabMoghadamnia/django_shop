@@ -3,17 +3,11 @@ from .models import Discount, Brand, Category, Product
 
 class DiscountTestCase(TestCase):
     def setUp(self):
-        # ایجاد یک تخفیف برای تست
         self.discount_percentage = Discount.objects.create(name='Test DiscountP', discount_type='percentage', value=10)
         self.discount_amount = Discount.objects.create(name='Test DiscountA', discount_type='amount', value=1000)
 
-
-
-        # ایجاد یک دسته بندی برای تست
-        self.category = Category.objects.create(name='Test Category', slug='test-category')
-
-        # ایجاد یک محصول برای تست
-
+    def test_discount(self):
+        self.assertEqual(self.discount_percentage)
 
 class BrandTestCase(TestCase):
     def setUp(self):

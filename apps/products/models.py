@@ -4,6 +4,7 @@ from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -30,9 +31,13 @@ class Discount(BaseModel):
 class BaseGrouping(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('discount'))
-    slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
+    slug = models.SlugField(unique=True, max_length=20, blank=True, null=True, verbose_name=_('slug'))
     class Meta:
         abstract = True
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class Brand(BaseGrouping):
     description = models.TextField(null=True, blank=True, verbose_name=_('description'))
@@ -61,7 +66,7 @@ class Product(BaseModel):
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
     discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('brand'))
-    slug = models.SlugField(unique=True, max_length=20, verbose_name=_('slug'))
+    slug = models.SlugField(unique=True, blank=True, null=True, max_length=20, verbose_name=_('slug'))
 
     class Meta:
         ordering = ['name']
@@ -69,6 +74,11 @@ class Product(BaseModel):
 
     def like_count(self):
         return self.likes.count()
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 @receiver(post_save, sender=Product)
 def calculate_discounted_price(sender, instance, **kwargs):
