@@ -2,12 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ..core.models import BaseModel
 from django.contrib.auth.models import AbstractUser, Group, Permission
-from .manager import PhoneValidator
 from django.core.validators import RegexValidator
-
-
-
-
 class User(AbstractUser):
     USER_TYPES = (
         ('manager', 'Manager'),

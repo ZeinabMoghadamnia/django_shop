@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from .manager import BaseManager
+from .managers import BaseManager
 from django.utils import timezone
 
 # Create your models here.

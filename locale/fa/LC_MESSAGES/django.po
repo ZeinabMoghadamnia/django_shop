@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-15 13:42+0330\n"
+"POT-Creation-Date: 2024-01-15 13:49+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,61 +22,77 @@ msgstr ""
 msgid "The username(Email) or password is incorrect !"
 msgstr "نام کاربری(ایمیل) یا رمز عبور اشتباه است!"
 
-#: apps/accounts/models.py:17
+#: apps/accounts/managers.py:8
+msgid "Entering a phone number is required!"
+msgstr "وارد کردن شماره موبایل اجباری است!"
+
+#: apps/accounts/managers.py:10
+msgid "Entering a email address is required!"
+msgstr "وارد کردن آدرس ایمیل اجباری است!"
+
+#: apps/accounts/managers.py:12
+msgid "Entering the first name is required!"
+msgstr "وارد کردن نام اجباری است!"
+
+#: apps/accounts/managers.py:14
+msgid "Entering the last name is required!"
+msgstr "وارد کردن نام خانوادگی اجباری است!"
+
+#: apps/accounts/models.py:16
 msgid "user type"
 msgstr "نوع کاربری"
 
-#: apps/accounts/models.py:18
+#: apps/accounts/models.py:17
 msgid "email address"
 msgstr "آدرس ایمیل"
 
-#: apps/accounts/models.py:19
+#: apps/accounts/models.py:18
 msgid "Please enter the phone number in this format: '09999999999'"
 msgstr "لطفا شماره تلفن را در این قالب وارد کنید : ' 09999999999' "
 
-#: apps/accounts/models.py:20
+#: apps/accounts/models.py:19
 msgid "phone"
 msgstr "شماره تلفن"
 
-#: apps/accounts/models.py:21
+#: apps/accounts/models.py:20
 msgid "first name"
 msgstr "نام"
 
-#: apps/accounts/models.py:22
+#: apps/accounts/models.py:21
 msgid "last name"
 msgstr "نام خانوادگی"
 
-#: apps/accounts/models.py:23
+#: apps/accounts/models.py:22
 msgid "birthday"
 msgstr "تاریخ تولد"
 
-#: apps/accounts/models.py:24 apps/products/models.py:39
+#: apps/accounts/models.py:23 apps/products/models.py:39
 #: apps/products/models.py:49 apps/products/models.py:59
 msgid "image"
 msgstr "تصویر"
 
-#: apps/accounts/models.py:29 apps/orders/models.py:18
+#: apps/accounts/models.py:28 apps/orders/models.py:18
 #: apps/products/models.py:127
 msgid "user"
 msgstr "کاربر"
 
-#: apps/accounts/models.py:35
+#: apps/accounts/models.py:34
 msgid "customer"
 msgstr "مشتری"
 
-#: apps/accounts/models.py:36
+#: apps/accounts/models.py:35
 msgid "city"
 msgstr "شهر"
 
-#: apps/accounts/models.py:37
+#: apps/accounts/models.py:36
 msgid "province"
 msgstr "استان"
 
-#: apps/accounts/models.py:38
+#: apps/accounts/models.py:37
 msgid "complete address"
 msgstr "آدرس کامل"
 
-#: apps/accounts/models.py:40
+#: apps/accounts/models.py:39
 #, fuzzy
 #| msgid "email address"
 msgid "address"
