@@ -3,6 +3,9 @@ from django.utils.translation import gettext_lazy as _
 from ..core.models import BaseModel
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from .manager import PhoneValidator
+from django.core.validators import RegexValidator
+
+
 
 
 class User(AbstractUser):
@@ -13,7 +16,8 @@ class User(AbstractUser):
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPES, verbose_name=_('user type'),null=True, blank=True)
     email = models.EmailField(max_length=100, unique=True, verbose_name=_('email address'))
-    phone_number = models.CharField(validators=[PhoneValidator], max_length=11, unique=True, verbose_name=_('phone'))
+    mobile_regex = RegexValidator(regex='^(\+98|0)?9\d{9}$', message=_("Please enter the phone number in this format: '09999999999'"))
+    phone_number = models.CharField(validators=[mobile_regex], max_length=11, unique=True, verbose_name=_('phone'))
     first_name = models.CharField(max_length=40, verbose_name=_('first name'))
     last_name = models.CharField(max_length=40, verbose_name=_('last name'))
     date_of_birth = models.DateField(null=True, blank=True, verbose_name=_('birthday'))

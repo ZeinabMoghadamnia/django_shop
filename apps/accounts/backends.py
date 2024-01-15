@@ -2,6 +2,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 
 class EmailBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
@@ -10,7 +11,7 @@ class EmailBackend(ModelBackend):
             user = UserModel.objects.get(Q(username__iexact=username) | Q(email__iexact=username))
             if user.check_password(password):
                 return user
-            messages.error(request, f"The username(Email) or password is incorrect !", 'danger')
+            messages.error(request, _(f"The username(Email) or password is incorrect !"), 'danger')
         except UserModel.DoesNotExist:
             return None
 
