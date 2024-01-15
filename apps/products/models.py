@@ -77,7 +77,14 @@ class Product(BaseModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base_slug = slugify(self.name)
+            self.slug = base_slug
+            counter = 1
+
+            while Product.objects.filter(slug=self.slug).exists():
+                self.slug = f"{base_slug}-{counter}"
+                counter += 1
+
         super().save(*args, **kwargs)
 
 @receiver(post_save, sender=Product)
