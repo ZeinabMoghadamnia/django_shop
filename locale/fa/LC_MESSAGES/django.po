@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-15 13:49+0330\n"
+"POT-Creation-Date: 2024-01-16 22:11+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,61 +38,61 @@ msgstr "وارد کردن نام اجباری است!"
 msgid "Entering the last name is required!"
 msgstr "وارد کردن نام خانوادگی اجباری است!"
 
-#: apps/accounts/models.py:16
+#: apps/accounts/models.py:13
 msgid "user type"
 msgstr "نوع کاربری"
 
-#: apps/accounts/models.py:17
+#: apps/accounts/models.py:14
 msgid "email address"
 msgstr "آدرس ایمیل"
 
-#: apps/accounts/models.py:18
+#: apps/accounts/models.py:15
 msgid "Please enter the phone number in this format: '09999999999'"
 msgstr "لطفا شماره تلفن را در این قالب وارد کنید : ' 09999999999' "
 
-#: apps/accounts/models.py:19
+#: apps/accounts/models.py:16
 msgid "phone"
 msgstr "شماره تلفن"
 
-#: apps/accounts/models.py:20
+#: apps/accounts/models.py:17
 msgid "first name"
 msgstr "نام"
 
-#: apps/accounts/models.py:21
+#: apps/accounts/models.py:18
 msgid "last name"
 msgstr "نام خانوادگی"
 
-#: apps/accounts/models.py:22
+#: apps/accounts/models.py:19
 msgid "birthday"
 msgstr "تاریخ تولد"
 
-#: apps/accounts/models.py:23 apps/products/models.py:39
-#: apps/products/models.py:49 apps/products/models.py:59
+#: apps/accounts/models.py:20 apps/products/models.py:44
+#: apps/products/models.py:52 apps/products/models.py:63
 msgid "image"
 msgstr "تصویر"
 
-#: apps/accounts/models.py:28 apps/orders/models.py:18
-#: apps/products/models.py:127
+#: apps/accounts/models.py:24 apps/orders/models.py:18
+#: apps/products/models.py:150
 msgid "user"
 msgstr "کاربر"
 
-#: apps/accounts/models.py:34
+#: apps/accounts/models.py:30
 msgid "customer"
 msgstr "مشتری"
 
-#: apps/accounts/models.py:35
+#: apps/accounts/models.py:31
 msgid "city"
 msgstr "شهر"
 
-#: apps/accounts/models.py:36
+#: apps/accounts/models.py:32
 msgid "province"
 msgstr "استان"
 
-#: apps/accounts/models.py:37
+#: apps/accounts/models.py:33
 msgid "complete address"
 msgstr "آدرس کامل"
 
-#: apps/accounts/models.py:39
+#: apps/accounts/models.py:35
 #, fuzzy
 #| msgid "email address"
 msgid "address"
@@ -122,17 +122,17 @@ msgstr "تاریخ بازگردانی"
 msgid "active status"
 msgstr "وضعیت فعال بودن"
 
-#: apps/orders/models.py:11 apps/products/models.py:68
-#: apps/products/models.py:111 apps/products/models.py:116
-#: apps/products/models.py:126
+#: apps/orders/models.py:11 apps/products/models.py:73
+#: apps/products/models.py:135 apps/products/models.py:140
+#: apps/products/models.py:149
 msgid "product"
 msgstr "محصول"
 
-#: apps/orders/models.py:12 apps/products/models.py:58
+#: apps/orders/models.py:12 apps/products/models.py:62
 msgid "quantity"
 msgstr "تعداد"
 
-#: apps/orders/models.py:13 apps/products/models.py:57
+#: apps/orders/models.py:13 apps/products/models.py:61
 msgid "price"
 msgstr "قیمت"
 
@@ -154,78 +154,84 @@ msgstr "قیمت کل"
 msgid "order"
 msgstr "سفارشات"
 
-#: apps/products/models.py:17 apps/products/models.py:21
+#: apps/products/models.py:18 apps/products/models.py:22
 msgid "discount code"
 msgstr "کد تخفیف"
 
-#: apps/products/models.py:18
+#: apps/products/models.py:19
 msgid "discount type"
 msgstr "نوع تخفیف"
 
-#: apps/products/models.py:19
+#: apps/products/models.py:20
 msgid "value"
 msgstr "مقدار"
 
-#: apps/products/models.py:31 apps/products/models.py:56
+#: apps/products/models.py:32 apps/products/models.py:60
 #, fuzzy
 #| msgid "last name"
 msgid "name"
 msgstr "نام"
 
-#: apps/products/models.py:32 apps/products/models.py:61
+#: apps/products/models.py:33 apps/products/models.py:65
 msgid "discount"
 msgstr "تخفیف"
 
-#: apps/products/models.py:33 apps/products/models.py:64
+#: apps/products/models.py:34 apps/products/models.py:69
 msgid "slug"
 msgstr "اسلاگ"
 
-#: apps/products/models.py:38
-msgid "parent category"
-msgstr "دسته بندی گنده"
-
-#: apps/products/models.py:42 apps/products/models.py:60
-msgid "category"
-msgstr "دسته بندی"
-
-#: apps/products/models.py:48
+#: apps/products/models.py:43 apps/products/models.py:68
 msgid "description"
 msgstr "توضیحات"
 
-#: apps/products/models.py:51 apps/products/models.py:63
+#: apps/products/models.py:46 apps/products/models.py:67
 msgid "brand"
 msgstr "برند"
 
-#: apps/products/models.py:62
+#: apps/products/models.py:51
+msgid "parent category"
+msgstr "دسته بندی گنده"
+
+#: apps/products/models.py:54
+#, fuzzy
+#| msgid "category"
+msgid "Categories"
+msgstr "دسته بندی ها"
+
+#: apps/products/models.py:64
+msgid "category"
+msgstr "دسته بندی"
+
+#: apps/products/models.py:66
 msgid "discounted price"
 msgstr "قیمت پس از تخفیف"
 
-#: apps/products/models.py:110
+#: apps/products/models.py:134
 msgid "gallery"
 msgstr "گالری"
 
-#: apps/products/models.py:113
+#: apps/products/models.py:137
 #, fuzzy
 #| msgid "image"
 msgid "images"
 msgstr "تصویر"
 
-#: apps/products/models.py:117
+#: apps/products/models.py:141
 msgid "reply"
 msgstr "پاسخ"
 
-#: apps/products/models.py:118
+#: apps/products/models.py:142
 msgid "author"
 msgstr "نویسنده"
 
-#: apps/products/models.py:119
+#: apps/products/models.py:143
 msgid "content"
 msgstr "محتوا"
 
-#: apps/products/models.py:123
+#: apps/products/models.py:146
 msgid "comments"
 msgstr "نظرات"
 
-#: apps/products/models.py:129
+#: apps/products/models.py:152
 msgid "likes"
 msgstr "لایک ها"

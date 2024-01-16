@@ -66,13 +66,13 @@
     <header id="header" class="site-header">
       <nav id="header-nav" class="navbar navbar-expand-lg px-3">
         <div class="container">
-          <a class="navbar-brand d-lg-none" href="index.html">
+          <a class="navbar-brand d-lg-none" href="base.html">
             <img src="{% static 'images/main-logo.png' %}" class="logo" alt="">
           </a>
           <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
           <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
             <div class="offcanvas-header px-4 pb-0">
-              <a class="navbar-brand" href="index.html">
+              <a class="navbar-brand" href="base.html">
                 <img src="{% static 'images/main-logo.png' %}" class="logo">
               </a>
               <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
@@ -82,19 +82,19 @@
                 
                 <ul class="list-unstyled d-lg-flex justify-content-md-between align-items-center">
                   <li class="nav-item">
-                    <a class="nav-link ms-0" href="about.html">About</a>
+                    <a class="nav-link ms-0" href="about.html">درباره ما</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link ms-0" href="shop.html">Shop</a>
+                    <a class="nav-link ms-0" href="shop.html">محصولات</a>
                   </li>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle ms-0" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Pages</a>
                     <ul class="dropdown-menu">
                       <li>
-                        <a href="about.html" class="dropdown-item fs-5 fw-medium">About <span class="text-primary">(PRO)</span></a>
+                        <a href="about.html" class="dropdown-item fs-5 fw-medium">درباره ما<span class="text-primary">(PRO)</span></a>
                       </li>
                       <li>
-                        <a href="shop.html" class="dropdown-item fs-5 fw-medium">Shop <span class="text-primary">(PRO)</span></a>
+                        <a href="shop.html" class="dropdown-item fs-5 fw-medium">محصولات<span class="text-primary">(PRO)</span></a>
                       </li>
                       <li>
                         <a href="single-product.html" class="dropdown-item fs-5 fw-medium">Single Product <span class="text-primary">(PRO)</span></a>
@@ -103,7 +103,7 @@
                         <a href="login.html" class="dropdown-item fs-5 fw-medium">Account <span class="text-primary">(PRO)</span></a>
                       </li>
                       <li>
-                        <a href="cart.html" class="dropdown-item fs-5 fw-medium">Cart <span class="text-primary">(PRO)</span></a>
+                        <a href="cart.html" class="dropdown-item fs-5 fw-medium">سبد خرید<span class="text-primary">(PRO)</span></a>
                       </li>
                       <li>
                         <a href="checkout.html" class="dropdown-item fs-5 fw-medium">Checkout <span class="text-primary">(PRO)</span></a>
@@ -115,13 +115,13 @@
                         <a href="single-post.html" class="dropdown-item fs-5 fw-medium">Single Post <span class="text-primary">(PRO)</span></a>
                       </li>
                       <li>
-                        <a href="contact.html" class="dropdown-item fs-5 fw-medium">Contact <span class="text-primary">(PRO)</span></a>
+                        <a href="contact.html" class="dropdown-item fs-5 fw-medium">سبد خرید<span class="text-primary">(PRO)</span></a>
                       </li>
                     </ul>
                   </li>                  
                 </ul>
                 
-                <a class="navbar-brand d-none d-lg-block me-0" href="index.html">
+                <a class="navbar-brand d-none d-lg-block me-0" href="base.html">
                   <img src="{% static 'images/main-logo.png' %}" class="logo" alt="">
                 </a>
 
@@ -130,7 +130,7 @@
                     <div id="search-bar" class="border-right d-none d-lg-block">
                       <form action="" autocomplete="on">
                         <input id="search" class="text-dark" name="search" type="text" placeholder="Search Here...">
-                        <a type="submit" class="nav-link me-0" href="#">Search</a>
+                        <a type="submit" class="nav-link me-0" href="#">جستجو</a>
                       </form>
                     </div>
                   </li>
@@ -138,10 +138,10 @@
                     <a class="nav-link text-decoration-underline me-0" href="https://templatesjungle.gumroad.com/l/vaso-interior-decor-ecommerce-website-template" target="_blank">Get Pro</a>
                   </li>
                   <li class="cart-dropdown nav-item dropdown">
-                    <a class="nav-link dropdown-toggle me-0" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Cart(2)</a>
+                    <a class="nav-link dropdown-toggle me-0" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">سبد خرید</a>
                     <div class="dropdown-menu dropdown-menu-end p-3">
                       <h4 class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-dark">Your cart</span>
+                        <span class="text-dark">سبد خرید</span>
                         <span class="badge bg-dark rounded-pill">2</span>
                       </h4>
                       <ul class="list-group mb-3">
@@ -184,7 +184,7 @@
     <section id="billboard" class="position-relative overflow-hidden">
       <div class="swiper main-swiper">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" style="background-image: url('{% static 'images/banner-image.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 100vh; background-position: center;">
+          <div class="swiper-slide" style="background-image: url('{% static 'images/banner-image3.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 100vh; background-position: center;">
             <div class="container ">
               <div class="row">
                 <div class="offset-md-1 col-md-6">
@@ -198,7 +198,7 @@
               </div>
             </div>
           </div>
-          <div class="swiper-slide" style="background-image: url('{% static 'images/banner-image1.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 100vh; background-position: center;">
+          <div class="swiper-slide" style="background-image: url('{% static 'images/banner-image5.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 100vh; background-position: center;">
             <div class="container">
               <div class="row">
                 <div class="offset-md-6 col-md-6">
@@ -212,7 +212,7 @@
               </div>
             </div>
           </div>
-          <div class="swiper-slide" style="background-image: url('{% static 'images/banner-image2.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 100vh; background-position: center;">
+          <div class="swiper-slide" style="background-image: url('{% static 'images/banner-image.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 100vh; background-position: center;">
             <div class="container">
               <div class="row">
                 <div class="offset-md-1 col-md-6">

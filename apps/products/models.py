@@ -19,7 +19,7 @@ class Discount(BaseModel):
     discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES, verbose_name=_('discount type'))
     value = models.PositiveIntegerField(verbose_name=_('value'))
     class Meta:
-        verbose_name = _('discount code')
+        verbose_name_plural = _('discount code')
 
     def clean(self):
         if self.discount_type=='percentage' and self.value > 100:
@@ -43,7 +43,7 @@ class Brand(BaseGrouping):
     description = models.TextField(null=True, blank=True, verbose_name=_('description'))
     image = models.ImageField(upload_to='brands/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
-        verbose_name = _('brand')
+        verbose_name_plural = _('brand')
     def __str__(self):
         return f"brand: {self.name}"
 
@@ -51,8 +51,7 @@ class Category(BaseGrouping):
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('parent category'))
     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
-        verbose_name_plural = 'Categories'
-        verbose_name = _('category')
+        verbose_name_plural = _('Categories')
 
     def __str__(self):
         return f"category: {self.name}"
@@ -66,11 +65,12 @@ class Product(BaseModel):
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
     discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('brand'))
+    description = models.TextField(blank=True, verbose_name=_('description'))
     slug = models.SlugField(unique=True, blank=True, null=True, max_length=20, verbose_name=_('slug'))
 
     class Meta:
         ordering = ['name']
-        verbose_name = _('product')
+        verbose_name_plural = _('product')
 
     def like_count(self):
         return self.likes.count()
@@ -134,7 +134,7 @@ class Image(BaseModel):
     sub_image = models.ImageField(upload_to='products/', height_field=None, width_field=None, null=True, blank=True, verbose_name=_('gallery'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image', verbose_name=_('product'))
     class Meta:
-        verbose_name = _('images')
+        verbose_name_plural = _('images')
 
 class Comment(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_('product'))
@@ -143,10 +143,10 @@ class Comment(BaseModel):
     context = models.TextField(verbose_name=_('content'))
     class Meta:
         ordering = ['created_at']
-        verbose_name = _('comments')
+        verbose_name_plural = _('comments')
 
 class Like(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('product'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_liked', verbose_name=_('user'))
     class Meta:
-        verbose_name = _('likes')
+        verbose_name_plural = _('likes')

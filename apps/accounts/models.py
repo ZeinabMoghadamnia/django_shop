@@ -21,7 +21,7 @@ class User(AbstractUser, BaseModel):
 
     REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'email']
     class Meta:
-        verbose_name = _('user')
+        verbose_name_plural = _('user')
     def __str__(self):
         return self.email
 
@@ -32,6 +32,6 @@ class Address(BaseModel):
     province = models.CharField(max_length=30, verbose_name=_('province'))
     complete_address = models.TextField(max_length=200, verbose_name=_('complete address'))
     class Meta:
-        verbose_name = _('address')
+        verbose_name_plural = _('address')
     def __str__(self):
         return self.city
