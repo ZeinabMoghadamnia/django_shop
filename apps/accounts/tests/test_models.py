@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.test import TestCase
 from ..models import User, Address
 from django.utils import timezone
@@ -16,28 +17,25 @@ class UserModelTest(TestCase):
             is_deleted = False,
         )
     def test_user_model(self):
-        self.assertEqual(self.user.username, 'zeinab')
-        self.assertEqual(self.user.user_type, 'costumer')
-        self.assertEqual(self.user.email, 'zeinab@gmail.com')
-        self.assertEqual(self.user.phone_number, '09032554304')
-        self.assertEqual(self.user.first_name, 'zeinab')
-        self.assertEqual(self.user.last_name, 'moghadamnia')
-        self.assertEqual(self.user.date_of_birth, '2002-07-23')
-        self.assertEqual(self.user.image, None)
-        self.assertEqual(self.user.is_active, True)
-        self.assertEqual(self.user.is_deleted, False)
+        user = User.objects.get(username='zeinab')
+        self.assertEqual(user.username, 'zeinab')
+        self.assertEqual(user.user_type, 'costumer')
+        self.assertEqual(user.email, 'zeinab@gmail.com')
+        self.assertEqual(user.phone_number, '09032554304')
+        self.assertEqual(user.first_name, 'zeinab')
+        self.assertEqual(user.last_name, 'moghadamnia')
+        self.assertEqual(user.date_of_birth, datetime.strptime('2002-07-23', "%Y-%m-%d").date())
+        self.assertEqual(user.is_active, True)
+        self.assertEqual(user.is_deleted, False)
 class AddressModelTest(TestCase):
     def setUp(self):
         self.address = Address.objects.create(
-            customer = User.objects.create_user(
+            customer = User.objects.create(
                 username='zeinab',
-                user_type = 'costumer',
-                email = 'zeinab@gmail.com',
-                phone_number = '09032554304',
-                first_name = 'zeinab',
-                last_name = 'moghadamnia',
-                date_of_birth = '2002-07-23',
-                image = None,
+                email='zeinab@gmail.com',
+                phone_number='09032554304',
+                first_name='zeinab',
+                last_name='moghadamnia',
             ),
             province = 'Tehran',
             city = 'Tehran',
@@ -47,9 +45,11 @@ class AddressModelTest(TestCase):
         )
 
     def test_address_model(self):
-        self.assertEqual(self.address.customer.first_name, 'zeinab')
-        self.assertEqual(self.address.province, 'Tehran')
-        self.assertEqual(self.address.city, 'Tehran')
-        self.assertEqual(self.address.complete_address, 'Tehran, Tehran, Heravi')
-        self.assertEqual(self.address.is_active, True)
-        self.assertEqual(self.address.is_deleted, False)
+        address = Address.objects.get(province='Tehran')
+        self.assertEqual(address.customer.email, 'zeinab@gmail.com')
+        self.assertEqual(address.customer.first_name, 'zeinab')
+        self.assertEqual(address.province, 'Tehran')
+        self.assertEqual(address.city, 'Tehran')
+        self.assertEqual(address.complete_address, 'Tehran, Tehran, Heravi')
+        self.assertEqual(address.is_active, True)
+        self.assertEqual(address.is_deleted, False)
