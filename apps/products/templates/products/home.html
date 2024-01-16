@@ -97,20 +97,16 @@
                 </div>
             </div>
         </div>
-
         <div class="swiper product-swiper">
-
             <div class="swiper-wrapper">
                 {% for product in products %}
                     <div class="swiper-slide">
-
                         <div class="product-card position-relative">
-
                             <div class="image-holder zoom-effect">
-                                <img src="{{ product.main_image }}" alt="product-item" class="img-fluid zoom-in">
+                                <img src="{{ product.main_image.url }}" alt="product-item" class="img-fluid zoom-in">
                                 <div class="cart-concern position-absolute">
                                     <div class="cart-button">
-                                        <a href="#" class="btn">Add to Cart</a>
+                                        <a href="#" class="btn">اضافه کردن به سبد خرید</a>
                                     </div>
                                 </div>
                             </div>
@@ -120,44 +116,10 @@
                                 </h5>
                                 <span class="item-price text-primary fs-3 fw-light">{{ product.price }}</span>
                             </div>
-
                         </div>
-
-
                     </div>
                 {% endfor %}
             </div>
-
-        </div>
-
-        {#        <div class="swiper-slide">#}
-        {#            <div class="product-card position-relative">#}
-        {#                <div class="image-holder zoom-effect">#}
-        {#                    <img src="{% static 'images/product-item2.jpg' %}" alt="product-item" class="img-fluid zoom-in">#}
-        {#                    <div class="cart-concern position-absolute">#}
-        {#                        <div class="cart-button">#}
-        {#                            <a href="#" class="btn">Add to Cart</a>#}
-        {#                        </div>#}
-        {#                    </div>#}
-        {#                </div>#}
-        {#                <div class="card-detail text-center pt-3 pb-2">#}
-        {#                    <h5 class="card-title fs-3 text-capitalize">#}
-        {#                        <a href="single-product.html">Oldie Off-White</a>#}
-        {#                    </h5>#}
-        {#                    <span class="item-price text-primary fs-3 fw-light">$680</span>#}
-        {#                </div>#}
-        {#            </div>#}
-        {#        </div>#}
-        {##}
-        {##}
-        {#        <div class="swiper-slide">#}
-        {#            <div class="product-card position-relative">#}
-        {##}
-        {#            </div>#}
-        {#        </div>#}
-
-
-        </div>
         </div>
     </section>
     <section id="testimonials" class="position-relative padding-xlarge">
@@ -165,22 +127,12 @@
             <div class="row">
                 <div class="offset-md-2 col-md-8">
                     <h3 class="text-center mb-5" data-aos="fade" data-aos-easing="ease-in" data-aos-duration="1000"
-                        data-aos-once="true">What our customers says</h3>
+                        data-aos-once="true">نظرات شما</h3>
                     <div class="review-content position-relative" data-aos="fade" data-aos-easing="ease-in"
                          data-aos-duration="1500" data-aos-once="true">
                         <div class="swiper testimonial-swiper">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide text-center d-flex justify-content-center">
-                                    <div class="review-item">
-                                        <blockquote class="fs-1 fw-light">“A pellen tesque pretium feugiat vel morbi
-                                            sagittis lorem habi tasse cursus. Suspen dise tempus oncu enim pellen tesque
-                                            este pretium in neque, elit morbi sagittis lorem habi mattis.”
-                                        </blockquote>
-                                        <div class="author-detail">
-                                            <div class="name fw-bold text-uppercase pt-2">Anna garcia</div>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="swiper-slide text-center d-flex justify-content-center">
                                     <div class="review-item">
                                         <blockquote class="fs-1 fw-light">“A pellen tesque pretium feugiat vel morbi
