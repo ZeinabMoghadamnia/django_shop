@@ -3,8 +3,9 @@ from django.utils.translation import gettext_lazy as _
 from ..core.models import BaseModel
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
-class User(AbstractUser):
+class User(AbstractUser, BaseModel):
     USER_TYPES = (
+        ('costumer', 'Costumer'),
         ('manager', 'Manager'),
         ('supervisor', 'Supervisor'),
         ('operator', 'Operator'),
@@ -18,7 +19,6 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True, verbose_name=_('birthday'))
     image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
 
-    # USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'email']
     class Meta:
         verbose_name = _('user')
