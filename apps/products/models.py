@@ -29,23 +29,25 @@ class Discount(BaseModel):
 
 
 class BaseGrouping(BaseModel):
-    name = models.CharField(max_length=50, verbose_name=_('name'))
+    name_en = models.CharField(max_length=50, verbose_name=_('English name'))
+    name_fa = models.CharField(max_length=50, verbose_name=_('Persian name'))
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('discount'))
     slug = models.SlugField(unique=True, max_length=20, blank=True, null=True, verbose_name=_('slug'))
     class Meta:
         abstract = True
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(self.name_en)
         super().save(*args, **kwargs)
 
 class Brand(BaseGrouping):
-    description = models.TextField(null=True, blank=True, verbose_name=_('description'))
+    description_en = models.TextField(null=True, blank=True, verbose_name=_('English description'))
+    description_fa = models.TextField(null=True, blank=True, verbose_name=_('Persian description'))
     image = models.ImageField(upload_to='brands/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
         verbose_name_plural = _('brand')
     def __str__(self):
-        return self.name
+        return self.name_en
 
 class Category(BaseGrouping):
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('parent category'))
@@ -54,33 +56,35 @@ class Category(BaseGrouping):
         verbose_name_plural = _('Categories')
 
     def __str__(self):
-        return self.name
+        return self.name_en
 
 class Product(BaseModel):
-    name = models.CharField(max_length=50, verbose_name=_('name'))
+    name_en = models.CharField(max_length=50, verbose_name=_('English name'))
+    name_fa = models.CharField(max_length=50, verbose_name=_('Persian name'))
     price = models.PositiveIntegerField(verbose_name=_('price'))
     quantity = models.PositiveIntegerField(verbose_name=_('quantity'))
     main_image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name=_('image'))
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories', verbose_name=_('category'))
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
     discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
-    brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('brand'))
-    description = models.TextField(blank=True, verbose_name=_('description'))
+    brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('English brand'))
+    description_en = models.TextField(blank=True, verbose_name=_('English description'))
+    description_fa = models.TextField(blank=True, verbose_name=_('Persian description'))
     slug = models.SlugField(unique=True, blank=True, null=True, max_length=20, verbose_name=_('slug'))
 
     class Meta:
-        ordering = ['name']
+        ordering = ['name_en']
         verbose_name_plural = _('product')
 
     def __str__(self):
-        return self.name
+        return self.name_en
 
     def like_count(self):
         return self.likes.count()
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base_slug = slugify(self.name)
+            base_slug = slugify(self.name_en)
             self.slug = base_slug
             counter = 1
 

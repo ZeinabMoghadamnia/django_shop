@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+# from ..apps.products.views import SelectLanguage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps.products.urls')),
+    path('home/', include('apps.products.urls')),
+    # path('', SelectLanguage.as_view(), name='my_model_view'),
 ]
 if settings.DEBUG:
   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
