@@ -3,7 +3,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from .models import Product
 # Create your views here.
 
-class IndexView(ListView):
+class ProductListView(ListView):
     model = Product
     template_name = 'products/home.html'
     context_object_name = 'products'

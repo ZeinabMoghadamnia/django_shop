@@ -98,9 +98,14 @@ CSS STRUCTURE:
 html {
   box-sizing: border-box;
 }
+
+@font-face {
+  font-family: 'vazir';
+  src: url('fonts/Vazir.woff') format('woff');
+}
 body {
   background-color: var(--gray-color-300);
-  font-family: var(--body-font);
+  font-family: 'vazir', sans-serif !important;
   font-size: 1.125rem;
   font-weight: 500;
   line-height: 1.6;
@@ -147,15 +152,15 @@ ul.inner-list li {
   font-size: 1.2em;
 }
 a {
-  color: var(--dark-color);
-  text-decoration: none;
+  color: var(--dark-color) !important;
+  text-decoration: none !important;
   transition: 0.3s color ease-out;
 }
 a.light {
   color: var(--light-color);
 }
 a:hover {
-  text-decoration: none;
+  text-decoration: none !important;
   color: var(--primary-color);
 }
 

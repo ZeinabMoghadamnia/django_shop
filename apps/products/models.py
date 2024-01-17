@@ -45,7 +45,7 @@ class Brand(BaseGrouping):
     class Meta:
         verbose_name_plural = _('brand')
     def __str__(self):
-        return f"brand: {self.name}"
+        return self.name
 
 class Category(BaseGrouping):
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('parent category'))
@@ -54,7 +54,7 @@ class Category(BaseGrouping):
         verbose_name_plural = _('Categories')
 
     def __str__(self):
-        return f"category: {self.name}"
+        return self.name
 
 class Product(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
@@ -72,6 +72,9 @@ class Product(BaseModel):
         ordering = ['name']
         verbose_name_plural = _('product')
 
+    def __str__(self):
+        return self.name
+
     def like_count(self):
         return self.likes.count()
 
@@ -87,6 +90,7 @@ class Product(BaseModel):
 
         super().save(*args, **kwargs)
 
+
 @receiver(post_save, sender=Product)
 def calculate_discounted_price(sender, instance, **kwargs):
     if instance.discount is None and instance.category.discount is None and instance.brand.discount is None:
@@ -100,13 +104,12 @@ def calculate_discounted_price(sender, instance, **kwargs):
                 instance.discounted_price = instance.price - int(instance.discount.value)
             discounts.append(instance.discounted_price)
 
-        # افزودن تخفیف دسته‌بندی به لیست
         if hasattr(instance, 'category') and instance.category and instance.category.discount:
-            if instance.category.discount and instance.category.discount.discount_type in ['percentage', 'amount']:
+            if instance.category.discount.discount_type in ['percentage', 'amount']:
                 if instance.category.discount.discount_type == 'percentage':
-                    instance.discounted_price -= ((instance.category.discount.value / 100) * instance.price)
+                    instance.discounted_price = instance.price - ((instance.category.discount.value / 100) * instance.price)
                 elif instance.category.discount.discount_type == 'amount':
-                    instance.discounted_price -= int(instance.category.discount.value)
+                    instance.discounted_price = instance.price - int(instance.category.discount.value)
                 discounts.append(instance.discounted_price)
 
             if instance.category.parent and instance.category.parent.discount and instance.category.parent.discount.discount_type in [
@@ -136,6 +139,9 @@ class Image(BaseModel):
     class Meta:
         verbose_name_plural = _('images')
 
+    def __str__(self):
+        return self.product
+
 class Comment(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_('product'))
     reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', blank=True, null=True, verbose_name=_('reply'))
@@ -145,8 +151,14 @@ class Comment(BaseModel):
         ordering = ['created_at']
         verbose_name_plural = _('comments')
 
+    def __str__(self):
+        return f"{self.product} : {self.author}"
+
 class Like(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('product'))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('products'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_liked', verbose_name=_('user'))
     class Meta:
         verbose_name_plural = _('likes')
+
+    def __str__(self):
+        return f"{self.product}"
