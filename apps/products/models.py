@@ -65,8 +65,7 @@ class Product(BaseModel):
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
     discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brands', verbose_name=_('brand'))
-    description_en = models.TextField(blank=True, verbose_name=_('English description'))
-    description_fa = models.TextField(blank=True, verbose_name=_('Persian description'))
+    description = models.TextField(blank=True, verbose_name=_('description'))
     slug = models.SlugField(unique=True, blank=True, null=True, max_length=20, verbose_name=_('slug'))
 
     class Meta:
