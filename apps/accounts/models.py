@@ -35,4 +35,4 @@ class Address(BaseModel):
     class Meta:
         verbose_name_plural = _('address')
     def __str__(self):
-        return self.city
+        return f"{self.customer.first_name} {self.customer.last_name}"

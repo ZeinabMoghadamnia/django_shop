@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     #translation
     'modeltranslation',
 
+    #crispy
+    'crispy_forms',
+
     #my_apps
     'apps.core',
     'apps.products',

@@ -3,11 +3,12 @@ from ..core.models import BaseModel
 from ..products.models import Discount
 
 from ..accounts.models import User
+# from apps.accounts
 # from FinalProject.apps.accounts.models import User
+# from accounts.models import User
 # from apps.accounts.models import User
 # from .apps.accounts.models import User
 # from .accounts.models import User
-# from accounts.models import User
 
 
 

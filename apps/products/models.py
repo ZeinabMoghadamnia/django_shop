@@ -67,7 +67,6 @@ class Product(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
     price = models.PositiveIntegerField(verbose_name=_('price'))
     quantity = models.PositiveIntegerField(verbose_name=_('quantity'))
-    main_image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name=_('image'))
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='categories', verbose_name=_('category'))
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, related_name='discounts', null=True, blank=True, verbose_name=_('discount'))
     discounted_price = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('discounted price'))
@@ -141,13 +140,14 @@ def calculate_discounted_price(sender, instance, **kwargs):
     post_save.connect(calculate_discounted_price, sender=Product)
 
 class Image(BaseModel):
-    sub_image = models.ImageField(upload_to='products/', height_field=None, width_field=None, null=True, blank=True, verbose_name=_('gallery'))
+    sub_image = models.ImageField(upload_to='products/', height_field=None, width_field=None, null=True, blank=True, verbose_name=_('images'))
+    is_main = models.BooleanField(default=False, verbose_name=_('main image'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image', verbose_name=_('product'))
     class Meta:
         verbose_name_plural = _('image')
 
     def __str__(self):
-        return self.product
+        return self.product.name
 
 class Comment(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_('product'))
