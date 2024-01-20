@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-17 23:08+0330\n"
+"POT-Creation-Date: 2024-01-19 22:18+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,7 +67,8 @@ msgid "birthday"
 msgstr "تاریخ تولد"
 
 #: apps/accounts/models.py:20 apps/products/models.py:44
-#: apps/products/models.py:52 apps/products/models.py:63
+#: apps/products/models.py:52 apps/products/models.py:64
+#: apps/products/models.py:141
 msgid "image"
 msgstr "تصویر"
 
@@ -92,7 +93,7 @@ msgstr "استان"
 msgid "complete address"
 msgstr "آدرس کامل"
 
-#: apps/accounts/models.py:35
+#: apps/accounts/models.py:35 apps/orders/models.py:22
 #, fuzzy
 #| msgid "email address"
 msgid "address"
@@ -127,13 +128,9 @@ msgstr "وضعیت فعال بودن"
 msgid "product"
 msgstr "محصول"
 
-#: apps/orders/models.py:12 apps/products/models.py:62
+#: apps/orders/models.py:12 apps/products/models.py:63
 msgid "quantity"
 msgstr "تعداد"
-
-#: apps/orders/models.py:13 apps/products/models.py:61
-msgid "price"
-msgstr "قیمت"
 
 #: apps/orders/models.py:15
 #, fuzzy
@@ -149,7 +146,7 @@ msgstr "کالاها"
 msgid "total price"
 msgstr "قیمت کل"
 
-#: apps/orders/models.py:22
+#: apps/orders/models.py:24
 msgid "order"
 msgstr "سفارشات"
 
@@ -165,13 +162,13 @@ msgstr "نوع تخفیف"
 msgid "value"
 msgstr "مقدار"
 
-#: apps/products/models.py:32 apps/products/models.py:60
+#: apps/products/models.py:32 apps/products/models.py:61
 #, fuzzy
 #| msgid "last name"
 msgid "name"
 msgstr "نام"
 
-#: apps/products/models.py:33 apps/products/models.py:65
+#: apps/products/models.py:33 apps/products/models.py:66
 msgid "discount"
 msgstr "تخفیف"
 
@@ -179,13 +176,13 @@ msgstr "تخفیف"
 msgid "slug"
 msgstr "اسلاگ"
 
-#: apps/products/models.py:43
+#: apps/products/models.py:43 apps/products/models.py:69
 #, fuzzy
 #| msgid "description"
 msgid "description"
 msgstr "توضیحات"
 
-#: apps/products/models.py:46 apps/products/models.py:67
+#: apps/products/models.py:46 apps/products/models.py:68
 msgid "brand"
 msgstr "برند"
 
@@ -193,41 +190,27 @@ msgstr "برند"
 msgid "parent category"
 msgstr "دسته بندی گنده"
 
-#: apps/products/models.py:54
-#, fuzzy
-#| msgid "category"
-msgid "Categories"
-msgstr "دسته بندی ها"
-
-#: apps/products/models.py:64
+#: apps/products/models.py:54 apps/products/models.py:65
 msgid "category"
 msgstr "دسته بندی"
 
-#: apps/products/models.py:66
+#: apps/products/models.py:55
+#, fuzzy
+#| msgid "category"
+msgid "categories"
+msgstr "دسته بندی ها"
+
+#: apps/products/models.py:62
+msgid "price"
+msgstr "قیمت"
+
+#: apps/products/models.py:67
 msgid "discounted price"
 msgstr "قیمت پس از تخفیف"
-
-#: apps/products/models.py:68
-#, fuzzy
-#| msgid "description"
-msgid "English description"
-msgstr "توضیحات"
-
-#: apps/products/models.py:69
-#, fuzzy
-#| msgid "description"
-msgid "Persian description"
-msgstr "توضیحات"
 
 #: apps/products/models.py:138
 msgid "gallery"
 msgstr "گالری"
-
-#: apps/products/models.py:141
-#, fuzzy
-#| msgid "image"
-msgid "images"
-msgstr "تصویر"
 
 #: apps/products/models.py:148
 msgid "reply"
@@ -254,13 +237,3 @@ msgstr "محصول"
 #: apps/products/models.py:162
 msgid "likes"
 msgstr "لایک ها"
-
-#, fuzzy
-#~| msgid "last name"
-#~ msgid "English name"
-#~ msgstr "نام خانوادگی"
-
-#, fuzzy
-#~| msgid "first name"
-#~ msgid "Persian name"
-#~ msgstr "نام"

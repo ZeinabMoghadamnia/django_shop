@@ -130,12 +130,12 @@ class CommentModelTests(TestCase):
                 discounted_price=None
             ),
             reply = None,
-            author = User.objects.create(username='zeinab', first_name='zeinab', last_name='moghadamnia', email='zeinab@moghadamnia', phone_number='09032554304'),
+            author = User.objects.create(username='zeinab', first_name='zeinab', last_name='moghadamnia', email='zeinab@moghadamnia', phone_number='09001112233'),
             context = "saaaaaaaalaaaaaam",
         )
     def test_comment_model(self):
         comment = Comment.objects.get(author__email="zeinab@moghadamnia")
-        self.assertEqual(comment.author.phone_number, '09032554304')
+        self.assertEqual(comment.author.phone_number, '09001112233')
         self.assertEqual(comment.product.name, 'Test Comment')
         self.assertEqual(comment.context, "saaaaaaaalaaaaaam")
 
@@ -153,9 +153,9 @@ class LikeModelTest(TestCase):
                 discounted_price=None
             ),
             user=User.objects.create(username='zeinab', first_name='zeinab', last_name='moghadamnia',
-                                       email='zeinab@moghadamnia', phone_number='09032554304'),
+                                       email='zeinab@moghadamnia', phone_number='09001112233'),
         )
     def test_like(self):
         like = Like.objects.get(product__name='Test Like')
         self.assertEqual(like.product.discount.discount_type, 'amount')
-        self.assertEqual(like.user.phone_number, '09032554304')
+        self.assertEqual(like.user.phone_number, '09001112233')

@@ -1,7 +1,7 @@
 from django.test import TestCase
-from ...accounts.models import User
-from ..models import Order, OrderItem
-from ...products.models import Product, Category, Brand, Discount
+from FinalProject.apps.accounts.models import User
+from FinalProject.apps.orders.models import Order, OrderItem
+from FinalProject.apps.products.models import Product, Category, Brand, Discount
 
 class OrderItemModelTest(TestCase):
 
@@ -28,7 +28,7 @@ class OrderItemModelTest(TestCase):
 class OrderModelTest(TestCase):
     def setUp(self):
         self.order = Order.objects.create(
-            user = User.objects.create_user(username='zeinab', first_name='zeinab', last_name='moghadamnia', email='zeinab@moghadamnia', phone_number='09032554304'),
+            user = User.objects.create_user(username='zeinab', first_name='zeinab', last_name='moghadamnia', email='zeinab@moghadamnia', phone_number='09001112233'),
             items = OrderItem.objects.create(
                 product = Product.objects.create(
                     name='Test Product1',

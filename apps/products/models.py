@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.text import slugify
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -18,12 +19,17 @@ class Discount(BaseModel):
     code = models.CharField(max_length=50, unique=True, verbose_name=_('discount code'))
     discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES, verbose_name=_('discount type'))
     value = models.PositiveIntegerField(verbose_name=_('value'))
+    activate_at = models.DateTimeField(verbose_name=_('activation date'))
+    disactivate_at = models.DateTimeField(verbose_name=_('deactivation date'))
     class Meta:
         verbose_name_plural = _('discount code')
 
     def clean(self):
-        if self.discount_type=='percentage' and self.value > 100:
+        if self.discount_type=='percentage' and not MinValueValidator(0) and not MaxValueValidator(100):
             raise ValidationError('must be between 0 and 100')
+        if self.discount_type=='amount' and not MinValueValidator(0) and not MaxValueValidator(self.value):
+            raise ValidationError('must be between 0 and price')
+
     def __str__(self):
         return self.code
 
@@ -51,7 +57,8 @@ class Category(BaseGrouping):
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('parent category'))
     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
-        verbose_name_plural = _('Categories')
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
 
     def __str__(self):
         return self.name
@@ -137,7 +144,7 @@ class Image(BaseModel):
     sub_image = models.ImageField(upload_to='products/', height_field=None, width_field=None, null=True, blank=True, verbose_name=_('gallery'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image', verbose_name=_('product'))
     class Meta:
-        verbose_name_plural = _('images')
+        verbose_name_plural = _('image')
 
     def __str__(self):
         return self.product
@@ -157,6 +164,7 @@ class Comment(BaseModel):
 class Like(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('products'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_liked', verbose_name=_('user'))
+    is_liked = models.BooleanField(default=False, verbose_name=_('like status'))
     class Meta:
         verbose_name_plural = _('likes')
 

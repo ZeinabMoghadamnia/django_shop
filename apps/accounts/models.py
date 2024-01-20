@@ -28,8 +28,9 @@ class User(AbstractUser, BaseModel):
 
 class Address(BaseModel):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', verbose_name=_('customer'))
-    city = models.CharField(max_length=30, verbose_name=_('city'))
+    postal_code = models.CharField(max_length=10, verbose_name=_('postal code'))
     province = models.CharField(max_length=30, verbose_name=_('province'))
+    city = models.CharField(max_length=30, verbose_name=_('city'))
     complete_address = models.TextField(max_length=200, verbose_name=_('complete address'))
     class Meta:
         verbose_name_plural = _('address')
