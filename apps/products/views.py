@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, DetailView
-from .models import Product
+from .models import Product, Category
 # Create your views here.
 
 class HomeView(ListView):
@@ -22,3 +22,9 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         print(context)
         return context
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'products/categories.html'
+    context_object_name = 'categories'
+    queryset = Category.objects.all()
