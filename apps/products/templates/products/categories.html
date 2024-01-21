@@ -19,32 +19,20 @@
         </div>
     </section>
     <section id="products" class="product-store position-relative px-5 mx-3 my-5" dir="rtl">
-        <div class="row m-5">
+        <div class="row m-5 d-flex justify-content-center">
             {% for category in categories %}
-                <div class="col-lg-2 col-md-4 mb-4 pb-2">
-                    <div class="product-card bg-gray position-relative rounded">
-                        <div class="image-holder zoom-effect">
-                            {% for image in product.image.all %}
-                                {% if image.is_main %}
-                                    <img src="{{ image.sub_image.url }}" alt="product-item"
-                                         class="img-fluid zoom-in rounded-top">
-                                {% endif %}
-                            {% endfor %}
-                            <div class="cart-concern position-absolute">
-                                <div class="cart-button">
-                                    <a href="#" class="btn rounded-0 bg-light bg-opacity-50 w-100">اضافه کردن به سبد
-                                        خرید</a>
-                                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12 mb-4 pb-2 " style="width: 250px; height: 250px;">
+                    <a href="#" class="btn w-100" style="width: 250px; height: 250px;">
+                        <div class="product-card bg-transparent position-relative rounded">
+                            <div class="image-holder zoom-effect position-relative rounded-circle">
+                                <img src="{{ category.image.url }}" alt="product-item"
+                                     class="img-fluid zoom-in rounded-top">
+                                <h4 class="btn rounded-0 fs-3 py-2 mb-0 bg-light bg-opacity-75 w-100 position-absolute top-50 start-50 translate-middle" style="color: grey">
+                                    {{ category.name }}
+                                </h4>
                             </div>
                         </div>
-                        <div class="card-detail text-center pt-3 pb-2">
-                            <h5 class="card-title fs-3 text-capitalize">
-                                <a href="single-product.html"
-                                   class="link-body-emphasis link-offset-2 link-underline-opacity-0">{{ product.name }}</a>
-                            </h5>
-                            <span class="item-price text-secondary fs-3 fw-light">{{ product.price }}</span>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             {% endfor %}
         </div>

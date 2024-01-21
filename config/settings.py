@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'modeltranslation',
 
     #crispy
-    'crispy_forms',
+    "crispy_forms",
+
 
     #my_apps
     'apps.core',
@@ -159,3 +160,6 @@ AUTHENTICATION_BACKENDS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"

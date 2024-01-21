@@ -11,22 +11,22 @@
         <div class="col-xl-3 col-lg-4 col-md-5 col-sm-5 col-xs-6 bg-transparent mt-0 mx-sm-5 px-4 pt-4 pb-3">
             <form method="post">
                 {% csrf_token %}
-                <h2 class="text-center">ورود به سایت</h2>
+                <h2 class="text-center">ثبت نام</h2>
                 {{ form.as_p }}
 {#                {{ form | crispy }}#}
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="mt-2">
-                        <a class="text-decoration-none"  style="color: rgb(240, 73, 131);" href="">فراموشی رمز عبور</a>
+{#                <div class="d-flex justify-content-between align-items-center">#}
+{#                    <div class="mt-2">#}
+{#                        <a class="text-decoration-none"  style="color: rgb(240, 73, 131);" href="">فراموشی رمز عبور</a>#}
 {#                        <a class="text-decoration-none"  style="color: rgb(240, 73, 131);" href="{% url 'password_reset' %}">فراموشی رمز عبور</a>#}
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-dark mt-3 w-100">ورود</button>
+{#                    </div>#}
+{#                </div>#}
+                <button type="submit" class="btn btn-dark mt-3 w-100">ثبت نام</button>
                 <div class="line-with-middle-sep d-flex justify-content-center">
                   <span>
                     یا
                   </span>
                 </div>
-                <a href="" class="btn btn-outline-light border-dark text-dark mt-2 mb-3 w-100">ثبت نام</a>
+                <a href="" class="btn btn-outline-light border-dark text-dark mt-2 mb-3 w-100">ورود</a>
 {#                <a href="{% url 'accounts:signup' %}" class="btn btn-dark mt-2 mb-3 w-100">ثبت نام</a>#}
 
                 {% comment %} <a class="btn btn-dark mt-2 w-100 " href="">بازگشت</a> {% endcomment %}
