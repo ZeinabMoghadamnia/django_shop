@@ -75,7 +75,7 @@
         <div class="container display-header d-flex flex-wrap justify-content-between pb-4">
             <h3 class="mt-3">پیشنهاد ما</h3>
             <div class="btn-right d-flex flex-wrap align-items-center">
-                <a href="shop.html" class="btn me-5">بیشتر</a>
+
                 <div class="swiper-buttons">
                     <button class="swiper-prev product-carousel-prev me-2">
                         <svg width="41" height="41">
@@ -89,18 +89,23 @@
 
                     </button>
                 </div>
+                <a href="shop.html" class="btn me-5">بیشتر</a>
             </div>
         </div>
         <div class="swiper product-swiper mb-5">
             <div class="swiper-wrapper">
                 {% for product in products %}
                     <div class="swiper-slide">
-                        <div class="product-card position-relative">
+                        <div class="product-card bg-gray position-relative">
                             <div class="image-holder zoom-effect">
-                                <img src="{{ product.images.url }}" alt="product-item" class="img-fluid zoom-in">
+                                {% for image in product.image.all %}
+                                    {% if image.is_main %}
+                                         <img src="{{ image.sub_image.url }}" alt="product-item" class="img-fluid zoom-in">
+                                    {% endif %}
+                                {% endfor %}
                                 <div class="cart-concern position-absolute">
                                     <div class="cart-button">
-                                        <a href="#" class="btn">اضافه کردن به سبد خرید</a>
+                                        <a href="#" class="btn rounded-0 bg-light bg-opacity-50 w-100">اضافه کردن به سبد خرید</a>
                                     </div>
                                 </div>
                             </div>
@@ -167,7 +172,7 @@
         <div class="container display-header d-flex flex-wrap justify-content-between pb-4">
             <h3 class="mt-3">پر فروش ترین ها</h3>
             <div class="btn-right d-flex flex-wrap align-items-center">
-                <a href="shop.html" class="btn me-5">بیشتر</a>
+
                 <div class="swiper-buttons">
                     <button class="swiper-prev product-carousel-prev me-2">
                         <svg width="41" height="41">
@@ -180,6 +185,7 @@
                             <use xlink:href="#angle-left"></use>
                         </svg>
                     </button>
+                    <a href="shop.html" class="btn me-5">بیشتر</a>
                 </div>
             </div>
         </div>
@@ -187,12 +193,16 @@
             <div class="swiper-wrapper">
                 {% for product in products %}
                     <div class="swiper-slide">
-                        <div class="product-card position-relative">
-                            <div class="image-holder zoom-effect">
-                                <img src="{{ product.main_image.url }}" alt="product-item" class="img-fluid zoom-in">
+                        <div class="product-card bg-gray position-relative">
+                           <div class="image-holder zoom-effect">
+                                {% for image in product.image.all %}
+                                    {% if image.is_main %}
+                                         <img src="{{ image.sub_image.url }}" alt="product-item" class="img-fluid zoom-in">
+                                    {% endif %}
+                                {% endfor %}
                                 <div class="cart-concern position-absolute">
                                     <div class="cart-button">
-                                        <a href="#" class="btn">اضافه کردن به سبد خرید</a>
+                                        <a href="#" class="btn rounded-0 bg-light bg-opacity-50 w-100">اضافه کردن به سبد خرید</a>
                                     </div>
                                 </div>
                             </div>
