@@ -8,7 +8,7 @@ class EmailBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         UserModel = get_user_model()
         try:
-            user = UserModel.objects.get(Q(username__iexact=username) | Q(email__iexact=username))
+            user = UserModel.objects.get(Q(phone_number__iexact=username) | Q(email__iexact=username))
             if user.check_password(password):
                 return user
             messages.error(request, _(f"The username(Email) or password is incorrect !"), 'danger')

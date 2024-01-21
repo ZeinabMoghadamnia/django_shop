@@ -8,33 +8,32 @@ from django.urls import reverse_lazy
 # from .models import
 # Create your views here.
 
-from django.contrib.auth.views import LoginView
-from .forms import LoginForm  # Import your LoginForm
-
 class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'  # Specify the path to your login template
-    form_class = LoginForm  # Set the form class to your LoginForm
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        # Your additional logic after a successful login (if needed)
-        return response
-
+    template_name = 'accounts/login.html'
+    form_class = LoginForm
     def get_success_url(self):
-        # Define the URL to redirect to after successful login
-        return 'cafemenu:home'
+        return reverse_lazy('products:home')
+    def form_valid(self, form):
+        return super().form_valid(form)
 
-class LogoutPageView(LogoutView):
-    success_url = reverse_lazy('home')
+
+class CustomLogoutView(LogoutView):
+    def get_success_url(self):
+        return reverse_lazy('products:home')
 
 
 class RegisterView(FormView):
     template_name = 'accounts/register.html'
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('register')
+    success_url = reverse_lazy('accounts:login')
 
     def form_valid(self, form):
+        form.save()
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Handle invalid form submissions (e.g., display errors)
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 # def login_view(request):

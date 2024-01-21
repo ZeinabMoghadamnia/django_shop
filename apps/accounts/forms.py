@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from .models import User
 from django import forms
 
@@ -33,7 +33,7 @@ class CustomUserChangeForm(UserChangeForm):
         }
 
 
-class LoginForm(forms.Form):
+class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=50, label="ایمیل یا شماره تلفن")
     password = forms.CharField(max_length=50, label="رمز عبور", widget=forms.PasswordInput)
 
