@@ -20,7 +20,7 @@ class Discount(BaseModel):
     discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPES, verbose_name=_('discount type'))
     value = models.PositiveIntegerField(verbose_name=_('value'))
     activate_at = models.DateTimeField(verbose_name=_('activation date'))
-    disactivate_at = models.DateTimeField(verbose_name=_('deactivation date'))
+    deactivate_at = models.DateTimeField(verbose_name=_('deactivation date'))
     class Meta:
         verbose_name_plural = _('discount code')
 
