@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
-from .models import User
+from .models import User, Profile
 from django import forms
 
 
@@ -25,10 +25,9 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('email','phone_number','image','user_type')
+        fields = ('email','phone_number','user_type')
         labels = {
             'email': 'ایمیل',
-            'image': 'تصویر',
             'user_type': 'نوع کاربری',
         }
 
@@ -37,3 +36,7 @@ class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=50, label="ایمیل یا شماره تلفن")
     password = forms.CharField(max_length=50, label="رمز عبور", widget=forms.PasswordInput)
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image', 'date_of_birth', 'gender']
