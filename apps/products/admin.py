@@ -6,7 +6,7 @@ from .models import Category, Product, Discount, Image, Comment, Like, Brand
 class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ['discounted_price']
     list_display = ('id', 'name', 'category', 'brand', 'quantity', 'price', 'discounted_price', 'is_deleted')
-    search_fields = ("name", "brand")
+    search_fields = ('name', 'brand', 'category')
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'is_active', 'created_at', 'is_deleted')
@@ -25,21 +25,23 @@ class BrandAdmin(admin.ModelAdmin):
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'context', 'author', 'product_id', 'created_at', 'updated_at')
-    search_fields = ("title", "description")
+    search_fields = ("author", "context", "product_id")
 
 
 class ImageAdmin(admin.ModelAdmin):
-    # readonly_fields = ['img_preview']
     list_display = ('id', 'product', 'is_main')
 
 
 class DiscountAdmin(admin.ModelAdmin):
-    list_display = ('id', 'discount_type', 'value')
+    list_display = ('id', 'discount_type', 'value', 'activate_at', 'deactivate_at')
 
-
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product')
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Discount, DiscountAdmin)
+admin.site.register(Brand, BrandAdmin)
+admin.site.register(Like, LikeAdmin)
