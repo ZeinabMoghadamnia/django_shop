@@ -33,13 +33,13 @@ from .models import Category
 
 class CategoryDetailView(DetailView):
     model = Category
-    template_name = 'category_detail.html'
+    template_name = 'products/category_detail.html'
     context_object_name = 'category'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category = self.get_object()
-        subcategories = category.subcategories.all()
+        subcategories = category.filter(parent=self.get_object())
         products = category.products.all()
         context['subcategories'] = subcategories
         context['products'] = products
