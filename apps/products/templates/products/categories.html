@@ -22,7 +22,7 @@
         <div class="row m-5 d-flex justify-content-center">
             {% for category in categories %}
                 <div class="col-lg-2 col-md-4 col-sm-12 mb-4 pb-2 " style="width: 250px; height: 250px;">
-                    <a href="#" class="btn w-100" style="width: 250px; height: 250px;">
+                    <a href="{% url 'products:category_details' category.slug %}" class="btn w-100" style="width: 250px; height: 250px;">
                         <div class="product-card bg-transparent position-relative rounded">
                             <div class="image-holder zoom-effect position-relative rounded-circle">
                                 <img src="{{ category.image.url }}" alt="product-item"

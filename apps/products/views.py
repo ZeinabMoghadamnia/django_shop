@@ -21,18 +21,28 @@ class CategoryListView(ListView):
     context_object_name = 'categories'
     queryset = Category.objects.all()
 
-class CategoryDetailView(ListView):
-    model = Product
-    # template_name = 'cafemenu/menuitem_list.html'
-    context_object_name = 'menu_items'
+# views.py
+# views.py
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView
+from .models import Category, Product
 
-    def get_queryset(self):
-        self.category = Category.objects.get(slug=self.kwargs['slug'])
-        return Product.objects.filter(category=self.category)
+from django.shortcuts import render
+from django.views.generic import DetailView
+from .models import Category
+
+class CategoryDetailView(DetailView):
+    model = Category
+    template_name = 'category_detail.html'
+    context_object_name = 'category'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category'] = self.category
+        category = self.get_object()
+        subcategories = category.subcategories.all()
+        products = category.products.all()
+        context['subcategories'] = subcategories
+        context['products'] = products
         return context
 
 class ProductListView(ListView):
@@ -63,16 +73,3 @@ class ProductDetailView(DetailView):
         context['like_count'] = self.object.likes.count()
 
         return context
-
-    def post(self, request, *args, **kwargs):
-        # بررسی اگر کاربر لاگین کرده باشد
-        if request.user.is_authenticated:
-            # دریافت نمونه محصول
-            product = self.get_object()
-            # تغییر وضعیت لایک توسط کاربر
-            product.toggle_like(request.user)
-            return self.get(request, *args, **kwargs)
-        else:
-            # اگر کاربر لاگین نکرده باشد، می‌توانید یک پیام خطا نمایش دهید یا به هر شیوه‌ای بخواهید برخورد کنید.
-            return HttpResponseForbidden("شما باید لاگین کنید تا بتوانید لایک کنید.")
-
