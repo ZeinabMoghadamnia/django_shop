@@ -165,8 +165,7 @@ class Like(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes', verbose_name=_('products'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_liked', verbose_name=_('user'))
     is_liked = models.BooleanField(default=False, verbose_name=_('like status'))
-    class Meta:
-        verbose_name_plural = _('likes')
 
-    def __str__(self):
-        return f"{self.product}"
+    class Meta:
+        verbose_name = _('like')
+        verbose_name_plural = _('likes')

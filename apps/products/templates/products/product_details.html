@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    details
+{% endblock %}
+
+{% block content %}
+    <section id="billboard" class="position-relative overflow-hidden">
+        <div class="d-flex align-items-center text-center"
+             style="background-image: url('{% static 'images/header_bg2.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 50vh; background-position: center;">
+            <div class="container ">
+                <div class="row h-100 pt-5 justify-content-center text-center">
+                    <div class="banner-content mt-0" dir="rtl">
+                        <h2 style="color: #303030">جزئیات محصول</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5" dir="rtl">
+            <div class="row text-center align-items-center d-flex justify-content-center">
+                <div class="col-2"></div>
+                <div class="col-1 mb-3" data-cro-id="pdp-album-open">
+                    {% for image in details.image.all %}
+                        {% if not image.is_main %}
+                            <div class="row">
+                                <img class="img-fluid rounded my-3" src="{{ image.sub_image.url }}"
+                                     alt="{{ details.name }}" width="100%" height="auto"
+                                     onclick="changeImage(this.src)"
+                                />
+
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="col-3 mb-3" data-cro-id="pdp-album-open">
+                    {% for image in details.image.all %}
+                        {% if image.is_main %}
+                            <img class="card-img-top mb-5 mb-md-0 rounded w-100 h-100" id="mainImage"
+                                 src="{{ image.sub_image.url }}"
+                                 alt="{{ details.name }}"/>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="col-md-5 text-end pe-5 d-flex flex-column justify-content-center">
+                    <h1 class="display-5 mb-4 fw-bolder">{{ details.name }}</h1>
+
+                    {% for line in description_lines %}
+                        <li>{{ line }}</li>
+                    {% endfor %}
+                    <div class="fs-5 mt-4">
+                        <span>{{ details.price }}</span>
+                    </div>
+                    {#                    <p class="lead">{{ details.description }}</p>#}
+                    <div class="row align-items-center mt-4">
+                        {#                        <button class="col-md-1 btn-sm border-0 btn-link"#}
+                        {#                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()">#}
+                        {#                            <i class="fas fa-plus"></i>#}
+                        {#                        </button>#}
+                        {#                        <input class="col-md-3 form-control text-center" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />#}
+                        {#                        <button class="col-md-1 btn-sm border-0 btn-link"#}
+                        {#                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()">#}
+                        {#                            <i class="fas fa-minus"></i>#}
+                        {#                        </button>#}
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {#                            {{ add_to_cart_form|crispy }}#}
+                            {#                        <button class="btn" type="submit"> اضافه کردن به سبد خرید</button>#}
+                            <button class="col-sm-7 btn btn-outline-dark flex-shrink-0 me-3" type="submit">
+                                <i class="bi-cart-fill me-1"></i>
+                                اضافه کردن به سبد خرید
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+                {#--------------------------- like --------------------------------#}
+
+                <!-- درون تگ های قبلی قالب -->
+                <button id="likeButton">Like</button>
+                <p id="likeCount">{{ like_count }}</p>
+
+                <script>
+                    // استفاده از جاوااسکریپت یا جی‌کوئری برای ارسال درخواست POST به URL مربوطه
+                    document.getElementById("likeButton").addEventListener("click", function () {
+                        // ارسال درخواست به URL مربوط به لایک
+                        fetch('/product/{{ details.pk }}/like/', {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                // بروزرسانی تعداد لایک‌ها
+                                document.getElementById("likeCount").innerText = data.like_count;
+
+                                // بروزرسانی وضعیت دکمه لایک
+                                document.getElementById("likeButton").innerText = data.is_liked ? "Unlike" : "Like";
+                            });
+                    });
+                </script>
+
+
+                {#--------------------------- like --------------------------------#}
+            </div>
+        </div>
+        <div class="container text-center align-items-center" dir="rtl">
+            <div class="row text-center align-items-center">
+                {% if comments %}
+                    <div class="row justify-content-center">
+                        <div class="col-6 border-top border-bottom">
+                            <h3 class="fs-5 mt-3">نظرات کاربران</h3>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center text-end rounded">
+                    <!-- درون قالب HTML -->
+
+                    <div class="col-6 bg-gray rounded py-3 px-5 text-center ">
+                        <div class="rounded">
+                            {% for comment in comments %}
+                                <div class="row text-end text-white ">
+                                    <strong class="col-12 text-end bg-dark">{{ comment.author.username }}</strong>
+                                </div>
+                                <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center">
+                                    <div class="row text-end text-white">
+                                        <p class="pt-2 fs-6">{{ comment.context }}</p>
+                                    </div>
+                                    {% if comment.replies.all %}
+                                        {% for reply in comment.replies.all %}
+                                            <div class="px-5">
+                                                <div class="row text-end mb-1 text-white"
+                                                     style="background-color: #7F8177">
+                                                    <strong class="text-end pe-1 text-light">{{ reply.author.username }}</strong>
+                                                </div>
+                                                <div class="row text-end">
+                                                    <p class="">{{ reply.context }}</p>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+
+    </section>
+
+    <!-- Related items section-->
+    <section class="py-5 bg-light">
+        <div class="container px-4 px-lg-5 mt-5">
+            <h2 class="fw-bolder mb-4">محصولات مشابه</h2>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for item in similar_item %}
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            {% for image in details.image.all %}
+                                {% if image.is_main %}
+                                    <img class="card-img-top mb-5 mb-md-0 rounded w-100 h-100" id="mainImage"
+                                         src="{{ image.sub_image.url }}"
+                                         alt="{{ details.name }}"/>
+                                {% endif %}
+                            {% endfor %}
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{ item.name }}</h5>
+                                    <!-- Product reviews-->
+                                    {% comment %}
+                                        <div class="d-flex justify-content-center small text-warning mb-2">
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                        </div> {% endcomment %}
+                                    <!-- Product price-->
+                                    {{ item.price }}
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto"
+                                                            href="{% url 'products:details' slug=item.slug %}">اضافه
+                                    کردن به سبد خرید</a></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
