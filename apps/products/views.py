@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView, DetailView
 from .models import Product, Category, Like
 from django.http import JsonResponse
@@ -63,4 +64,15 @@ class ProductDetailView(DetailView):
 
         return context
 
+    def post(self, request, *args, **kwargs):
+        # بررسی اگر کاربر لاگین کرده باشد
+        if request.user.is_authenticated:
+            # دریافت نمونه محصول
+            product = self.get_object()
+            # تغییر وضعیت لایک توسط کاربر
+            product.toggle_like(request.user)
+            return self.get(request, *args, **kwargs)
+        else:
+            # اگر کاربر لاگین نکرده باشد، می‌توانید یک پیام خطا نمایش دهید یا به هر شیوه‌ای بخواهید برخورد کنید.
+            return HttpResponseForbidden("شما باید لاگین کنید تا بتوانید لایک کنید.")
 

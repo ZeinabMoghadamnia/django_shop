@@ -24,15 +24,13 @@
                 <div class="col-2"></div>
                 <div class="col-1 mb-3" data-cro-id="pdp-album-open">
                     {% for image in details.image.all %}
-                        {% if not image.is_main %}
-                            <div class="row">
-                                <img class="img-fluid rounded my-3" src="{{ image.sub_image.url }}"
-                                     alt="{{ details.name }}" width="100%" height="auto"
-                                     onclick="changeImage(this.src)"
-                                />
+                        <div class="row">
+                            <img class="img-fluid rounded my-3" src="{{ image.sub_image.url }}"
+                                 alt="{{ details.name }}" width="100%" height="auto"
+                                 onclick="changeImage(this.src)"
+                            />
 
-                            </div>
-                        {% endif %}
+                        </div>
                     {% endfor %}
                 </div>
 
@@ -78,35 +76,27 @@
                     </div>
                 </div>
                 {#--------------------------- like --------------------------------#}
+                <!-- product_details.html -->
 
-                <!-- درون تگ های قبلی قالب -->
-                <button id="likeButton">Like</button>
-                <p id="likeCount">{{ like_count }}</p>
+                <!-- Display like/unlike button based on user's like status -->
+                {% if user.is_authenticated %}
+                    {% if user in details.likes.all %}
+                        <form method="post" action="{% url 'unlike_product' pk=details.pk %}">
+                            {% csrf_token %}
+                            <button type="submit">Unlike</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{% url 'like_product' pk=details.pk %}">
+                            {% csrf_token %}
+                            <button type="submit">Like</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <p>Login to like this product.</p>
+                {% endif %}
 
-                <script>
-                    // استفاده از جاوااسکریپت یا جی‌کوئری برای ارسال درخواست POST به URL مربوطه
-                    document.getElementById("likeButton").addEventListener("click", function () {
-                        // ارسال درخواست به URL مربوط به لایک
-                        fetch('/product/{{ details.pk }}/like/', {
-                            method: 'POST',
-                            credentials: 'same-origin',
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRFToken': '{{ csrf_token }}'
-                            }
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                // بروزرسانی تعداد لایک‌ها
-                                document.getElementById("likeCount").innerText = data.like_count;
-
-                                // بروزرسانی وضعیت دکمه لایک
-                                document.getElementById("likeButton").innerText = data.is_liked ? "Unlike" : "Like";
-                            });
-                    });
-                </script>
-
+                <!-- Display total like count -->
+                <p>Total Likes: {{ like_count }}</p>
 
                 {#--------------------------- like --------------------------------#}
             </div>
@@ -121,8 +111,6 @@
                     </div>
 
                     <div class="row justify-content-center text-end rounded">
-                    <!-- درون قالب HTML -->
-
                     <div class="col-6 bg-gray rounded py-3 px-5 text-center ">
                         <div class="rounded">
                             {% for comment in comments %}
@@ -203,5 +191,22 @@
             </div>
         </div>
     </section>
+    <script>
+        function changeImage(newSrc) {
+            const mainImage = document.getElementById('mainImage');
+            mainImage.src = newSrc;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const thumbnails = document.querySelectorAll('.img-fluid');
+
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function () {
+                    changeImage(thumbnail.src);
+                });
+            });
+        });
+    </script>
+
 
 {% endblock %}

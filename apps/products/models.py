@@ -81,8 +81,11 @@ class Product(BaseModel):
     def __str__(self):
         return self.name
 
-    def like_count(self):
-        return self.likes.count()
+    def toggle_like(self, user):
+        if user in self.likes.all():
+            self.likes.delete(user)
+        else:
+            self.likes.add(user)
 
     def save(self, *args, **kwargs):
         if not self.slug:
