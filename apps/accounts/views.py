@@ -62,7 +62,7 @@ class OTPFormView(FormView):
 
 
 class OTPCheckView(View):
-    template_name = 'otp_check.html'
+    template_name = 'accounts/otp_check.html'
 
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')

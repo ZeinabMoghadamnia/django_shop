@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #drf
+    #drf and otp
     'rest_framework',
+    'otp_api',
 
     #translation
     'modeltranslation',
@@ -175,3 +176,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+REDIS_HOST = 'localhost'  # Replace with your Redis server host
+REDIS_PORT = 6379         # Replace with your Redis server port
+REDIS_DB = 0              # Replace with your Redis database number
