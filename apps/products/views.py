@@ -3,53 +3,52 @@ from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView, DetailView
 from .models import Product, Category, Like
 from django.http import JsonResponse
+
+
 # Create your views here.
 
 class HomeView(ListView):
-
     model = Product
     template_name = 'products/home.html'
     context_object_name = 'products'
     queryset = Product.objects.prefetch_related('image').order_by('id')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
 
 class CategoryListView(ListView):
     model = Category
     template_name = 'products/categories.html'
     context_object_name = 'categories'
-    queryset = Category.objects.all()
+    queryset = Category.objects.filter(parent=None).order_by('name')
+
 
 # views.py
-# views.py
-from django.shortcuts import render
-from django.views.generic import DetailView, ListView
-from .models import Category, Product
-
-from django.shortcuts import render
-from django.views.generic import DetailView
-from .models import Category
 
 class CategoryDetailView(DetailView):
     model = Category
     template_name = 'products/category_detail.html'
-    context_object_name = 'category'
+    context_object_name = 'categories'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category = self.get_object()
-        subcategories = category.filter(parent=self.get_object())
-        products = category.products.all()
-        context['subcategories'] = subcategories
-        context['products'] = products
+        subcategories = Category.objects.filter(parent=category)
+        if subcategories.exists():
+            context['subcategories'] = subcategories
+        else:
+            context['products'] = Product.objects.filter(category=category)
         return context
+
 
 class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
     context_object_name = 'products'
     queryset = Product.objects.prefetch_related('image')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print(context)

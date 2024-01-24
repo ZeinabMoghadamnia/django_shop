@@ -40,3 +40,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image', 'date_of_birth', 'gender']
+
+
+class OTPForm(forms.Form):
+    email = forms.EmailField(label='ایمیل')

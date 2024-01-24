@@ -1,9 +1,16 @@
 from django.views.generic import TemplateView, ListView, DetailView
-from ..accounts.forms import LoginForm, CustomUserCreationForm
+from ..accounts.forms import LoginForm, CustomUserCreationForm, OTPForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import FormView
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse_lazy
+
+from django.core.mail import send_mail
+import random
+import redis
+from django.views import View
+from django.shortcuts import render, redirect
+
 
 # from .models import
 # Create your views here.
@@ -34,6 +41,40 @@ class RegisterView(FormView):
     def form_invalid(self, form):
         # Handle invalid form submissions (e.g., display errors)
         return self.render_to_response(self.get_context_data(form=form))
+
+
+
+
+class OTPFormView(FormView):
+    template_name = 'accounts/otp_form.html'
+    form_class = OTPForm
+    success_url = '/check_otp/'
+
+    def form_valid(self, form):
+        otp = random.randint(1000, 9999)
+        email = form.cleaned_data['email']
+        send_mail('کد OTP', f'کد OTP شما: {otp}', 'your@example.com', [email])
+
+        r = redis.StrictRedis(host='localhost', port=6379, db=0)
+        r.setex(email, 120, otp)  # تغییر در زمان اعتبار
+
+        return super().form_valid(form)
+
+
+class OTPCheckView(View):
+    template_name = 'otp_check.html'
+
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get('email')
+        otp_entered = request.POST.get('otp')
+
+        r = redis.StrictRedis(host='localhost', port=6379, db=0)
+        stored_otp = r.get(email)
+
+        if stored_otp and int(otp_entered) == int(stored_otp):
+            return redirect('/dashboard/')
+        else:
+            return render(request, self.template_name, {'error_message': 'کد OTP اشتباه است.'})
 
 
 # def login_view(request):

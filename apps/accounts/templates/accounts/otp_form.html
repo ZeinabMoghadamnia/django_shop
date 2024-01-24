@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+<!-- otp_form.html -->
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">ارسال کد OTP</button>
+</form>
+
+
+####
+otp_check.html
+
+<!-- otp_check.html -->
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="email" value="{{ email }}">
+    <input type="text" name="otp" placeholder="کد OTP">
+    <button type="submit">تایید</button>
+</form>
+{% if error_message %}
+    <p>{{ error_message }}</p>
+{% endif %}
