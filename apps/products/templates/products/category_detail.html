@@ -23,7 +23,7 @@
 
             {% if subcategories %}
                 {% for subcategory in subcategories %}
-                    <div class="col-lg-2 col-md-4 col-sm-12 mb-4 pb-2 " style="width: 250px; height: 250px;">#}
+                    <div class="col-lg-2 col-md-4 col-sm-12 mb-4 pb-2 " style="width: 250px; height: 250px;">
                         <a href="{% url 'products:category_details' subcategory.slug %}" class="btn w-100"
                            style="width: 250px; height: 250px;">
                             <div class="product-card bg-transparent position-relative rounded">

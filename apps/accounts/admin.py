@@ -12,7 +12,7 @@ class UsersAdmin(admin.ModelAdmin):
     search_fields = ('username', 'first_name', 'last_name', 'email', 'phone')
     fieldsets = (
         ('Name', {
-            'fields': (tuple(['first_name', 'last_name', 'username']),),
+            'fields': (tuple(['first_name', 'last_name', 'username', 'image']),),
         }),
         ('Contact Information', {
             'fields': (tuple(['email', 'phone_number']),),
@@ -24,7 +24,7 @@ class UsersAdmin(admin.ModelAdmin):
             'fields': ('last_login',),
         }),
         ('Group and User Type', {
-            'fields': ('groups', 'user_type')
+            'fields': ('groups', 'user_type'),
         }),
     )
     ordering = ('email',)

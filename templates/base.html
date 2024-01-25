@@ -106,7 +106,7 @@
                 <div class="offcanvas-body">
                     <ul id="navbar" class="navbar-nav w-100 d-flex justify-content-between align-items-center">
 
-                        <ul class="list-unstyled d-lg-flex justify-content-md-between align-items-center">
+                        <ul class="col-5 list-unstyled d-lg-flex justify-content-md-between align-items-center">
                             <li class="nav-item search-item">
                                 <div id="search-bar" class="border-right d-none d-lg-block">
                                     <form action="" autocomplete="on">
@@ -117,11 +117,13 @@
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link mx-5 text-center" href="shop.html">محصولات</a>
+                                <a class="nav-link mx-5 text-center" href="{% url 'products:products' %}">محصولات</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <div class="btn-group">
-                                    <button type="button" class="btn border-0 bg-transparent">دسته بندی ها</button>
+                                    <button type="button" class="btn border-0 bg-transparent"
+                                            ><a href="{% url 'products:categories' %}">دسته بندی ها</a>
+                                    </button>
                                     <button type="button"
                                             class="btn bg-transparent dropdown-toggle dropdown-toggle-split border-0"
                                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -140,12 +142,12 @@
                                 <img src="{% static 'images/main-logo.png' %}" class="logo" alt="">
                             </a>
                         </li>
-                        <ul class="list-unstyled d-lg-flex justify-content-between align-items-center">
+                        <ul class="col-5 list-unstyled d-lg-flex justify-content-between align-items-center">
 
-                            <li class="nav-item">
-                                <a class="nav-link ms-0" href="about.html">درباره ما</a>
+                            <li class="col-2 nav-item">
+                                <a class="nav-link mx-0" href="about.html">درباره ما</a>
                             </li>
-                            <li class="cart-dropdown nav-item dropdown text-center">
+                            <li class="col-4 cart-dropdown nav-item dropdown text-center mx-2 d-flex justify-content-center text-center">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
                                    role="button" aria-expanded="false">سبد خرید</a>
                                 <div class="dropdown-menu dropdown-menu-end p-3">
@@ -186,18 +188,23 @@
                             </li>
 
                             {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="btn btn-outline-0 text-dark d-flex justify-content-center align-items-center font-weight-bold pe-0"
-                                   href="{% url 'accounts:logout' %}"> خروج </a>
-                            </li>
-                            <li class="nav-item">
-                                <span class="ms-0 text-dark font-weight-bold"> - خوش اومدی {{ user.first_name }}  </span>
-                            </li>
-                                {% else %}
                                 <li class="nav-item">
-                                <a type="submit" class="nav-link me-0" href="{% url 'accounts:login' %}">ورود / ثبت نام</a>
+                                    <div class="row w-25 h-25 img-fluid ms-2"><img class="rounded-circle"
+                                                                                   src="{{ user.image.url }}"
+                                                                                   alt="profile"></div>
+                                    <div class="row">
+                                        <div class="ms-0 text-dark font-weight-bold text-start">
+                                            <a href="{% url 'accounts:logout' %}"> خروج </a> - {{ user.first_name }}
+                                        </div>
+
+                                    </div>
                                 </li>
-                                {% endif %}
+                            {% else %}
+                                <li class="nav-item">
+                                    <a type="submit" class="nav-link ms-2" href="{% url 'accounts:login' %}">ورود / ثبت
+                                        نام</a>
+                                </li>
+                            {% endif %}
 
                         </ul>
                     </ul>

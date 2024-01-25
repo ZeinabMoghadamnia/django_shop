@@ -16,6 +16,8 @@ class User(AbstractUser, BaseModel):
     phone_number = models.CharField(validators=[mobile_regex], max_length=11, unique=True, verbose_name=_('phone'))
     first_name = models.CharField(max_length=40, verbose_name=_('first name'))
     last_name = models.CharField(max_length=40, verbose_name=_('last name'))
+    image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
+
 
     REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'email']
     class Meta:
@@ -32,6 +34,7 @@ class Profile(BaseModel):
     date_of_birth = models.DateField(null=True, blank=True, verbose_name=_('birthday'))
     gender = models.CharField(max_length=20, choices=GENDER, verbose_name=_('gender'), null=True, blank=True)
     image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
+
 
 class Address(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', verbose_name=_('customer'))
