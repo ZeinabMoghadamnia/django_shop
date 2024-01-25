@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.shortcuts import render
 from .forms import OTPForm
+from .tasks import send_otp_email_task
 
 from django.core.mail import send_mail
 import random
@@ -15,6 +16,7 @@ from django.views import View
 class SendOTPCodeView(View):
     template_name = 'accounts/otp_form.html'
     form_class = OTPForm
+
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
@@ -22,11 +24,10 @@ class SendOTPCodeView(View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            subject = 'Your Code'
+            subject = 'Login Code'
             message = str(random.randint(10000, 99999))
             recipient = form.cleaned_data['email']
-
-            send_mail(subject, message, 'zeinab.moghadamniaa@gmail.com', [recipient])
+            send_otp_email_task.delay(subject, message, recipient)
 
         return redirect('products:home')
 

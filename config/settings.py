@@ -187,3 +187,11 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 REDIS_HOST = 'localhost'  # Replace with your Redis server host
 REDIS_PORT = 6379         # Replace with your Redis server port
 REDIS_DB = 0              # Replace with your Redis database number
+
+#celery
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Tehran'

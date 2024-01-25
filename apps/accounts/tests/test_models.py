@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.test import TestCase
-from FinalProject.apps.accounts.models import User, Address
+from django_shop.apps.accounts.models import User, Address
 from django.utils import timezone
 class UserModelTest(TestCase):
     def setUp(self):

@@ -1,7 +1,7 @@
 from django.test import TestCase
-from FinalProject.apps.accounts.models import User
-from FinalProject.apps.orders.models import Order, OrderItem
-from FinalProject.apps.products.models import Product, Category, Brand, Discount
+from django_shop.apps.accounts.models import User
+from django_shop.apps.orders.models import Order, OrderItem
+from django_shop.apps.products.models import Product, Category, Brand, Discount
 
 class OrderItemModelTest(TestCase):
 
