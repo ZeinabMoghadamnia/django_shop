@@ -5,8 +5,8 @@
 /* VARIABLE DEFINITIONS */
 html[data-theme="light"],
 :root {
-    --primary: #79aec8;
-    --secondary: #417690;
+    --primary: #c879c7;
+    --secondary: #d96cd1;
     --accent: #f5dd5d;
     --primary-fg: #fff;
 
@@ -24,9 +24,9 @@ html[data-theme="light"],
     --breadcrumbs-link-fg: var(--body-bg);
     --breadcrumbs-bg: var(--primary);
 
-    --link-fg: #417893;
-    --link-hover-color: #036;
-    --link-selected-fg: #5b80b2;
+    --link-fg: #844193;
+    --link-hover-color: #5c0066;
+    --link-selected-fg: #b25bab;
 
     --hairline-color: #e8e8e8;
     --border-color: #ccc;
@@ -43,9 +43,9 @@ html[data-theme="light"],
 
     --button-fg: #fff;
     --button-bg: var(--primary);
-    --button-hover-bg: #609ab6;
+    --button-hover-bg: #a160b6;
     --default-button-bg: var(--secondary);
-    --default-button-hover-bg: #205067;
+    --default-button-hover-bg: #602067;
     --close-button-bg: #747474;
     --close-button-hover-bg: #333;
     --delete-button-bg: #ba2121;

@@ -1,10 +1,9 @@
 from django.contrib import admin
 from .models import User, Profile, Address
 
-
 # Register your models here.
 
-
+@admin.register(User)
 class UsersAdmin(admin.ModelAdmin):
     list_display = (
     'id', 'username', 'first_name', 'last_name', 'email', 'phone_number', 'created_at',
@@ -29,18 +28,21 @@ class UsersAdmin(admin.ModelAdmin):
     )
     ordering = ('email',)
 
+
+@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['gender', 'date_of_birth']
+    list_display = ['gender', 'date_of_birth', 'user']
     search_fields = ('date_of_birth', 'gender')
     fieldsets = (('Additional Information', {
-            'fields': (tuple(['date_of_birth', 'gender', 'image']),),
+            'fields': (tuple(['user', 'date_of_birth', 'gender', 'image']),),
         }),)
-    ordering = ('birthdate',)
+    ordering = ('date_of_birth',)
 
+@admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'province', 'city', 'postal_code', 'is_deleted')
     search_fields = ('province', 'city', 'complete_address', 'postal_code')
 
 
-admin.site.register(User, UsersAdmin)
-admin.site.register(Address, AddressAdmin)
+# admin.site.register(User, UsersAdmin)
+# admin.site.register(Address, AddressAdmin)
