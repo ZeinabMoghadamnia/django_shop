@@ -44,3 +44,6 @@ class ProfileForm(forms.ModelForm):
 
 class OTPForm(forms.Form):
     email = forms.EmailField(label='ایمیل')
+
+class VerifyOTPForm(forms.Form):
+    otp_code = forms.CharField(label='رمز یک بار مصرف')

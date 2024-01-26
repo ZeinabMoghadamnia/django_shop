@@ -4,9 +4,10 @@ from django.contrib.auth.views import FormView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.shortcuts import render
-from .forms import OTPForm
+from .forms import OTPForm, VerifyOTPForm
 from .tasks import send_otp_email_task
-
+from config.redis import OTPRedis
+from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 import random
 from django.views import View
@@ -27,10 +28,36 @@ class SendOTPCodeView(View):
             subject = 'Login Code'
             message = str(random.randint(10000, 99999))
             recipient = form.cleaned_data['email']
+            OTPRedis.set_redis(recipient, message)
             send_otp_email_task.delay(subject, message, recipient)
 
-        return redirect('products:home')
+        return redirect('accounts:verify_otp')
 
+class VerifyOTPView(View):
+    template_name = 'accounts/verify_otp.html'
+    form_class = VerifyOTPForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            entered_code = form.cleaned_data.get('otp_code')
+            recipient = OTPRedis.key_by_code(entered_code.decode('utf-8', 'ignore'))
+            stored_code_bytes = OTPRedis.get_redis(recipient)
+
+            if stored_code_bytes:
+                stored_code = stored_code_bytes.decode('utf-8', 'ignore')
+                if entered_code == stored_code:
+                    user = authenticate(request, username=recipient, password='')
+                    if user:
+                        login(request, user)
+                        OTPRedis.delete_redis(recipient)
+                        return redirect('products:home')
+
+        return render(request, self.template_name, {'form': form, 'error_message': 'Invalid OTP code'})
 
 # def index(request):
 #     if request.method == 'POST':
@@ -158,7 +185,7 @@ class RegisterView(FormView):
 #
 #
 # class OTPCheckView(View):
-#     template_name = 'accounts/otp_check.html'
+#     template_name = 'accounts/verify_otp.html'
 #
 #     def post(self, request, *args, **kwargs):
 #         email = request.POST.get('email')

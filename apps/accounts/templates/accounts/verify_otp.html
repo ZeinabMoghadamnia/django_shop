@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+<!-- otp_form.html -->
+{% block content %}
+    <div class="d-flex justify-content-center my-5" dir="rtl">
+        <div class="container d-flex justify-content-center border-top border-bottom mt-5">
+            <div class="row mb-5 ">
+                <div class="col-sm-5 bg-transparent mt-0 mx-sm-5 px-4 pt-4 pb-3">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit">ورود</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-5">
+
+    </div>
+
+{% endblock %}
