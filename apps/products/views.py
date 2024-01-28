@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView, DetailView
 from .models import Product, Category, Like
 from django.http import JsonResponse
+from .forms import CommentForm
 
 
 # Create your views here.
@@ -60,16 +61,24 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'products/product_details.html'
     context_object_name = 'details'
+    form_class = CommentForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['item_name'] = self.object
         description_lines = self.object.description.splitlines()
         context['description_lines'] = description_lines
         context['item_images'] = self.object.image.all()
         context['similar_item'] = Product.objects.filter(category=self.object.category)
-        # context['add_to_cart_form'] = AddToCartProductForm()
-        context['comments'] = self.object.comments.filter(reply__isnull=True)
         context['like_count'] = self.object.likes.count()
+        context['comment_form'] = CommentForm()
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.product = self.get_object()
+            comment.author = self.request.user
+            comment.save()
+        return redirect('accounts:verify_otp')

@@ -12,8 +12,6 @@ from django.core.mail import send_mail
 import random
 from django.views import View
 
-
-
 class SendOTPCodeView(View):
     template_name = 'accounts/otp_form.html'
     form_class = OTPForm

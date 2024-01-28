@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load crispy_forms_tags %}
 {% block title %}
     details
 {% endblock %}
@@ -79,69 +79,88 @@
                 <!-- product_details.html -->
 
                 <!-- Display like/unlike button based on user's like status -->
-{#                {% if user.is_authenticated %}#}
-{#                    {% if user in details.likes.all %}#}
-{#                        <form method="post" action="{% url 'unlike_product' pk=details.pk %}">#}
-{#                            {% csrf_token %}#}
-{#                            <button type="submit">Unlike</button>#}
-{#                        </form>#}
-{#                    {% else %}#}
-{#                        <form method="post" action="{% url 'like_product' pk=details.pk %}">#}
-{#                            {% csrf_token %}#}
-{#                            <button type="submit">Like</button>#}
-{#                        </form>#}
-{#                    {% endif %}#}
-{#                {% else %}#}
-{#                    <p>Login to like this product.</p>#}
-{#                {% endif %}#}
-{##}
-{#                <!-- Display total like count -->#}
-{#                <p>Total Likes: {{ like_count }}</p>#}
+                {#                {% if user.is_authenticated %}#}
+                {#                    {% if user in details.likes.all %}#}
+                {#                        <form method="post" action="{% url 'unlike_product' pk=details.pk %}">#}
+                {#                            {% csrf_token %}#}
+                {#                            <button type="submit">Unlike</button>#}
+                {#                        </form>#}
+                {#                    {% else %}#}
+                {#                        <form method="post" action="{% url 'like_product' pk=details.pk %}">#}
+                {#                            {% csrf_token %}#}
+                {#                            <button type="submit">Like</button>#}
+                {#                        </form>#}
+                {#                    {% endif %}#}
+                {#                {% else %}#}
+                {#                    <p>Login to like this product.</p>#}
+                {#                {% endif %}#}
+                {##}
+                {#                <!-- Display total like count -->#}
+                {#                <p>Total Likes: {{ like_count }}</p>#}
 
                 {#--------------------------- like --------------------------------#}
             </div>
         </div>
         <div class="container text-center align-items-center" dir="rtl">
-            <div class="row text-center align-items-center">
+            <div class="row text-center align-items-center d-flex justify-content-center">
                 {% if comments %}
                     <div class="row justify-content-center">
-                        <div class="col-6 border-top border-bottom">
+                        <div class="col-9 border-top border-bottom" style="border-color: #c9c9c9 !important;">
                             <h3 class="fs-5 mt-3">نظرات کاربران</h3>
                         </div>
                     </div>
+                    <div class="col-10 text-center">
+                        <div class="row d-flex justify-content-center text-end">
 
-                    <div class="row justify-content-center text-end rounded">
-                    <div class="col-6 bg-gray rounded py-3 px-5 text-center ">
-                        <div class="rounded">
-                            {% for comment in comments %}
-                                <div class="row text-end text-white ">
-                                    <strong class="col-12 text-end bg-dark">{{ comment.author.username }}</strong>
-                                </div>
-                                <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center">
-                                    <div class="row text-end text-white">
-                                        <p class="pt-2 fs-6">{{ comment.context }}</p>
+                            <div class="col-10 rounded-bottom py-3 px-5 text-center " style="background-color: #f5f5f5">
+                                {% for comment in comments %}
+                                    <div class="row d-flex justify-content-center text-dark rounded mb-3"
+                                         style="background-color: #eee5e1">
+                                    <div class="col-6 text-end ps-2 py-2">
+                                        <strong>{{ comment.author.username }}</strong>
                                     </div>
-                                    {% if comment.replies.all %}
-                                        {% for reply in comment.replies.all %}
-                                            <div class="px-5">
-                                                <div class="row text-end mb-1 text-white"
-                                                     style="background-color: #7F8177">
-                                                    <strong class="text-end pe-1 text-light">{{ reply.author.username }}</strong>
-                                                </div>
-                                                <div class="row text-end">
-                                                    <p class="">{{ reply.context }}</p>
-                                                </div>
+                                    <div class="col-6 text-start ps-2 py-2">
+                                        <a class="ps-2 py-2 opacity-50" href="">پاسخ</a>
+                                    </div>
+                                        <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center rounded-bottom w-100">
+                                            <div class="row text-end text-white">
+                                                <p class="pt-2 fs-6">{{ comment.context }}</p>
                                             </div>
-                                        {% endfor %}
-                                    {% endif %}
+                                            {% if comment.replies.all %}
+                                                {% for reply in comment.replies.all %}
+                                                    <div class="px-5 text-end">
+                                                        <div class="row text-end mb-1 text-white py-2 pe-2 rounded-top"
+                                                             style="background-color: #f6f6f6 !important;">
+                                                            <strong class="text-end pe-1 text-dark">{{ reply.author.username }}</strong>
+                                                        </div>
+                                                        <div class="row text-end py-2 border-2 border-bottom rounded"
+                                                             style="border-color: #e7e7e7 !important;">
+                                                            <p class="">{{ reply.context }}</p>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                                <div class="row justify-content-center text-end rounded">
+                                    <div class="col-8 rounded py-3 px-5 text-center " style="background-color: #f5f5f5">
+                                        <div class="">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <div class="bg-white rounded" >{{ comment_form }}</div>
+
+                                                <button class="btn btn-dark" type="submit">ثبت نظر</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                            {% endfor %}
+                            </div>
                         </div>
-
-
                     </div>
                 {% endif %}
-                </div>
+
             </div>
 
     </section>
