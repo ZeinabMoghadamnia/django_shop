@@ -71,6 +71,7 @@ class ProductDetailView(DetailView):
         context['similar_item'] = Product.objects.filter(category=self.object.category)
         context['like_count'] = self.object.likes.count()
         context['comment_form'] = CommentForm()
+        context['comments'] = self.object.comments.all()
 
         return context
 

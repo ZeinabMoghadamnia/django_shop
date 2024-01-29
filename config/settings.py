@@ -54,6 +54,11 @@ INSTALLED_APPS = [
 
     #crispy
     "crispy_forms",
+    "crispy_bootstrap5",
+
+
+    #admin_panel
+    'admin_extra_buttons',
 
 
     #my_apps
@@ -180,9 +185,9 @@ AUTHENTICATION_BACKENDS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 REDIS_HOST = 'localhost'  # Replace with your Redis server host
 REDIS_PORT = 6379         # Replace with your Redis server port

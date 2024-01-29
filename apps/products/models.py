@@ -2,11 +2,13 @@ from django.db import models
 from ..accounts.models import User
 from ..core.models import BaseModel
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.utils.html import mark_safe
+from django.contrib import messages
 
 # Create your models here.
 
@@ -81,6 +83,11 @@ class Product(BaseModel):
     def __str__(self):
         return self.name
 
+    def img_preview(self):
+        main_image = self.images.filter(is_main=True).first()
+        return mark_safe('<img src="/media/%s" width="auto" height="100" />' % (self.sub_image))
+
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name)
@@ -92,6 +99,7 @@ class Product(BaseModel):
                 counter += 1
 
         super().save(*args, **kwargs)
+
 
 
 @receiver(post_save, sender=Product)
@@ -145,6 +153,31 @@ class Image(BaseModel):
 
     def __str__(self):
         return self.product.name
+
+
+
+    def img_preview(self):
+        return mark_safe('<img src="/media/%s" width="auto" height="100" />' % (self.sub_image))
+
+
+@receiver(pre_save, sender=Image)
+def validate_main_image(sender, instance, **kwargs):
+    if instance.is_main:
+        existing_main_image = Image.objects.filter(product=instance.product, is_main=True).exclude(id=instance.id)
+
+        if existing_main_image.exists():
+            raise ValidationError('لطفاً یک عکس را به عنوان عکس اصلی انتخاب کنید!')
+
+        other_images = Image.objects.filter(product=instance.product).exclude(id=instance.id)
+        other_images.update(is_main=False)
+
+    else:
+        main_image_exists = Image.objects.filter(product=instance.product, is_main=True).exclude(
+            id=instance.id).exists()
+
+        if not main_image_exists:
+            raise ValidationError('لطفاً یک عکس را به عنوان عکس اصلی انتخاب کنید!')
+
 
 class Comment(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_('product'))

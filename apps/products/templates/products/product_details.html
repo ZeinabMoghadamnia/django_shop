@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 {% block title %}
     details
@@ -21,20 +22,31 @@
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5" dir="rtl">
             <div class="row text-center align-items-center d-flex justify-content-center">
-                <div class="col-2"></div>
-                <div class="col-1 mb-3" data-cro-id="pdp-album-open">
-                    {% for image in details.image.all %}
-                        <div class="row">
-                            <img class="img-fluid rounded my-3" src="{{ image.sub_image.url }}"
-                                 alt="{{ details.name }}" width="100%" height="auto"
-                                 onclick="changeImage(this.src)"
-                            />
-
-                        </div>
-                    {% endfor %}
+                <div class="col-md-2"></div>
+                <div class="col-md-1 col-sm-12">
+                    <div class="row">
+                        {% for image in details.image.all %}
+                            <div class="col-4 col-sm-4 col-md-12 col-lg-12 mb-2">
+                                <img class="img-fluid rounded my-auto" src="{{ image.sub_image.url }}"
+                                     alt="{{ details.name }}" width="100%" height="auto"
+                                     onclick="changeImage(this.src)">
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
+                {#                <div class="col-md-1 mb-3" data-cro-id="pdp-album-open">#}
+                {#                    {% for image in details.image.all %}#}
+                {#                        <div class="row">#}
+                {#                            <img class="img-fluid rounded my-3" src="{{ image.sub_image.url }}"#}
+                {#                                 alt="{{ details.name }}" width="100%" height="auto"#}
+                {#                                 onclick="changeImage(this.src)"#}
+                {#                            />#}
+                {##}
+                {#                        </div>#}
+                {#                    {% endfor %}#}
+                {#                </div>#}
 
-                <div class="col-3 mb-3" data-cro-id="pdp-album-open">
+                <div class="col-md-3 col-sm-10 mb-3" data-cro-id="pdp-album-open">
                     {% for image in details.image.all %}
                         {% if image.is_main %}
                             <img class="card-img-top mb-5 mb-md-0 rounded w-100 h-100" id="mainImage"
@@ -43,7 +55,7 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                <div class="col-md-5 text-end pe-5 d-flex flex-column justify-content-center">
+                <div class="col-md-5 text-end pe-md-5 pe-sm-3 mx-sm-4 d-flex flex-column justify-content-center">
                     <h1 class="display-5 mb-4 fw-bolder">{{ details.name }}</h1>
 
                     {% for line in description_lines %}
@@ -54,24 +66,29 @@
                     </div>
                     {#                    <p class="lead">{{ details.description }}</p>#}
                     <div class="row align-items-center mt-4">
-                        {#                        <button class="col-md-1 btn-sm border-0 btn-link"#}
-                        {#                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()">#}
-                        {#                            <i class="fas fa-plus"></i>#}
-                        {#                        </button>#}
-                        {#                        <input class="col-md-3 form-control text-center" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />#}
-                        {#                        <button class="col-md-1 btn-sm border-0 btn-link"#}
-                        {#                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()">#}
-                        {#                            <i class="fas fa-minus"></i>#}
-                        {#                        </button>#}
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            {#                            {{ add_to_cart_form|crispy }}#}
-                            {#                        <button class="btn" type="submit"> اضافه کردن به سبد خرید</button>#}
-                            <button class="col-sm-7 btn btn-outline-dark flex-shrink-0 me-3" type="submit">
-                                <i class="bi-cart-fill me-1"></i>
-                                اضافه کردن به سبد خرید
+                        {#                        <form action="" method="post">#}
+                        <div class="col-4 col-md-4 col-xs-4 d-flex">
+
+                            <button class="btn btn-link text-dark px-2"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                <i class="fas fa-plus"></i>
                             </button>
-                        </form>
+
+                            <input id="form1" min="0" name="quantity" value="1" type="number"
+                                   class="form-control form-control-sm w-100 h-100"/>
+
+                            <button class="btn btn-link text-dark px-2"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                        {#                            <div class="col col-md-8 me-5 p-0">#}
+                        <button class="col-7 col-md-5 col-sm-7 btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            اضافه کردن به سبد خرید
+                        </button>
+                        {#                            </div>#}
+                        {#                        </form>#}
 
                     </div>
                 </div>
@@ -114,42 +131,49 @@
 
                             <div class="col-10 rounded-bottom py-3 px-5 text-center " style="background-color: #f5f5f5">
                                 {% for comment in comments %}
-                                    <div class="row d-flex justify-content-center text-dark rounded mb-3"
-                                         style="background-color: #eee5e1">
-                                    <div class="col-6 text-end ps-2 py-2">
-                                        <strong>{{ comment.author.username }}</strong>
-                                    </div>
-                                    <div class="col-6 text-start ps-2 py-2">
-                                        <a class="ps-2 py-2 opacity-50" href="">پاسخ</a>
-                                    </div>
-                                        <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center rounded-bottom w-100">
-                                            <div class="row text-end text-white">
-                                                <p class="pt-2 fs-6">{{ comment.context }}</p>
+                                    {% if not comment.reply %}
+                                        <div class="row d-flex justify-content-center text-dark rounded mb-3"
+                                             style="background-color: #eee5e1">
+                                            <div class="col-6 text-end ps-2 py-2">
+                                                <strong>{{ comment.author.first_name }}</strong>
                                             </div>
-                                            {% if comment.replies.all %}
-                                                {% for reply in comment.replies.all %}
-                                                    <div class="px-5 text-end">
-                                                        <div class="row text-end mb-1 text-white py-2 pe-2 rounded-top"
-                                                             style="background-color: #f6f6f6 !important;">
-                                                            <strong class="text-end pe-1 text-dark">{{ reply.author.username }}</strong>
-                                                        </div>
-                                                        <div class="row text-end py-2 border-2 border-bottom rounded"
-                                                             style="border-color: #e7e7e7 !important;">
-                                                            <p class="">{{ reply.context }}</p>
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </div>
-                                    </div>
+                                            <div class="col-6 text-start ps-2 py-2">
+                                                <a class="ps-2 py-2 opacity-50" href="">پاسخ</a>
+                                            </div>
+                                            <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center rounded-bottom w-100">
+                                                <div class="row text-end text-white">
+                                                    <p class="pt-2 fs-6">{{ comment.context }}</p>
+                                                </div>
 
+                                                {% if comment.replies.all %}
+                                                    {% for reply in comment.replies.all %}
+                                                        <div class="px-5 mb-3 text-end">
+                                                            <div class="row text-end mb-1 rounded-top"
+                                                                 style="background-color: #f6f6f6 !important;">
+                                                                <div class="col-6 text-dark text-end ps-2 py-2">
+                                                                    <strong>{{ reply.author.first_name }}</strong>
+                                                                </div>
+                                                                <div class="col-6 text-start ps-2 py-2">
+                                                                    <a class="ps-2 py-2 opacity-50" href="">پاسخ</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row text-end py-2 border-2 border-bottom rounded"
+                                                                 style="border-color: #e7e7e7 !important;">
+                                                                <p class="">{{ reply.context }}</p>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                                 <div class="row justify-content-center text-end rounded">
-                                    <div class="col-8 rounded py-3 px-5 text-center " style="background-color: #f5f5f5">
+                                    <div class="col-12 col-md-8 col-sm-12 rounded py-3 px-5 text-center " style="background-color: #f5f5f5">
                                         <div class="">
-                                            <form method="post">
+                                            <form class="col-12 col-md-12 col-sm-12" method="post">
                                                 {% csrf_token %}
-                                                <div class="bg-white rounded" >{{ comment_form }}</div>
+                                                <div class="bg-white rounded">{{ comment_form | crispy }}</div>
 
                                                 <button class="btn btn-dark" type="submit">ثبت نظر</button>
                                             </form>
@@ -226,6 +250,5 @@
             });
         });
     </script>
-
 
 {% endblock %}

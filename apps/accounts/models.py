@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 from ..core.models import BaseModel
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
+from django.utils.html import mark_safe
+
 class User(AbstractUser, BaseModel):
     USER_TYPES = (
         ('costumer', 'Costumer'),
@@ -17,12 +19,13 @@ class User(AbstractUser, BaseModel):
     first_name = models.CharField(max_length=40, verbose_name=_('first name'))
     last_name = models.CharField(max_length=40, verbose_name=_('last name'))
 
-
-    REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name']
     class Meta:
         verbose_name_plural = _('user')
     def __str__(self):
         return self.email
+
 
 class Profile(BaseModel):
     GENDER = (
@@ -33,6 +36,9 @@ class Profile(BaseModel):
     date_of_birth = models.DateField(null=True, blank=True, verbose_name=_('birthday'))
     gender = models.CharField(max_length=20, choices=GENDER, verbose_name=_('gender'), null=True, blank=True)
     image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
+
+    def img_preview(self):
+        return mark_safe('<img src="/media/%s" width="auto" height="100" />' % (self.image))
 
 
 class Address(BaseModel):
