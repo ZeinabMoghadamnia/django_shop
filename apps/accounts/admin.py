@@ -6,6 +6,14 @@ from ..core.admin import ButtonMixin, CustomExtraButtonsMixin
 
 # Register your models here.
 
+class AddressInline(admin.TabularInline):
+    model = Address
+    fieldsets = [(
+        (None, {'fields': ('user', 'province', 'city', 'complete_address')})
+    ),]
+    readonly_fields = ['user']
+    extra = 0
+
 @admin.register(User)
 class UsersAdmin(CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
     list_display = (
@@ -31,6 +39,7 @@ class UsersAdmin(CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
     )
     ordering = ('email',)
     list_filter = ('is_superuser', 'user_type', 'is_active', 'is_deleted',)
+    inlines = [AddressInline]
 
 
 @admin.register(Profile)
