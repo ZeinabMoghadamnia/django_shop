@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'admin_extra_buttons',
 
 
-    #my_apps
+    #apps
     'apps.core',
     'apps.products',
     'apps.accounts',
