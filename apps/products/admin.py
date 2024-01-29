@@ -11,13 +11,18 @@ class ImageInline(admin.TabularInline):
 
 class CommentInline(admin.TabularInline):
     model = Comment
-    extra = 1
-
+    fieldsets = [(
+        (None, {'fields': ('author', 'context', 'product')})
+    ),]
+    readonly_fields = ['author']
+    extra = 0
+    def queryset(self, request):
+        return super().get_queryset(request).all()
 @admin.register(Product)
 class ProductAdmin(CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
     readonly_fields = ['discounted_price']
     list_display = ('id', 'display_main_image', 'name', 'category', 'brand', 'quantity', 'price', 'discounted_price', 'is_deleted', 'change_button', 'delete_button')
-    inlines = [ImageInline]
+    inlines = [ImageInline, CommentInline]
     fieldsets = [
         ('Product Information', {
             'fields': (tuple([
@@ -51,11 +56,10 @@ class ProductAdmin(CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
             return format_html('<img src="{}" width="auto" height="100" />'.format(main_image.sub_image.url))
         return None
 
-    def display_comment(self, obj):
-        comment = obj.comments.filter(is_main=True).first()
-        if comment:
-            return format_html('<img src="{}" width="auto" height="100" />'.format(main_image.sub_image.url))
-        return None
+    # def display_comment(self, obj):
+    #     if comment:
+    #         return format_html('<img src="{}" width="auto" height="100" />'.format(main_image.sub_image.url))
+    #     return None
 
     display_main_image.short_description = 'Main Image'
 
