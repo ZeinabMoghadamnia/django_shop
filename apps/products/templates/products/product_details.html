@@ -96,24 +96,24 @@
                 <!-- product_details.html -->
 
                 <!-- Display like/unlike button based on user's like status -->
-                {#                {% if user.is_authenticated %}#}
-                {#                    {% if user in details.likes.all %}#}
-                {#                        <form method="post" action="{% url 'unlike_product' pk=details.pk %}">#}
-                {#                            {% csrf_token %}#}
-                {#                            <button type="submit">Unlike</button>#}
-                {#                        </form>#}
-                {#                    {% else %}#}
-                {#                        <form method="post" action="{% url 'like_product' pk=details.pk %}">#}
-                {#                            {% csrf_token %}#}
-                {#                            <button type="submit">Like</button>#}
-                {#                        </form>#}
-                {#                    {% endif %}#}
-                {#                {% else %}#}
-                {#                    <p>Login to like this product.</p>#}
-                {#                {% endif %}#}
-                {##}
-                {#                <!-- Display total like count -->#}
-                {#                <p>Total Likes: {{ like_count }}</p>#}
+{#                                {% if user.is_authenticated %}#}
+{#                                    {% if user in details.likes.all %}#}
+{#                                        <form method="post" action="{% url 'unlike_product' pk=details.pk %}">#}
+{#                                            {% csrf_token %}#}
+{#                                            <button type="submit">Unlike</button>#}
+{#                                        </form>#}
+{#                                    {% else %}#}
+{#                                        <form method="post" action="{% url 'like_product' pk=details.pk %}">#}
+{#                                            {% csrf_token %}#}
+{#                                            <button type="submit">Like</button>#}
+{#                                        </form>#}
+{#                                    {% endif %}#}
+{#                                {% else %}#}
+{#                                    <p>Login to like this product.</p>#}
+{#                                {% endif %}#}
+
+                                <!-- Display total like count -->
+                                <p>Total Likes: {{ like_count }}</p>
 
                 {#--------------------------- like --------------------------------#}
             </div>
