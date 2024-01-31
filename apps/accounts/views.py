@@ -2,8 +2,8 @@ from ..accounts.forms import LoginForm, CustomUserCreationForm, OTPForm
 from .models import User
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import FormView
-from django.urls import reverse_lazy
-from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import render
 from .forms import OTPForm, VerifyOTPForm
 from .tasks import send_otp_email_task
@@ -14,7 +14,10 @@ import random
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-
+from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 class SendOTPCodeView(View):
     template_name = 'accounts/otp_form.html'
     form_class = OTPForm
@@ -73,24 +76,6 @@ class VerifyOTPView(View):
         return render(request, self.template_name, {'form': form})
 
 
-# def index(request):
-#     if request.method == 'POST':
-#         form = OTPForm(request.POST)
-#         if form.is_valid():
-#             message = request.POST['message']
-#             email = request.POST['email']
-#             name = request.POST['name']
-#             send_mail("Verify Code",
-#                       message,
-#                       'settings.EMAIL_HOST_USER',
-#                       [email],
-#                       fail_silently=False)
-#     return render(request,'accounts/otp_form.html')
-
-
-# from .models import
-# Create your views here.
-
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
     form_class = LoginForm
@@ -104,19 +89,63 @@ class CustomLogoutView(LogoutView):
     def get_success_url(self):
         return reverse_lazy('products:home')
 
-
-class RegisterView(FormView):
+class RegisterView(View):
     template_name = 'accounts/register.html'
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy('accounts:login')
 
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        form = CustomUserCreationForm()
+        return render(request, self.template_name, {'form': form})
 
-    def form_invalid(self, form):
-        # Handle invalid form submissions (e.g., display errors)
-        return self.render_to_response(self.get_context_data(form=form))
+    def post(self, request, *args, **kwargs):
+        form = CustomUserCreationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = form.cleaned_data.get('email')
+            user.is_active = False
+            user.save()
+
+            self.send_activation_email(request, user)
+
+            return redirect('accounts:login')
+
+        return render(request, self.template_name, {'form': form})
+
+    def send_activation_email(self, request, user):
+
+        token = default_token_generator.make_token(user)
+        activation_url = request.build_absolute_uri(reverse('accounts:activate', args=[str(token)]))
+        subject = 'Activate your account'
+        message = f'Click the following link to activate your account:\n\n{activation_url}'
+        to_email = user.email
+
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [to_email])
+
+
+class ActivateAccountView(View):
+    def get(self, request, token, *args, **kwargs):
+
+        user = self.get_user_by_token(token)
+
+        if user:
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+                messages.success(request, 'حساب کاربری شما فعال است')
+            else:
+                messages.success(request, 'حساب کاربری شما از قبل فعال است')
+        else:
+            messages.error(request, 'توکن فعالسازی نامعتبر است')
+
+        return redirect('accounts:login')
+
+    def get_user_by_token(self, token):
+
+        try:
+            user_id = default_token_generator.check_token(str(token))
+            return User.objects.get(id=user_id)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return None
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'accounts/password_reset_form.html'

@@ -8,12 +8,18 @@ from django.views.decorators.csrf import csrf_exempt
 # Register your models here.
 
 class ButtonMixin:
+
+    def show_button(self, obj):
+        return format_html(
+            '<a class="btn" style="border: #6db0c9; background-color: rgb(109,176,201); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/change/">نمایش</a>',
+            obj._meta.app_label, obj._meta.model_name, obj.id)
+
     def change_button(self, obj):
-        return format_html('<a class="btn" style="border: #6db0c9; background-color: rgb(109,176,201); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/change/">Edit</a>',
+        return format_html('<a class="btn" style="border: #6db0c9; background-color: rgb(109,176,201); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/ویرایش/">Edit</a>',
                            obj._meta.app_label, obj._meta.model_name, obj.id)
 
     def delete_button(self, obj):
-        return format_html('<a class="btn" style="border: #d95858; background-color: rgb(217,88,88); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/delete/">Delete</a>',
+        return format_html('<a class="btn" style="border: #d95858; background-color: rgb(217,88,88); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/حذف/">Delete</a>',
                            obj._meta.app_label, obj._meta.model_name, obj.id)
 
 

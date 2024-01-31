@@ -56,12 +56,16 @@ class ProductAdmin(CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
             return format_html('<img src="{}" width="auto" height="100" />'.format(main_image.sub_image.url))
         return None
 
-    # def display_comment(self, obj):
-    #     if comment:
-    #         return format_html('<img src="{}" width="auto" height="100" />'.format(main_image.sub_image.url))
-    #     return None
-
     display_main_image.short_description = 'Main Image'
+
+    def get_list_display(self, request):
+        staff_type = request.user.groups.values_list('name', flat=True)
+        if staff_type == 'Operator' or staff_type == 'Manager' :
+            return super().get_list_display(request)
+        else:
+            return ('display_main_image', 'name', 'category', 'brand', 'quantity', 'price', 'discounted_price', 'show_button')
+
+    def edit_permissions(self, request):
 
     @link(href=None,
           change_list=False,

@@ -1,14 +1,15 @@
 from django.urls import path
 from .views import CustomLoginView, RegisterView, CustomLogoutView, SendOTPCodeView, VerifyOTPView, \
     CustomPasswordResetView, CustomPasswordResetDoneView, CustomPasswordResetConfirmView, \
-    CustomPasswordResetCompleteView
+    CustomPasswordResetCompleteView, ActivateAccountView
 from django.contrib.auth import views as auth_views
 
 app_name = 'accounts'
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
-    path('register/', RegisterView.as_view(), name='register'),
+    path('signup/', RegisterView.as_view(), name='register'),
+    path('activate/<str:token>/', ActivateAccountView.as_view(), name='activate'),
     path('send_otp/', SendOTPCodeView.as_view(), name='send_otp'),
     path('verify_otp/', VerifyOTPView.as_view(), name='verify_otp'),
     path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),

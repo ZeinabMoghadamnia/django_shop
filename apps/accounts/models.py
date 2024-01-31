@@ -20,6 +20,7 @@ class User(AbstractUser, BaseModel):
     last_name = models.CharField(max_length=40, verbose_name=_('last name'))
 
     USERNAME_FIELD = 'email'
+
     REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name']
     class Meta:
         verbose_name_plural = _('user')
