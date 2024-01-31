@@ -1,4 +1,5 @@
 from ..accounts.forms import LoginForm, CustomUserCreationForm, OTPForm
+from ..accounts.backends import EmailBackend
 from .models import User
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import FormView
@@ -8,7 +9,7 @@ from django.shortcuts import render
 from .forms import OTPForm, VerifyOTPForm
 from .tasks import send_otp_email_task
 from config.redis import OTPRedis
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.core.mail import send_mail
 import random
 from django.views import View
@@ -31,12 +32,12 @@ class SendOTPCodeView(View):
         if form.is_valid():
             email = form.cleaned_data['email']
 
-            if User.objects.filter(email=email).exists():
+            if User.objects.filter(username=email).exists():
                 subject = 'Login Code'
                 message = str(random.randint(10000, 99999))
                 OTPRedis.set_redis(email, message)
                 send_otp_email_task.delay(subject, message, email)
-                request.session['otp_email'] = email
+                request.session['email'] = email
                 return redirect('accounts:verify_otp')
             else:
                 messages.error(request, 'لطفاً ابتدا ثبت نام کنید.')
@@ -44,10 +45,9 @@ class SendOTPCodeView(View):
 
         return redirect('accounts:verify_otp')
 
-
 class VerifyOTPView(View):
     template_name = 'accounts/verify_otp.html'
-    form_class = VerifyOTPForm  # تغییر به نام فرم تایید OTP شما
+    form_class = VerifyOTPForm
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
@@ -56,24 +56,25 @@ class VerifyOTPView(View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            email = request.session.get('otp_email', None)
-            if email:
-                saved_otp = OTPRedis.get_redis(email).decode('utf-8', 'ignore')
-                entered_otp = form.cleaned_data['otp']
-                user = authenticate(request, email=email)
+            entered_code = form.cleaned_data['otp']
+            email = request.session.get('email')
 
-                if entered_otp == saved_otp:
-                    login(request, user)
-                    OTPRedis.delete_redis(email)
-
+            stored_code = OTPRedis.get_redis(email).decode('utf-8')
+            if stored_code and entered_code == stored_code:
+                user = get_user_model().objects.get(email=email)
+                if user is not None:
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     messages.success(request, 'ورود موفقیت آمیز بود.')
                     return redirect('products:home')
                 else:
-                    messages.error(request, 'کد وارد شده صحیح نیست.')
+                    messages.error(request, 'ورود با خطا مواجه شد.')
             else:
-                messages.error(request, 'خطایی رخ داده است. لطفا دوباره تلاش کنید.')
+                messages.error(request, 'کد وارد شده صحیح نیست.')
+        else:
+            messages.error(request, 'خطایی رخ داده است. لطفا دوباره تلاش کنید.')
 
         return render(request, self.template_name, {'form': form})
+
 
 
 class CustomLoginView(LoginView):
@@ -104,7 +105,6 @@ class RegisterView(View):
             user.username = form.cleaned_data.get('email')
             user.is_active = False
             user.save()
-
             self.send_activation_email(request, user)
 
             return redirect('accounts:login')
@@ -119,7 +119,8 @@ class RegisterView(View):
         message = f'Click the following link to activate your account:\n\n{activation_url}'
         to_email = user.email
 
-        send_mail(subject, message, settings.EMAIL_HOST_USER, [to_email])
+
+        send_mail.delay(subject, message, settings.EMAIL_HOST_USER, [to_email])
 
 
 class ActivateAccountView(View):
