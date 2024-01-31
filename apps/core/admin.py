@@ -15,11 +15,11 @@ class ButtonMixin:
             obj._meta.app_label, obj._meta.model_name, obj.id)
 
     def change_button(self, obj):
-        return format_html('<a class="btn" style="border: #6db0c9; background-color: rgb(109,176,201); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/ویرایش/">Edit</a>',
+        return format_html('<a class="btn" style="border: #6db0c9; background-color: rgb(109,176,201); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/change/">ویرایش</a>',
                            obj._meta.app_label, obj._meta.model_name, obj.id)
 
     def delete_button(self, obj):
-        return format_html('<a class="btn" style="border: #d95858; background-color: rgb(217,88,88); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/حذف/">Delete</a>',
+        return format_html('<a class="btn" style="border: #d95858; background-color: rgb(217,88,88); padding: 5px; border-radius: 5px; color: white" href="/admin/{}/{}/{}/delete/">حذف</a>',
                            obj._meta.app_label, obj._meta.model_name, obj.id)
 
 

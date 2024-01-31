@@ -15,6 +15,7 @@ class CostumeUserManager(BaseUserManager):
 
         user = self.model(phone_number=phone_number, email=self.normalize_email(email), first_name=first_name, last_name=last_name)
         user.set_password(password)
+        user.username = email
         user.save(using=self._db)
         return user
 
@@ -22,5 +23,8 @@ class CostumeUserManager(BaseUserManager):
 
         user = self.create_user(phone_number, email, first_name, last_name, password)
         user.is_admin = True
+        user.username = email
+        user.is_staff = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user

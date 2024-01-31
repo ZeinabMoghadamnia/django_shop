@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from .managers import CostumeUserManager
 from ..core.models import BaseModel
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission, UserManager
 from django.core.validators import RegexValidator
 from django.utils.html import mark_safe
 
@@ -22,6 +24,8 @@ class User(AbstractUser, BaseModel):
     USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name']
+
+    objects = CostumeUserManager()
     class Meta:
         verbose_name_plural = _('user')
     def __str__(self):

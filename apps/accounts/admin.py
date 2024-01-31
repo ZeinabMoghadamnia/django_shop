@@ -40,6 +40,7 @@ class UsersAdmin(CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
     ordering = ('email',)
     list_filter = ('is_superuser', 'user_type', 'is_active', 'is_deleted',)
     inlines = [AddressInline]
+    readonly_fields = ('last_login',)
 
 
 @admin.register(Profile)

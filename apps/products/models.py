@@ -119,9 +119,15 @@ class Image(BaseModel):
 
 
 class Comment(BaseModel):
+    ACCEPT_STATUS = (
+        ('approved', 'approved'),
+        ('waiting', 'waiting'),
+        ('rejected', 'rejected'),
+    )
+    status = models.CharField(max_length=10, choices=ACCEPT_STATUS, default='waiting', verbose_name=_('verify_status'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_('product'))
     reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', blank=True, null=True, verbose_name=_('reply'))
-    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='authors', verbose_name=_('author'))
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authors', verbose_name=_('author'))
     context = models.TextField(verbose_name=_('content'))
     class Meta:
         ordering = ['created_at']
