@@ -130,6 +130,7 @@ class ActivateAccountView(View):
                     user.is_active = True
                     user.save()
                     messages.success(request, 'حساب کاربری با موفقیت فعال شد. اکنون می‌توانید وارد شوید.')
+                    RedisDB.delete_redis()
                     return redirect('accounts:login')
                 else:
                     messages.info(request, 'حساب کاربری شما قبلاً فعال شده است.')

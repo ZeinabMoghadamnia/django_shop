@@ -36,7 +36,7 @@ class Discount(BaseModel):
         return self.code
 
 
-class BaseGrouping(BaseModel):
+class BaseOfGrouping(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('discount'))
     slug = models.SlugField(unique=True, max_length=20, blank=True, null=True, verbose_name=_('slug'))
@@ -47,7 +47,7 @@ class BaseGrouping(BaseModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-class Brand(BaseGrouping):
+class Brand(BaseOfGrouping):
     description = models.TextField(null=True, blank=True, verbose_name=_('description'))
     image = models.ImageField(upload_to='brands/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
@@ -55,7 +55,7 @@ class Brand(BaseGrouping):
     def __str__(self):
         return self.name
 
-class Category(BaseGrouping):
+class Category(BaseOfGrouping):
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('parent category'))
     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name=_('image'))
     class Meta:
