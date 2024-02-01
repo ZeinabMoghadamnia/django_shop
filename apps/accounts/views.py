@@ -108,7 +108,7 @@ class RegisterView(View):
             user.save()
             self.send_activation_email(request, user)
 
-            return render(request, 'accounts/activare_email.html')
+            return render(request, 'accounts/activate_email.html')
 
         return render(request, self.template_name, {'form': form})
 

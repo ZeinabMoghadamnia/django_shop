@@ -245,13 +245,12 @@
             $("#like-button").on("click", function () {
                 $.ajax({
                     type: "POST",
-                    url: "{% url 'products:product_like' pk=details.pk %}",  <!-- Update with your actual URL name -->
+                    url: "{% url 'products:product_like' pk=details.pk %}",
                     data: {
                         'like_action': 'toggle',
                         'csrfmiddlewaretoken': '{{ csrf_token }}'
                     },
                     success: function (data) {
-                        // Update like button text and like count in the UI
                         $("#like-button").text(data.is_liked ? 'Unlike' : 'Like');
                         $("#like-count").text(data.like_count);
                     }
