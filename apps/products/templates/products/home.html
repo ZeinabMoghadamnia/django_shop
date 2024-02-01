@@ -105,7 +105,7 @@
                                 {% endfor %}
                                 <div class="cart-concern position-absolute">
                                     <div class="cart-button">
-                                        <a href="#" class="btn rounded-0 bg-light bg-opacity-50 w-100">اضافه کردن به سبد خرید</a>
+                                        <a href="{% url 'products:details' product.slug %}" class="btn rounded-0 bg-light bg-opacity-50 w-100">اضافه کردن به سبد خرید</a>
                                     </div>
                                 </div>
                             </div>

@@ -65,6 +65,7 @@ class VerifyOTPView(View):
                 if user is not None:
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     messages.success(request, 'ورود موفقیت آمیز بود.')
+                    RedisDB.delete_redis(email)
                     return redirect('products:home')
                 else:
                     messages.error(request, 'ورود با خطا مواجه شد.')
@@ -107,7 +108,7 @@ class RegisterView(View):
             user.save()
             self.send_activation_email(request, user)
 
-            return redirect('accounts:login')
+            return render(request, 'accounts/activare_email.html')
 
         return render(request, self.template_name, {'form': form})
 
@@ -130,7 +131,7 @@ class ActivateAccountView(View):
                     user.is_active = True
                     user.save()
                     messages.success(request, 'حساب کاربری با موفقیت فعال شد. اکنون می‌توانید وارد شوید.')
-                    RedisDB.delete_redis()
+                    RedisDB.delete_redis('token')
                     return redirect('accounts:login')
                 else:
                     messages.info(request, 'حساب کاربری شما قبلاً فعال شده است.')
