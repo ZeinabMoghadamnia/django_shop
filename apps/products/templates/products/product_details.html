@@ -93,27 +93,11 @@
                     </div>
                 </div>
                 {#--------------------------- like --------------------------------#}
-                <!-- product_details.html -->
+                <button id="like-button">{% if user_has_liked %}Unlike{% else %}Like{% endif %}</button>
 
-                <!-- Display like/unlike button based on user's like status -->
-{#                                {% if user.is_authenticated %}#}
-{#                                    {% if user in details.likes.all %}#}
-{#                                        <form method="post" action="{% url 'unlike_product' pk=details.pk %}">#}
-{#                                            {% csrf_token %}#}
-{#                                            <button type="submit">Unlike</button>#}
-{#                                        </form>#}
-{#                                    {% else %}#}
-{#                                        <form method="post" action="{% url 'like_product' pk=details.pk %}">#}
-{#                                            {% csrf_token %}#}
-{#                                            <button type="submit">Like</button>#}
-{#                                        </form>#}
-{#                                    {% endif %}#}
-{#                                {% else %}#}
-{#                                    <p>Login to like this product.</p>#}
-{#                                {% endif %}#}
+                <!-- Display the current like count -->
+                <p id="like-count">{{ like_count }}</p>
 
-                                <!-- Display total like count -->
-                                <p>Total Likes: {{ like_count }}</p>
 
                 {#--------------------------- like --------------------------------#}
             </div>
@@ -169,7 +153,8 @@
                                     {% endif %}
                                 {% endfor %}
                                 <div class="row justify-content-center text-end rounded">
-                                    <div class="col-12 col-md-8 col-sm-12 rounded py-3 px-5 text-center " style="background-color: #f5f5f5">
+                                    <div class="col-12 col-md-8 col-sm-12 rounded py-3 px-5 text-center "
+                                         style="background-color: #f5f5f5">
                                         <div class="">
                                             <form class="col-12 col-md-12 col-sm-12" method="post">
                                                 {% csrf_token %}
@@ -251,4 +236,27 @@
         });
     </script>
 
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#like-button").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'products:product_like' pk=details.pk %}",  <!-- Update with your actual URL name -->
+                    data: {
+                        'like_action': 'toggle',
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (data) {
+                        // Update like button text and like count in the UI
+                        $("#like-button").text(data.is_liked ? 'Unlike' : 'Like');
+                        $("#like-count").text(data.like_count);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

@@ -87,6 +87,9 @@ class Product(BaseModel):
         main_image = self.images.filter(is_main=True).first()
         return mark_safe('<img src="/media/%s" width="auto" height="100" />' % (self.sub_image))
 
+    # def number_of_likes(self):
+    #     return self.likes.count()
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -144,3 +147,10 @@ class Like(BaseModel):
     class Meta:
         verbose_name = _('like')
         verbose_name_plural = _('likes')
+
+    def toggle_like(self):
+        self.is_liked = not self.is_liked
+        if not self.is_liked:
+            self.delete()
+        else:
+            self.save()

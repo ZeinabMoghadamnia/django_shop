@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView, DetailView
 from .models import Product, Category, Like
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from .forms import CommentForm
+from django.views import View
 
 
 # Create your views here.
@@ -56,7 +57,6 @@ class ProductListView(ListView):
         print(context)
         return context
 
-
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'products/product_details.html'
@@ -75,11 +75,39 @@ class ProductDetailView(DetailView):
 
         return context
 
+    # def post(self, request, *args, **kwargs):
+    #     form = self.form_class(request.POST)
+    #     if form.is_valid():
+    #         comment = form.save(commit=False)
+    #         comment.product = self.get_object()
+    #         comment.author = self.request.user
+    #         comment.save()
+    #     return redirect('accounts:verify_otp')
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
+
         if form.is_valid():
             comment = form.save(commit=False)
             comment.product = self.get_object()
             comment.author = self.request.user
             comment.save()
+
+        # Handling like/dislike
+        if 'like_action' in request.POST:
+            product = self.get_object()
+            like, created = Like.objects.get_or_create(user=self.request.user, product=product)
+            like.toggle_like()
+
         return redirect('accounts:verify_otp')
+
+
+
+class ProductLikeView(View):
+    def post(self, request, *args, **kwargs):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            product = get_object_or_404(Product, pk=kwargs['pk'])
+            like, created = Like.objects.get_or_create(user=request.user, product=product)
+            like.toggle_like()
+            like_count = product.likes.count()
+            return JsonResponse({'is_liked': like.is_liked, 'like_count': like_count})
