@@ -136,19 +136,28 @@
                                     </button>
 
                                     <ul class="dropdown-menu dropdown-menu-end text-end rounded">
-                                        {% for category in categories %}
-                                            <li>
-                                                <a class="px-3"
-                                                   href="{% url 'products:category_details' category.slug %}">{{ category.name }}</a>
-                                            </li>
-                                        {% endfor %}
+                                        {% if subcategories %}
+                                            {% for subcategory in subcategories %}
+                                                <li>
+                                                    <a class="px-3"
+                                                       href="{% url 'products:category_details' subcategory.slug %}">{{ subcategory.name }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        {% elif products %}
+                                            {% for product in products %}
+                                                <li>
+                                                    <a class="px-3"
+                                                       href="{% url 'products:category_details' product.slug %}">{{ product.name }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </li>
                         </ul>
 
                         <li>
-                            <a class="navbar-brand d-none d-lg-block me-0" href="base.html">
+                            <a class="navbar-brand d-none d-lg-block me-0" href="{% url 'products:home' %}">
                                 <img src="{% static 'images/main-logo.png' %}" class="logo" alt="">
                             </a>
                         </li>
@@ -223,7 +232,8 @@
                                 </li>
                             {% else %}
                                 <li class="nav-item col-4">
-                                    <a type="submit" class="nav-link m-0 p-0" href="{% url 'accounts:login' %}">ورود - ثبت نام</a>
+                                    <a type="submit" class="nav-link m-0 p-0" href="{% url 'accounts:login' %}">ورود -
+                                        ثبت نام</a>
                                 </li>
                             {% endif %}
 

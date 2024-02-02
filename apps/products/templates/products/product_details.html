@@ -62,7 +62,12 @@
                         <li>{{ line }}</li>
                     {% endfor %}
                     <div class="fs-5 mt-4">
-                        <span>{{ details.price }}</span>
+                        {% if not details.discounted_price %}
+                            <div><span>{{ details.price }}</span></div>
+                        {% else %}
+                            <div class="cancel-link"><del class="opacity-50"><span>{{ details.price }}</span></del></div>
+                            <div><span>{{ details.discounted_price }}</span></div>
+                        {% endif %}
                     </div>
                     {#                    <p class="lead">{{ details.description }}</p>#}
                     <div class="row align-items-center mt-4">
@@ -93,7 +98,7 @@
                     </div>
                 </div>
                 {#--------------------------- like --------------------------------#}
-                <button id="like-button">{% if user_has_liked %}Unlike{% else %}Like{% endif %}</button>
+                <button class="col-1" id="like-button">{% if user_has_liked %}Unlike{% else %}Like{% endif %}</button>
 
                 <!-- Display the current like count -->
                 <p id="like-count">{{ like_count }}</p>
@@ -114,44 +119,71 @@
                         <div class="row d-flex justify-content-center text-end">
 
                             <div class="col-10 rounded-bottom py-3 px-5 text-center " style="background-color: #f5f5f5">
+                                {#-------------------------------------comments------------------------------------------#}
+                                {#                                {% for comment in comments %}#}
+                                {#                                    <div class="comment">#}
+                                {#                                        {{ comment.context }}#}
+                                {#                                        <button class="reply-button" data-comment-id="{{ comment.id }}">Reply</button>#}
+                                {#                                        <form id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;"#}
+                                {#                                              method="post" action="{% url 'products:details' slug=details.slug %}">#}
+                                {#                                            {% csrf_token %}#}
+                                {#                                            <input type="hidden" name="reply_to" value="{{ comment.id }}">#}
+                                {#                                            {{ comment_form.as_p }}#}
+                                {#                                            <button type="submit">Submit Reply</button>#}
+                                {#                                        </form>#}
+                                {#                                        {% if comment.replies.all %}#}
+                                {#                                            <div class="replies">#}
+                                {#                                                {% for reply in comment.replies.all %}#}
+                                {#                                                    <!-- Display replies similarly as comments -->#}
+                                {#                                                {% endfor %}#}
+                                {#                                            </div>#}
+                                {#                                        {% endif %}#}
+                                {#                                    </div>#}
+                                {#                                {% endfor %}#}
+
+
+
                                 {% for comment in comments %}
                                     {% if not comment.reply %}
                                         <div class="row d-flex justify-content-center text-dark rounded mb-3"
-                                             style="background-color: #eee5e1">
+                                             style="background-color: #e5dbd6">
                                             <div class="col-6 text-end ps-2 py-2">
                                                 <strong>{{ comment.author.first_name }}</strong>
                                             </div>
                                             <div class="col-6 text-start ps-2 py-2">
-                                                <a class="ps-2 py-2 opacity-50" href="">پاسخ</a>
+                                                <button class="reply-button bg-transparent border-0"
+                                                        data-comment-id="{{ comment.id }}">پاسخ
+                                                </button>
                                             </div>
+
                                             <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center rounded-bottom w-100">
-                                                <div class="row text-end text-white">
+                                                <div class="row text-end text-white mb-3 text-center">
                                                     <p class="pt-2 fs-6">{{ comment.context }}</p>
+                                                    <form id="reply-form-{{ comment.id }}" class="reply-form"
+                                                          style="display: none;"
+                                                          method="post"
+                                                          action="{% url 'products:details' slug=details.slug %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="reply_to" value="{{ comment.id }}">
+                                                        {{ comment_form | crispy }}
+                                                        <button class="rounded border-0 text-light bg-dark"
+                                                                type="submit">ثبت پاسخ
+                                                        </button>
+                                                    </form>
                                                 </div>
 
                                                 {% if comment.replies.all %}
                                                     {% for reply in comment.replies.all %}
-                                                        <div class="px-5 mb-3 text-end">
-                                                            <div class="row text-end mb-1 rounded-top"
-                                                                 style="background-color: #f6f6f6 !important;">
-                                                                <div class="col-6 text-dark text-end ps-2 py-2">
-                                                                    <strong>{{ reply.author.first_name }}</strong>
-                                                                </div>
-                                                                <div class="col-6 text-start ps-2 py-2">
-                                                                    <a class="ps-2 py-2 opacity-50" href="">پاسخ</a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row text-end py-2 border-2 border-bottom rounded"
-                                                                 style="border-color: #e7e7e7 !important;">
-                                                                <p class="">{{ reply.context }}</p>
-                                                            </div>
-                                                        </div>
+                                                        {% if reply.status == 'approved' %}
+                                                            {% include 'products/comments.html' with comment=reply %}
+                                                        {% endif %}
                                                     {% endfor %}
                                                 {% endif %}
                                             </div>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
+                                {#-------------------------------------comments------------------------------------------#}
                                 <div class="row justify-content-center text-end rounded">
                                     <div class="col-12 col-md-8 col-sm-12 rounded py-3 px-5 text-center "
                                          style="background-color: #f5f5f5">
@@ -256,6 +288,24 @@
                     }
                 });
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var replyButtons = document.querySelectorAll('.reply-button');
+
+            replyButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var commentId = this.getAttribute('data-comment-id');
+                    var replyForm = document.getElementById('reply-form-' + commentId);
+                    toggleFormVisibility(replyForm);
+                });
+            });
+
+            function toggleFormVisibility(form) {
+                form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+            }
         });
     </script>
 {% endblock %}

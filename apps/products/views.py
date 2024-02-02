@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView, DetailView
-from .models import Product, Category, Like
+from .models import Product, Category, Like, Comment
 from django.http import JsonResponse, HttpResponseRedirect
 from .forms import CommentForm
 from django.views import View
@@ -71,7 +71,7 @@ class ProductDetailView(DetailView):
         context['similar_item'] = Product.objects.filter(category=self.object.category)
         context['like_count'] = self.object.likes.count()
         context['comment_form'] = CommentForm()
-        context['comments'] = self.object.comments.all()
+        context['comments'] = self.object.comments.filter(status='approved')
 
         return context
 
@@ -85,22 +85,30 @@ class ProductDetailView(DetailView):
     #     return redirect('accounts:verify_otp')
 
     def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         form = self.form_class(request.POST)
 
         if form.is_valid():
             comment = form.save(commit=False)
             comment.product = self.get_object()
             comment.author = self.request.user
+            if 'reply_to' in request.POST:
+                parent_comment_id = int(request.POST['reply_to'])
+                parent_comment = Comment.objects.get(id=parent_comment_id)
+                comment.reply = parent_comment
             comment.save()
 
-        # Handling like/dislike
+            # comment = form.save(commit=False)
+            # comment.product = self.get_object()
+            # comment.author = self.request.user
+            # comment.save()
+
         if 'like_action' in request.POST:
             product = self.get_object()
             like, created = Like.objects.get_or_create(user=self.request.user, product=product)
             like.toggle_like()
 
-        return redirect('accounts:verify_otp')
-
+        return redirect('products:details', slug=self.object.slug)
 
 
 class ProductLikeView(View):

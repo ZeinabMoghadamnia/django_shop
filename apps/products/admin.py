@@ -170,9 +170,9 @@ class BrandAdmin(ProductAdminPanelPermission, CustomExtraButtonsMixin, ButtonMix
 
 @admin.register(Comment)
 class CommentAdmin(ProductAdminPanelPermission, CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
-    list_display = ('id', 'context', 'author', 'product_id', 'created_at', 'updated_at', 'change_button', 'delete_button')
+    list_display = ('id', 'status', 'context', 'author', 'product_id', 'created_at', 'updated_at', 'change_button', 'delete_button')
     search_fields = ("author", "context", "product_id")
-    list_filter = ('product_id', 'author', 'is_active', 'is_deleted',)
+    list_filter = ('product_id', 'status', 'author', 'is_active', 'is_deleted',)
 
     def get_list_display(self, request):
         staff_groups = request.user.groups.values_list('name', flat=True)
@@ -181,7 +181,7 @@ class CommentAdmin(ProductAdminPanelPermission, CustomExtraButtonsMixin, ButtonM
         if is_superuser or (staff_type == 'manager'):
             return super().get_list_display(request)
         else:
-            return ('id', 'context', 'author', 'product_id', 'created_at', 'updated_at', 'show_button')
+            return ('id', 'status', 'context', 'author', 'product_id', 'created_at', 'updated_at', 'show_button')
 
     @link(href=None,
           change_list=False,
