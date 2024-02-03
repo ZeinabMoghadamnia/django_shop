@@ -70,19 +70,13 @@ class ProductDetailView(DetailView):
         context['item_images'] = self.object.image.all()
         context['similar_item'] = Product.objects.filter(category=self.object.category)
         context['like_count'] = self.object.likes.count()
+        context['user_has_liked'] = Like.objects.filter(user=self.request.user, product=self.object,
+                                                        is_liked=True).exists()
         context['comment_form'] = CommentForm()
         context['comments'] = self.object.comments.filter(status='approved')
 
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     form = self.form_class(request.POST)
-    #     if form.is_valid():
-    #         comment = form.save(commit=False)
-    #         comment.product = self.get_object()
-    #         comment.author = self.request.user
-    #         comment.save()
-    #     return redirect('accounts:verify_otp')
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -98,10 +92,6 @@ class ProductDetailView(DetailView):
                 comment.reply = parent_comment
             comment.save()
 
-            # comment = form.save(commit=False)
-            # comment.product = self.get_object()
-            # comment.author = self.request.user
-            # comment.save()
 
         if 'like_action' in request.POST:
             product = self.get_object()
@@ -109,6 +99,8 @@ class ProductDetailView(DetailView):
             like.toggle_like()
 
         return redirect('products:details', slug=self.object.slug)
+
+
 
 
 class ProductLikeView(View):

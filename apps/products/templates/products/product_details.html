@@ -32,19 +32,11 @@
                                      onclick="changeImage(this.src)">
                             </div>
                         {% endfor %}
+
                     </div>
+
                 </div>
-                {#                <div class="col-md-1 mb-3" data-cro-id="pdp-album-open">#}
-                {#                    {% for image in details.image.all %}#}
-                {#                        <div class="row">#}
-                {#                            <img class="img-fluid rounded my-3" src="{{ image.sub_image.url }}"#}
-                {#                                 alt="{{ details.name }}" width="100%" height="auto"#}
-                {#                                 onclick="changeImage(this.src)"#}
-                {#                            />#}
-                {##}
-                {#                        </div>#}
-                {#                    {% endfor %}#}
-                {#                </div>#}
+
 
                 <div class="col-md-3 col-sm-10 mb-3" data-cro-id="pdp-album-open">
                     {% for image in details.image.all %}
@@ -55,7 +47,7 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                <div class="col-md-5 text-end pe-md-5 pe-sm-3 mx-sm-4 d-flex flex-column justify-content-center">
+                <div class="col-md-3 text-end pe-md-2 pe-sm-3 mx-sm-4 d-flex flex-column justify-content-center pe-5">
                     <h1 class="display-5 mb-4 fw-bolder">{{ details.name }}</h1>
 
                     {% for line in description_lines %}
@@ -65,47 +57,60 @@
                         {% if not details.discounted_price %}
                             <div><span>{{ details.price }}</span></div>
                         {% else %}
-                            <div class="cancel-link"><del class="opacity-50"><span>{{ details.price }}</span></del></div>
+                            <div class="cancel-link">
+                                <del class="opacity-50"><span>{{ details.price }}</span></del>
+                            </div>
                             <div><span>{{ details.discounted_price }}</span></div>
                         {% endif %}
                     </div>
-                    {#                    <p class="lead">{{ details.description }}</p>#}
-                    <div class="row align-items-center mt-4">
-                        {#                        <form action="" method="post">#}
-                        <div class="col-4 col-md-4 col-xs-4 d-flex">
+                    {#--------------------------- like --------------------------------#}
 
-                            <button class="btn btn-link text-dark px-2"
-                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                    <div class="row mt-4">
 
-                            <input id="form1" min="0" name="quantity" value="1" type="number"
-                                   class="form-control form-control-sm w-100 h-100"/>
-
-                            <button class="btn btn-link text-dark px-2"
-                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                <i class="fas fa-minus"></i>
-                            </button>
+                        <div class="col-2 p-0 m-0 text-end">
+                            <div class="col">
+                                {% if user_has_liked %}
+                                    <img class="button h-auto like-button" id="like" data-product-id="{{ details.id }}"
+                                         style="width: 30px;" src="{% static 'images/like.png' %}" alt="like">
+                                {% else %}
+                                    <img class="button h-auto like-button" id="unlike"
+                                         data-product-id="{{ details.id }}"
+                                         style="width: 30px;" src="{% static 'images/unlike.png' %}" alt="unlike">
+                                {% endif %}
+                            </div>
                         </div>
-                        {#                            <div class="col col-md-8 me-5 p-0">#}
-                        <button class="col-7 col-md-5 col-sm-7 btn btn-outline-dark" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            اضافه کردن به سبد خرید
-                        </button>
-                        {#                            </div>#}
-                        {#                        </form>#}
-
+                        <div class="col-5 p-0 m-0 text-end mt-1" style="color: #8f8f8f"
+                             id="like-count">{{ like_count }}</div>
                     </div>
+                    {#--------------------------- like --------------------------------#}
+
                 </div>
-                {#--------------------------- like --------------------------------#}
-                <button class="col-1" id="like-button">{% if user_has_liked %}Unlike{% else %}Like{% endif %}</button>
 
-                <!-- Display the current like count -->
-                <p id="like-count">{{ like_count }}</p>
+                <div class="row d-flex justify-content-center align-items-end mt-4 ms-md-5 ps-md-0 ps-sm-4 pe-0">
+                    <div class="col-4 col-md-2 col-xs-4 d-flex pe-0">
 
+                        <button class="btn btn-link text-dark px-2"
+                                onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                            <i class="fas fa-plus"></i>
+                        </button>
 
-                {#--------------------------- like --------------------------------#}
+                        <input id="form1" min="0" name="quantity" value="1" type="number"
+                               class="form-control form-control-sm w-100 h-100"/>
+
+                        <button class="btn btn-link text-dark px-2"
+                                onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                    {#                            <div class="col col-md-8 me-5 p-0">#}
+                    <button class="col-6 col-md-2 col-sm-6 btn btn-outline-dark" type="submit">
+                        <i class="bi-cart-fill me-1"></i>
+                        اضافه کردن به سبد خرید
+                    </button>
+
+                </div>
             </div>
+
         </div>
         <div class="container text-center align-items-center" dir="rtl">
             <div class="row text-center align-items-center d-flex justify-content-center">
@@ -120,27 +125,6 @@
 
                             <div class="col-10 rounded-bottom py-3 px-5 text-center " style="background-color: #f5f5f5">
                                 {#-------------------------------------comments------------------------------------------#}
-                                {#                                {% for comment in comments %}#}
-                                {#                                    <div class="comment">#}
-                                {#                                        {{ comment.context }}#}
-                                {#                                        <button class="reply-button" data-comment-id="{{ comment.id }}">Reply</button>#}
-                                {#                                        <form id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;"#}
-                                {#                                              method="post" action="{% url 'products:details' slug=details.slug %}">#}
-                                {#                                            {% csrf_token %}#}
-                                {#                                            <input type="hidden" name="reply_to" value="{{ comment.id }}">#}
-                                {#                                            {{ comment_form.as_p }}#}
-                                {#                                            <button type="submit">Submit Reply</button>#}
-                                {#                                        </form>#}
-                                {#                                        {% if comment.replies.all %}#}
-                                {#                                            <div class="replies">#}
-                                {#                                                {% for reply in comment.replies.all %}#}
-                                {#                                                    <!-- Display replies similarly as comments -->#}
-                                {#                                                {% endfor %}#}
-                                {#                                            </div>#}
-                                {#                                        {% endif %}#}
-                                {#                                    </div>#}
-                                {#                                {% endfor %}#}
-
 
 
                                 {% for comment in comments %}
@@ -185,16 +169,16 @@
                                 {% endfor %}
                                 {#-------------------------------------comments------------------------------------------#}
                                 <div class="row justify-content-center text-end rounded">
-                                    <div class="col-12 col-md-8 col-sm-12 rounded py-3 px-5 text-center "
+                                    <div class="col-12 col-md-8 col-sm-12 rounded py-3 text-center "
                                          style="background-color: #f5f5f5">
-                                        <div class="">
-                                            <form class="col-12 col-md-12 col-sm-12" method="post">
+{#                                        <div class="">#}
+                                            <form class="col-12 col-md-12 col-sm-12 px-0" method="post">
                                                 {% csrf_token %}
                                                 <div class="bg-white rounded">{{ comment_form | crispy }}</div>
 
                                                 <button class="btn btn-dark" type="submit">ثبت نظر</button>
                                             </form>
-                                        </div>
+{#                                        </div>#}
                                     </div>
                                 </div>
                             </div>
@@ -214,7 +198,7 @@
                 {% for item in similar_item %}
                     <div class="col mb-5">
                         <div class="card h-100">
-                            {% for image in details.image.all %}
+                            {% for image in item.image.all %}
                                 {% if image.is_main %}
                                     <img class="card-img-top mb-5 mb-md-0 rounded w-100 h-100" id="mainImage"
                                          src="{{ image.sub_image.url }}"
@@ -272,24 +256,61 @@
 
 {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         $(document).ready(function () {
-            $("#like-button").on("click", function () {
+            function toggleLike() {
                 $.ajax({
-                    type: "POST",
-                    url: "{% url 'products:product_like' pk=details.pk %}",
+                    url: '{% url "products:product_like" pk=details.pk %}',
+                    type: 'POST',
                     data: {
                         'like_action': 'toggle',
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
                     },
                     success: function (data) {
-                        $("#like-button").text(data.is_liked ? 'Unlike' : 'Like');
-                        $("#like-count").text(data.like_count);
-                    }
+                        if (data.is_liked) {
+                            $('#like').attr('src', '{% static "images/like.png" %}');
+                        } else {
+                            $('#like').attr('src', '{% static "images/unlike.png" %}');
+                        }
+                        $('#like-count').text(data.like_count);
+                    },
                 });
+            }
+
+            $('#like').click(function () {
+                toggleLike();
+            });
+
+            $('#unlike').click(function () {
+                toggleLike();
             });
         });
     </script>
+    {#    <script>#}
+    {#        $(document).ready(function () {#}
+    {#            $("#like-button").on("click", function () {#}
+    {#                $.ajax({#}
+    {#                    type: "POST",#}
+    {#                    url: "{% url 'products:product_like' pk=details.pk %}",#}
+    {#                    data: {#}
+    {#                        'like_action': 'toggle',#}
+    {#                        'csrfmiddlewaretoken': '{{ csrf_token }}'#}
+    {#                    },#}
+    {#                    success: function (data) {#}
+    {#                        if (data.user_has_liked) {#}
+    {#                            $("#like").attr("src", "{% static 'images/like.png' %}");#}
+    {#                        } else {#}
+    {#                            $("#like").attr("src", "{% static 'images/unlike.png' %}");#}
+    {#                        }#}
+    {##}
+    {#$("#like-button").text(data.is_liked ? 'Unlike' : 'Like');#}
+    {#                        $("#like-count").text(data.like_count);#}
+    {#                    }#}
+    {#                });#}
+    {#            });#}
+    {#        });#}
+    {#    </script>#}
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
