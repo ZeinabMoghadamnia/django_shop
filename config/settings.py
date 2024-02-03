@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import environ
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -195,3 +196,68 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Tehran'
+
+#
+# # Mode handling
+# if DEBUG:
+#     STATICFILES_DIRS = [
+#         BASE_DIR / 'static'
+#     ]
+#
+#     # Cache
+#     CACHES = {
+#         "default": {
+#             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+#         }
+#     }
+#
+#     # Email
+#     EMAIL_USE_TLS = False
+#     EMAIL_HOST = "localhost"
+#     EMAIL_HOST_USER = ""
+#     EMAIL_HOST_PASSWORD = ""
+#     EMAIL_PORT = 25
+#
+#     # Database
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+#     }
+#
+# else:
+#     STATIC_ROOT = BASE_DIR / 'static'
+#
+#     REDIS_HOST = config("REDIS_HOST")
+#     REDIS_PORT = config("REDIS_PORT")
+#     REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+#
+#     # Cache Services:
+#     CACHES = {
+#         "default": {
+#             "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#             "LOCATION": REDIS_URL,
+#         }
+#     }
+#
+#     # Email settings
+#     EMAIL_HOST = config("EMAIL_HOST")
+#     EMAIL_PORT = config("EMAIL_PORT")
+#     EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+#     EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+#     EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+#     EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
+#     DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+#
+#     # Production postgresql db :
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": config("DB_NAME"),
+#             "USER": config("DB_USER"),
+#             "PASSWORD": config("DB_PASSWORD"),
+#             "HOST": config("DB_HOST"),
+#             "PORT": config("DB_PORT"),
+#         },
+#     }
