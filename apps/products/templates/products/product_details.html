@@ -22,7 +22,7 @@
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5" dir="rtl">
             <div class="row text-center align-items-center d-flex justify-content-center">
-                <div class="col-md-2"></div>
+                <div class="col-md-2 me-md-5"></div>
                 <div class="col-md-1 col-sm-12">
                     <div class="row">
                         {% for image in details.image.all %}
@@ -86,27 +86,39 @@
 
                 </div>
 
-                <div class="row d-flex justify-content-center align-items-end mt-4 ms-md-5 ps-md-0 ps-sm-4 pe-0">
+                <div class="row d-flex justify-content-center align-items-end mt-4 ps-md-0 ps-sm-4 pe-0">
                     <div class="col-4 col-md-2 col-xs-4 d-flex pe-0">
+                        {% if details.quantity > 0 %}
+                            <button class="btn btn-link text-dark px-2"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                <i class="fas fa-plus"></i>
+                            </button>
 
-                        <button class="btn btn-link text-dark px-2"
-                                onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                            <i class="fas fa-plus"></i>
-                        </button>
+                            <input id="form1" min="0" name="quantity" value="1" type="number"
+                                   class="form-control form-control-sm w-100 h-100"/>
 
-                        <input id="form1" min="0" name="quantity" value="1" type="number"
-                               class="form-control form-control-sm w-100 h-100"/>
+                            <button class="btn btn-link text-dark px-2"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            </div>
+                            {#                            <div class="col col-md-8 me-5 p-0">#}
 
-                        <button class="btn btn-link text-dark px-2"
-                                onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                    {#                            <div class="col col-md-8 me-5 p-0">#}
-                    <button class="col-6 col-md-2 col-sm-6 btn btn-outline-dark" type="submit">
-                        <i class="bi-cart-fill me-1"></i>
-                        اضافه کردن به سبد خرید
-                    </button>
+{#                            <button class="col-6 col-md-2 col-sm-6 btn btn-outline-dark" type="submit"#}
+{#                                    href="{% url 'orders:add_to_cart' %}">#}
+{#                                اضافه کردن به سبد خرید#}
+{#                            </button>#}
+{#                            #}
+                            <button class="col-6 col-md-2 col-sm-6 btn btn-outline-dark" type="submit"
+                                    formmethod="post" onclick="add_to_cart(event, this)" >
+                                اضافه کردن به سبد خرید
+                            </button>
+
+                        {% else %}
+                            <button class="col btn btn-outline-secondary mb-3 mx-0" disabled type="submit">
+                                در انبار موجود نیست
+                            </button>
+                        {% endif %}
 
                 </div>
             </div>
@@ -171,14 +183,14 @@
                                 <div class="row justify-content-center text-end rounded">
                                     <div class="col-12 col-md-8 col-sm-12 rounded py-3 text-center "
                                          style="background-color: #f5f5f5">
-{#                                        <div class="">#}
-                                            <form class="col-12 col-md-12 col-sm-12 px-0" method="post">
-                                                {% csrf_token %}
-                                                <div class="bg-white rounded">{{ comment_form | crispy }}</div>
+                                        {#                                        <div class="">#}
+                                        <form class="col-12 col-md-12 col-sm-12 px-0" method="post">
+                                            {% csrf_token %}
+                                            <div class="bg-white rounded">{{ comment_form | crispy }}</div>
 
-                                                <button class="btn btn-dark" type="submit">ثبت نظر</button>
-                                            </form>
-{#                                        </div>#}
+                                            <button class="btn btn-dark" type="submit">ثبت نظر</button>
+                                        </form>
+                                        {#                                        </div>#}
                                     </div>
                                 </div>
                             </div>
@@ -225,9 +237,13 @@
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto"
-                                                            href="{% url 'products:details' slug=item.slug %}">اضافه
-                                    کردن به سبد خرید</a></div>
+                                <div class="text-center">
+                                    <a href="{% url 'products:details' slug=item.slug %}">
+                                        <button class="btn btn-outline-dark mt-auto">
+                                            اضافه کردن به سبد خرید
+                                        </button>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -256,7 +272,7 @@
 
 {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    {# ------------------------------like---------------------------------- #}
     <script>
         $(document).ready(function () {
             function toggleLike() {
@@ -278,39 +294,18 @@
                 });
             }
 
-            $('#like').click(function () {
+            // Use event delegation for dynamically added elements
+            $(document).on('click', '#like', function () {
                 toggleLike();
             });
 
-            $('#unlike').click(function () {
+            $(document).on('click', '#unlike', function () {
                 toggleLike();
             });
         });
     </script>
-    {#    <script>#}
-    {#        $(document).ready(function () {#}
-    {#            $("#like-button").on("click", function () {#}
-    {#                $.ajax({#}
-    {#                    type: "POST",#}
-    {#                    url: "{% url 'products:product_like' pk=details.pk %}",#}
-    {#                    data: {#}
-    {#                        'like_action': 'toggle',#}
-    {#                        'csrfmiddlewaretoken': '{{ csrf_token }}'#}
-    {#                    },#}
-    {#                    success: function (data) {#}
-    {#                        if (data.user_has_liked) {#}
-    {#                            $("#like").attr("src", "{% static 'images/like.png' %}");#}
-    {#                        } else {#}
-    {#                            $("#like").attr("src", "{% static 'images/unlike.png' %}");#}
-    {#                        }#}
-    {##}
-    {#$("#like-button").text(data.is_liked ? 'Unlike' : 'Like');#}
-    {#                        $("#like-count").text(data.like_count);#}
-    {#                    }#}
-    {#                });#}
-    {#            });#}
-    {#        });#}
-    {#    </script>#}
+    {# ------------------------------like---------------------------------- #}
+    {# ------------------------------reply---------------------------------- #}
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -329,4 +324,36 @@
             }
         });
     </script>
+    {# ------------------------------reply---------------------------------- #}
+    {# ------------------------------cart---------------------------------- #}
+    <script>
+
+        async function add_to_cart(event, el) {
+            event.preventDefault()
+
+            const response = await fetch("/api/v1/cart/add_to_cart/", {
+                method: el.formMethod,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    pk: "{{ object.pk }}",
+                    name: "{{ object.name }}",
+                    price: {{ object.price }},
+                    discounted_price: document.getElementById('price').innerHTML,
+                })
+            })
+
+            if (response.status === 200){
+                alert("کالا به سبد خرید اضافه شد.")
+            } else if (response.status === 406) {
+               alert("این کالا  موجود نیست")
+            } else {
+               alert("در پروسه ثبت خرید مشکلی رخ داده است.")
+            }
+        }
+        </script>
+
+    {# ------------------------------cart---------------------------------- #}
+
 {% endblock %}

@@ -51,7 +51,6 @@ INSTALLED_APPS = [
 
     # drf and otp
     'rest_framework',
-    # 'otp_api',
 
     # translation
     'modeltranslation',

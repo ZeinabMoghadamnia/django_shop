@@ -32,7 +32,7 @@ class Order(BaseModel):
     total_price = models.PositiveIntegerField(verbose_name=_('total price'))
     discounted_total_price = models.PositiveIntegerField(verbose_name=_('discounted total price'))
     is_paid = models.BooleanField(default=False)
-    address = models.CharField(max_length=100, verbose_name=_('address'))
+    address = models.TextField(verbose_name=_('address'))
     class Meta:
         verbose_name_plural = _('order')
 
