@@ -169,48 +169,48 @@
                             <li class="col-4 cart-dropdown nav-item dropdown mx-2">
                                 <div class="btn-group">
                                     <button type="button" class="btn border-0 bg-transparent"
-                                    ><a href="#">سبد خرید</a>
+                                    ><a href="{% url 'orders:cart' %}">سبد خرید</a>
                                     </button>
-                                    <button type="button"
-                                            class="btn bg-transparent dropdown-toggle dropdown-toggle-split border-0"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="visually-hidden">Toggle Dropdown</span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-end rounded p-3">
-                                        <h4 class="d-flex justify-content-between align-items-start mb-3">
-                                            <span class="text-dark">سبد خرید</span>
-                                            <span class="badge bg-dark rounded-pill">2</span>
-                                        </h4>
-                                        <ul class="list-group mb-3">
-                                            <li class="list-group-item bg-transparent border-dark d-flex justify-content-between lh-sm">
-                                                <div>
-                                                    <h5 class="card-title fs-3 text-capitalize">
-                                                        <a href="single-product.html">Matt Black</a>
-                                                    </h5>
-                                                    <small class="text-body-secondary">Soft texture matt coated.</small>
-                                                </div>
-                                                <span class="text-primary">$120</span>
-                                            </li>
-                                            <li class="list-group-item bg-transparent border-dark d-flex justify-content-between lh-sm">
-                                                <div>
-                                                    <h5 class="card-title fs-3 text-capitalize">
-                                                        <a href="single-product.html">Shiny Pot</a>
-                                                    </h5>
-                                                    <small class="text-body-secondary">This pot is ceramic.</small>
-                                                </div>
-                                                <span class="text-primary">$870</span>
-                                            </li>
-                                            <li class="list-group-item bg-transparent border-dark d-flex justify-content-between">
-                                                <span class="text-uppercase"><b>Total (USD)</b></span>
-                                                <strong>$990</strong>
-                                            </li>
-
-                                        </ul>
-                                        <div class="d-flex flex-wrap justify-content-center">
-                                            <a class="w-100 btn btn-dark mb-1" type="submit">View Cart</a>
-                                            <a class="w-100 btn btn-primary" type="submit">Go to checkout</a>
-                                        </div>
-                                    </div>
+{#                                    <button type="button"#}
+{#                                            class="btn bg-transparent dropdown-toggle dropdown-toggle-split border-0"#}
+{#                                            data-bs-toggle="dropdown" aria-expanded="false">#}
+{#                                        <span class="visually-hidden">Toggle Dropdown</span>#}
+{#                                    </button>#}
+{#                                    <div class="dropdown-menu dropdown-menu-end rounded p-3">#}
+{#                                        <h4 class="d-flex justify-content-between align-items-start mb-3">#}
+{#                                            <span class="text-dark">سبد خرید</span>#}
+{#                                            <span class="badge bg-dark rounded-pill">2</span>#}
+{#                                        </h4>#}
+{#                                        <ul class="list-group mb-3">#}
+{#                                            <li class="list-group-item bg-transparent border-dark d-flex justify-content-between lh-sm">#}
+{#                                                <div>#}
+{#                                                    <h5 class="card-title fs-3 text-capitalize">#}
+{#                                                        <a href="single-product.html">Matt Black</a>#}
+{#                                                    </h5>#}
+{#                                                    <small class="text-body-secondary">Soft texture matt coated.</small>#}
+{#                                                </div>#}
+{#                                                <span class="text-primary">$120</span>#}
+{#                                            </li>#}
+{#                                            <li class="list-group-item bg-transparent border-dark d-flex justify-content-between lh-sm">#}
+{#                                                <div>#}
+{#                                                    <h5 class="card-title fs-3 text-capitalize">#}
+{#                                                        <a href="single-product.html">Shiny Pot</a>#}
+{#                                                    </h5>#}
+{#                                                    <small class="text-body-secondary">This pot is ceramic.</small>#}
+{#                                                </div>#}
+{#                                                <span class="text-primary">$870</span>#}
+{#                                            </li>#}
+{#                                            <li class="list-group-item bg-transparent border-dark d-flex justify-content-between">#}
+{#                                                <span class="text-uppercase"><b>Total (USD)</b></span>#}
+{#                                                <strong>$990</strong>#}
+{#                                            </li>#}
+{##}
+{#                                        </ul>#}
+{#                                        <div class="d-flex flex-wrap justify-content-center">#}
+{#                                            <a class="w-100 btn btn-dark mb-1" type="submit">View Cart</a>#}
+{#                                            <a class="w-100 btn btn-primary" type="submit">Go to checkout</a>#}
+{#                                        </div>#}
+{#                                    </div>#}
 
                                 </div>
                             </li>

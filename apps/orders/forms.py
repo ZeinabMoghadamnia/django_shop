@@ -4,5 +4,6 @@ class AddressSelectionForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super(AddressSelectionForm, self).__init__(*args, **kwargs)
         addresses = Address.objects.filter(user=user)
-        choices = [(address.id, address.complete_address) for address in addresses]
-        self.fields['address'] = forms.ChoiceField(choices=choices, widget=forms.RadioSelect)
+        choices = [(address.id, f"{address.province} - {address.city} - {address.complete_address}.") for address in addresses]
+        self.fields['address'] = forms.ChoiceField(choices=choices, widget=forms.RadioSelect, label='لطفا یک آدرس را انتخاب کنید:')
+

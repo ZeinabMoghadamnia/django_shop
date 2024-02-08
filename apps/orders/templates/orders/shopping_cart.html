@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block title %}
+    سبد خرید
+{% endblock %}
 {% block content %}
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5 " dir="rtl">
@@ -18,20 +23,22 @@
                     <!-- Items will be dynamically added here -->
                     </tbody>
                 </table>
-{#                <div class="row" style="background-color: #e3d9d4">lll</div>#}
-{#                <div class="row align-items-center py-5 text-center d-flex justify-content-center" style="background-color: #eee1e1;">#}
-                <div class="row align-items-center text-center d-flex justify-content-center rounded-bottom-5 mt-0 py-5" style="background-color: #e5cfcf;">
+                {#                <div class="row" style="background-color: #e3d9d4">lll</div>#}
+                {#                <div class="row align-items-center py-5 text-center d-flex justify-content-center" style="background-color: #eee1e1;">#}
+                <div class="row align-items-center text-center d-flex justify-content-center rounded-bottom-5 mt-0 py-5"
+                     style="background-color: #e5cfcf;">
                     <div class="col-3 align-items-center">
-                        <h2 class="text-white text-start">قیمت نهایی:</h2>
+                        <h4 class="text-white text-start">قیمت نهایی:</h4>
                     </div>
                     <div class="col-4 align-items-center">
-                        <h4 class="text-end text-white align-items-center mt-2"><span class="align-items-center" id="total-price"></span></h4>
+                        <h4 class="text-end text-white align-items-center mt-2"><span class="align-items-center"
+                                                                                      id="total-price"></span></h4>
                     </div>
                     <div class="col align-items-center text-center">
-                        <button class="btn rounded bg-white">ثبت سفارش</button>
+                        <a class="btn rounded bg-white" href="{% url 'orders:select_address' %}">ثبت سفارش</a>
                     </div>
                 </div>
-{#                </div>#}
+                {#                </div>#}
             </div>
         </div>
     </section>
@@ -69,128 +76,147 @@
     {#    </script>#}
 
 
-<script>
-     var shoppingCart = {{ shopping_cart|safe }};
+    <script>
+        var shoppingCart = {{ shopping_cart|safe }};
 
-    function populateCartTable() {
-        var cartItems = document.getElementById('cart-items');
-        cartItems.innerHTML = '';
-        var totalPrice = 0; // Initialize total price
-        shoppingCart.forEach(function (item) {
-            var row = document.createElement('tr');
-            var itemTotalPrice = item.quantity * item.price; // Calculate total price for this item
-            totalPrice += itemTotalPrice; // Add this item's total price to the overall total
-            row.innerHTML = '<td>' + item.name + '</td>' +
-                '<td class="quantity-cell">' +
-                '<button class="btn btn-link text-dark px-2 increase-btn" onclick="incrementQuantity(' + item.product_id + ')"><i class="fas fa-plus"></i></button>' +
-                '<input id="quantity_' + item.product_id + '" min="0" max="' + item.max_quantity + '" name="quantity" value="' + item.quantity + '" type="number" class="form-control form-control-sm w-30 quantity-input" onchange="updateQuantityInCookies(' + item.product_id + ', this.value)"/>' +
-                '<button class="btn btn-link text-dark px-2 decrease-btn" onclick="decrementQuantity(' + item.product_id + ')"><i class="fas fa-minus"></i></button>' +
-                '</td>' +
-                '<td>' + item.price + '</td>' +
-                '<td>' + itemTotalPrice + '</td>' + // Display total price for this item
-                '<td><button class="col-2 btn p-1 rounded" style="color: darkred; border-color: darkred;" onclick="deleteItem(' + item.product_id + ')">حذف</button></td>';
-            cartItems.appendChild(row);
-        });
-        document.getElementById('total-price').innerHTML = totalPrice; // Display overall total price
-    }
+        function populateCartTable() {
+            var cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            var totalPrice = 0;
+            shoppingCart.forEach(function (item) {
+                var row = document.createElement('tr');
+                var itemTotalPrice = item.quantity * item.price;
+                totalPrice += itemTotalPrice;
+                row.innerHTML = '<td>' + item.name + '</td>' +
+                    '<td class="quantity-cell">' +
+                    '<button class="btn btn-link text-dark px-2 increase-btn" onclick="incrementQuantity(' + item.product_id + ')"><i class="fas fa-plus"></i></button>' +
+                    '<input id="quantity_' + item.product_id + '" min="0" max="' + item.max_quantity + '" name="quantity" value="' + item.quantity + '" type="number" class="form-control form-control-sm w-30 quantity-input" onchange="updateQuantityInCookies(' + item.product_id + ', this.value)"/>' +
+                    '<button class="btn btn-link text-dark px-2 decrease-btn" onclick="decrementQuantity(' + item.product_id + ')"><i class="fas fa-minus"></i></button>' +
+                    '</td>' +
+                    '<td>' + item.price + '</td>' +
+                    '<td id="item-total-price_' + item.product_id + '">' + itemTotalPrice + '</td>' +
+                    '<td><button class="col-2 btn p-1 rounded" style="color: #b36a60; border-color: #b36a60;" onclick="deleteItem(' + item.product_id + ')">حذف</button></td>';
+                cartItems.appendChild(row);
+            });
+            document.getElementById('total-price').innerHTML = totalPrice;
 
-
-    function incrementQuantity(productId) {
-        var input = document.getElementById('quantity_' + productId);
-        input.stepUp();
-        updateQuantityInCookies(productId, input.value);
-    }
-
-    function decrementQuantity(productId) {
-        var input = document.getElementById('quantity_' + productId);
-        input.stepDown();
-        updateQuantityInCookies(productId, input.value);
-    }
-
-    function updateQuantityInCookies(productId, quantity) {
-        var updatedCart = shoppingCart.map(function (item) {
-            if (item.product_id === productId) {
-                return {...item, quantity: parseInt(quantity)};
-            }
-            return item;
-        });
-        setCookie('shopping_cart', JSON.stringify(updatedCart), 30);
-    }
-
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
         }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
 
-    populateCartTable();
 
-    function deleteItem(itemId) {
-        var indexToDelete = shoppingCart.findIndex(item => item.product_id === itemId);
-        if (indexToDelete !== -1) {
-            var deletedItem = shoppingCart.splice(indexToDelete, 1)[0];
-            // Repopulate the table
-            populateCartTable();
+        function incrementQuantity(productId) {
+            var input = document.getElementById('quantity_' + productId);
+            input.stepUp();
+            updateQuantityInCookies(productId, input.value);
+        }
 
-            fetch('/orders/cart/delete/', {
-                method: 'POST',
-                body: JSON.stringify({product_id: itemId}),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
+        function decrementQuantity(productId) {
+            var input = document.getElementById('quantity_' + productId);
+            input.stepDown();
+            updateQuantityInCookies(productId, input.value);
+        }
+
+        function updateQuantityInCookies(productId, quantity) {
+            var updatedCart = shoppingCart.map(function (item) {
+                if (item.product_id === productId) {
+                    return {...item, quantity: parseInt(quantity)};
                 }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        console.error('Failed to delete item');
-                        shoppingCart.push(deletedItem);
-                        populateCartTable();
+                return item;
+            });
+            setCookie('shopping_cart', JSON.stringify(updatedCart), 30);
+
+            // Update item total price in the table
+            var itemIndex = updatedCart.findIndex(item => item.product_id === productId);
+            if (itemIndex !== -1) {
+                var updatedItem = updatedCart[itemIndex];
+                var itemTotalPrice = updatedItem.quantity * updatedItem.price;
+                document.getElementById('total-price').innerHTML = calculateTotalPrice(updatedCart);
+                document.getElementById('quantity_' + productId).value = updatedItem.quantity;
+                document.getElementById('item-total-price_' + productId).innerHTML = itemTotalPrice;
+            }
+        }
+
+        function calculateTotalPrice(cart) {
+            var totalPrice = 0;
+            cart.forEach(function (item) {
+                totalPrice += item.quantity * item.price;
+            });
+            return totalPrice;
+        }
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        populateCartTable();
+
+        function deleteItem(itemId) {
+            var indexToDelete = shoppingCart.findIndex(item => item.product_id === itemId);
+            if (indexToDelete !== -1) {
+                var deletedItem = shoppingCart.splice(indexToDelete, 1)[0];
+                // Repopulate the table
+                populateCartTable();
+
+                fetch('/orders/cart/delete/', {
+                    method: 'POST',
+                    body: JSON.stringify({product_id: itemId}),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    shoppingCart.push(deletedItem);
-                    populateCartTable();
-                });
-        }
-    }
-
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error('Failed to delete item');
+                            shoppingCart.push(deletedItem);
+                            populateCartTable();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        shoppingCart.push(deletedItem);
+                        populateCartTable();
+                    });
             }
         }
-        return cookieValue;
-    }
-</script>
 
-<style>
-    .quantity-cell {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 
-    .quantity-input {
-        width: 50px;
-        margin: 0 5px;
-    }
+    <style>
+        .quantity-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .increase-btn,
-    .decrease-btn {
-        margin: 0;
-        padding: 0;
-    }
-</style>
+        .quantity-input {
+            width: 50px;
+            margin: 0 5px;
+        }
+
+        .increase-btn,
+        .decrease-btn {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 {% endblock %}

@@ -69,7 +69,7 @@ class ProductDetailView(DetailView):
         context['item_images'] = self.object.image.all()
         context['similar_item'] = Product.objects.filter(category=self.object.category)
         context['like_count'] = self.object.likes.count()
-        context['user_has_liked'] = Like.objects.filter(user=self.request.user, product=self.object,
+        context['user_has_liked'] = Like.objects.filter(user=self.request.user.pk, product=self.object,
                                                         is_liked=True).exists()
         context['comment_form'] = CommentForm()
         context['comments'] = self.object.comments.filter(status='approved')
