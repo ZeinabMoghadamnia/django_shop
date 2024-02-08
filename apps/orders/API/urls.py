@@ -1,7 +1,8 @@
 from django.urls import path
-from django_shop.apps.orders.API.views import AddToCartView
+from .views import AddToCartView, ShoppingCartView, DeleteFromCartView
 
-app_name = 'orders'
+app_name = 'cart'
 urlpatterns = [
     path('cart/add/', AddToCartView.as_view(), name='add_to_cart'),
+    path('cart/delete/', DeleteFromCartView.as_view(), name='delete_item'),
 ]

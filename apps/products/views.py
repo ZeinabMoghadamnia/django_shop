@@ -50,7 +50,7 @@ class ProductListView(ListView):
     template_name = 'products/products.html'
     context_object_name = 'products'
     queryset = Product.objects.prefetch_related('image')
-    paginate_by = 1
+    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

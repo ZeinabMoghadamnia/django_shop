@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block content %}
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5 " dir="rtl">
+            <div class="row text-center align-items-center d-flex justify-content-center ">
+                <h2 class="mt-5 rounded-top-5 text-white p-2 mb-0" style="background-color: #e5cfcf">سبد خرید</h2>
+                <table class="table table-striped my-0">
+                    <thead>
+                    <tr>
+                        <th>محصول</th>
+                        <th>تعداد</th>
+                        <th>قیمت</th>
+                        <th>قیمت کل</th>
+                        <th class="col-3">حذف</th>
+                    </tr>
+                    </thead>
+                    <tbody id="cart-items">
+                    <!-- Items will be dynamically added here -->
+                    </tbody>
+                </table>
+{#                <div class="row" style="background-color: #e3d9d4">lll</div>#}
+{#                <div class="row align-items-center py-5 text-center d-flex justify-content-center" style="background-color: #eee1e1;">#}
+                <div class="row align-items-center text-center d-flex justify-content-center rounded-bottom-5 mt-0 py-5" style="background-color: #e5cfcf;">
+                    <div class="col-3 align-items-center">
+                        <h2 class="text-white text-start">قیمت نهایی:</h2>
+                    </div>
+                    <div class="col-4 align-items-center">
+                        <h4 class="text-end text-white align-items-center mt-2"><span class="align-items-center" id="total-price"></span></h4>
+                    </div>
+                    <div class="col align-items-center text-center">
+                        <button class="btn rounded bg-white">ثبت سفارش</button>
+                    </div>
+                </div>
+{#                </div>#}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block scripts %}
+
+
+    {#    <script>#}
+    {#        // Get shopping cart data from Django template#}
+    {#        var shoppingCart = {{ shopping_cart|safe }};#}
+    {##}
+    {#        // Function to dynamically populate table with shopping cart data#}
+    {#        function populateCartTable() {#}
+    {#            var cartItems = document.getElementById('cart-items');#}
+    {#            cartItems.innerHTML = ''; // Clear existing data#}
+    {##}
+    {#            shoppingCart.forEach(function (item) {#}
+    {#                var row = document.createElement('tr');#}
+    {#                row.innerHTML = '<td>' + item.name + '</td>' +#}
+    {#                    '<td>' + item.quantity + '</td>' +#}
+    {#                    '<td>' + item.price + '</td>' +#}
+    {#                    '<td><button class="btn bg-danger-subtle text-secondary rounded" onclick="deleteItem(\'' + item.id + '\')">حذف</button></td>';#}
+    {#                cartItems.appendChild(row);#}
+    {#            });#}
+    {#        }#}
+    {##}
+    {#        // Call the function to populate table on page load#}
+    {#        populateCartTable();#}
+    {##}
+    {#        // Function to delete an item from the shopping cart#}
+    {#        function deleteItem(itemId) {#}
+    {#            // Implement delete functionality here#}
+    {#            console.log("Delete item with ID:", itemId);#}
+    {#        }#}
+    {#    </script>#}
+
+
+<script>
+     var shoppingCart = {{ shopping_cart|safe }};
+
+    function populateCartTable() {
+        var cartItems = document.getElementById('cart-items');
+        cartItems.innerHTML = '';
+        var totalPrice = 0; // Initialize total price
+        shoppingCart.forEach(function (item) {
+            var row = document.createElement('tr');
+            var itemTotalPrice = item.quantity * item.price; // Calculate total price for this item
+            totalPrice += itemTotalPrice; // Add this item's total price to the overall total
+            row.innerHTML = '<td>' + item.name + '</td>' +
+                '<td class="quantity-cell">' +
+                '<button class="btn btn-link text-dark px-2 increase-btn" onclick="incrementQuantity(' + item.product_id + ')"><i class="fas fa-plus"></i></button>' +
+                '<input id="quantity_' + item.product_id + '" min="0" max="' + item.max_quantity + '" name="quantity" value="' + item.quantity + '" type="number" class="form-control form-control-sm w-30 quantity-input" onchange="updateQuantityInCookies(' + item.product_id + ', this.value)"/>' +
+                '<button class="btn btn-link text-dark px-2 decrease-btn" onclick="decrementQuantity(' + item.product_id + ')"><i class="fas fa-minus"></i></button>' +
+                '</td>' +
+                '<td>' + item.price + '</td>' +
+                '<td>' + itemTotalPrice + '</td>' + // Display total price for this item
+                '<td><button class="col-2 btn p-1 rounded" style="color: darkred; border-color: darkred;" onclick="deleteItem(' + item.product_id + ')">حذف</button></td>';
+            cartItems.appendChild(row);
+        });
+        document.getElementById('total-price').innerHTML = totalPrice; // Display overall total price
+    }
+
+
+    function incrementQuantity(productId) {
+        var input = document.getElementById('quantity_' + productId);
+        input.stepUp();
+        updateQuantityInCookies(productId, input.value);
+    }
+
+    function decrementQuantity(productId) {
+        var input = document.getElementById('quantity_' + productId);
+        input.stepDown();
+        updateQuantityInCookies(productId, input.value);
+    }
+
+    function updateQuantityInCookies(productId, quantity) {
+        var updatedCart = shoppingCart.map(function (item) {
+            if (item.product_id === productId) {
+                return {...item, quantity: parseInt(quantity)};
+            }
+            return item;
+        });
+        setCookie('shopping_cart', JSON.stringify(updatedCart), 30);
+    }
+
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    populateCartTable();
+
+    function deleteItem(itemId) {
+        var indexToDelete = shoppingCart.findIndex(item => item.product_id === itemId);
+        if (indexToDelete !== -1) {
+            var deletedItem = shoppingCart.splice(indexToDelete, 1)[0];
+            // Repopulate the table
+            populateCartTable();
+
+            fetch('/orders/cart/delete/', {
+                method: 'POST',
+                body: JSON.stringify({product_id: itemId}),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to delete item');
+                        shoppingCart.push(deletedItem);
+                        populateCartTable();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    shoppingCart.push(deletedItem);
+                    populateCartTable();
+                });
+        }
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<style>
+    .quantity-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quantity-input {
+        width: 50px;
+        margin: 0 5px;
+    }
+
+    .increase-btn,
+    .decrease-btn {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+{% endblock %}
