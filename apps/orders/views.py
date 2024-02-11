@@ -74,22 +74,4 @@ class SaveOrderView(View):
 
         return render(request, 'orders/success.html')
 
-class CustomerPanelView(DetailView):
-    template_name = "orders/panel.html"
-    context_object_name = "users"
-    model = User
-
-    def get_object(self, queryset=None):
-        user_email = self.kwargs.get('email')
-        user = get_object_or_404(User, email=user_email)
-        order = Order.objects.filter(user=user).first()
-        return order
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.get_object().user
-        context['user'] = user
-        context['orders'] = Order.objects.filter(user=user)
-        return context
-
 

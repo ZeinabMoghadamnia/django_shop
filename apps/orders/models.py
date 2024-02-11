@@ -19,10 +19,17 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class Order(BaseModel):
+    ORDER_STATUS = (
+        ('processing', 'در حال پردازش'),
+        ('delivered', 'ارسال شده'),
+        ('cancelled', 'لغو شده'),
+        ('returned', 'بازگردانده شده'),
+    )
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='order', verbose_name=_('user'))
     total_price = models.PositiveIntegerField(verbose_name=_('total price'))
     discounted_total_price = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('discounted total price'))
-    is_paid = models.BooleanField(default=False)
+    status = models.CharField(choices=ORDER_STATUS, max_length=15, default='processing', verbose_name=_('order status'))
+    is_paid = models.BooleanField(default=False, verbose_name=_('payment status'))
     address = models.TextField(verbose_name=_('address'))
     class Meta:
         verbose_name_plural = _('order')

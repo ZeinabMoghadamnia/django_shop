@@ -10,8 +10,9 @@ from django.utils.html import mark_safe, format_html
 
 @admin.register(Order)
 class OrderAdmin(AccountsAdminPanelPermission, CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin):
-    list_display = ('id', 'total_price', 'discounted_total_price', 'is_paid', 'change_button', 'delete_button')
-    list_filter = ('is_paid',)
+    list_display = ('id', 'user', 'total_price', 'discounted_total_price', 'status', 'is_paid', 'change_button', 'delete_button')
+    list_filter = ('is_paid', 'status',)
+    search_fields = ('user', 'user__phone', 'user__first_name', 'user__last_name', 'order')
 
     # @link(href=None,
     #       change_list=False,
