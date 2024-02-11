@@ -3,7 +3,7 @@ from .views import SelectAddressView, SaveOrderView
 from .API.views import ShoppingCartView
 
 
-# from django_shop.apps.orders.API.ApiView import AddToCartView
+# from django_shop.apps.orders.i.ApiView import AddToCartView
 
 app_name = 'orders'
 urlpatterns = [
