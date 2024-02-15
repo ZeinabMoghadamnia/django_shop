@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+<!-- otp_form.html -->
+{% block content %}
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5 " dir="rtl">
+            <div class="row text-center align-items-center d-flex justify-content-center ">
+
+
+                <h1>Address List</h1>
+                <div id="address-list">
+                    {% for address in addresses %}
+                        <li>{{ address.province }}</li>
+                        <li>{{ address.city }}</li>
+                        <li>{{ address.complete_address }}</li>
+                        <!-- Add more fields as needed -->
+                        <br>
+                        {% empty %}
+                        <p>No addresses found.</p>
+                    {% endfor %}
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // Function to fetch and display address data
+        function fetchAddresses() {
+            fetch('{% url 'accounts:panel:address-list' %}') // Assuming this URL corresponds to your Django view
+                .then(response => response.json())
+                .then(data => {
+                    const addressListDiv = document.getElementById('address-list');
+                    addressListDiv.innerHTML = ''; // Clear previous data
+
+                    data.order_data.forEach(address => {
+                        const addressDiv = document.createElement('div');
+                        addressDiv.innerHTML = `
+                            <p><strong>Street:</strong> ${address.province}</p>
+                            <p><strong>City:</strong> ${address.city}</p>
+                            <p><strong>State:</strong> ${address.complete_address}</p>
+                            <!-- Add other address fields as needed -->
+                            <hr>
+                        `;
+                        addressListDiv.appendChild(addressDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching address data:', error);
+                });
+        }
+
+        // Call the fetchAddresses function when the page loads
+        window.onload = fetchAddresses;
+    </script>
+{% endblock %}

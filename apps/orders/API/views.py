@@ -82,41 +82,6 @@ class ShoppingCartView(APIView):
         return render(request, 'orders/select_address.html', {'form': form})
 
 
-# class AddToCartView(APIView):
-#     serializer_class = AddToCartSerializer
-#     permission_classes = [AllowAny]
-#     list_cart = []
-#
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.serializer_class(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#
-#         product_id = serializer.validated_data.get('product_id')
-#         # quantity = serializer.validated_data.get('order_quantity')
-#         quantity = 1
-#         name = serializer.validated_data.get('name')
-#         price = serializer.validated_data.get('price')
-#         discounted_price = serializer.validated_data.get('discounted_price')
-#
-#         product = Product.objects.get(id=product_id)
-#         if product.quantity >= 0:
-#             price = discounted_price if discounted_price is not None else price
-#             # item = {'product_id': product_id, 'name': name, 'price': price}
-#             item = {'product_id': product_id, 'quantity': quantity, 'name': name.encode('utf-8'), 'price': price}
-#             shopping_cart = request.COOKIES.get('shopping_cart')
-#             self.list_cart.append(shopping_cart)
-#             self.list_cart.append(item)
-#             # shopping_cart += f';{item}'  # Fix: Correct string formatting
-#
-#             response = Response({'shopping_cart': 'ok'})
-#             expires = datetime.datetime.now() + datetime.timedelta(hours=5)
-#             str_expires = expires.strftime('%a, %d-%b-%Y %H:%M:%S')
-#             response.set_cookie('shopping_cart', self.list_cart, expires=str_expires)
-#             print(shopping_cart)
-#             return response
-#         else:
-#             return Response({'message': 'not enough'}, status=status.HTTP_400_BAD_REQUEST)
-
 class DeleteFromCartView(APIView):
     serializer_class = DeleteFromCartSerializer
     permission_classes = [AllowAny]

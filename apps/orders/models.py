@@ -35,7 +35,7 @@ class Order(BaseModel):
         verbose_name_plural = _('order')
 
 class OrderItem(BaseModel):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='orders', verbose_name=_('order'))
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='orders', verbose_name=_('orders'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name=_('product'))
     quantity = models.PositiveIntegerField(verbose_name=_('quantity'))
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('discount'))

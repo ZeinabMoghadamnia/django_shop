@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+<!-- otp_form.html -->
+{% block content %}
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5 " dir="rtl">
+            <div class="row text-center align-items-center d-flex justify-content-center ">
+
+
+                <h1>Address List</h1>
+                <div id="address-list">
+                    <!-- Address data will be populated here dynamically -->
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block scripts %}
+    {#                {% url 'accounts:panel:address-list' %}#}
+    {#    /accounts/panel/addresses/#}
+    <script>
+        $(document).ready(function () {
+            // AJAX request to fetch address data
+            $.ajax({
+                url: 'http://127.0.0.1:8000/accounts/panel/addresses/',  // URL to your AddressListView
+                method: 'GET',
+                success: function (data) {
+                    // Clear existing content
+                    $('#address-list').empty();
+
+                    // Append each address to the list
+                    data.forEach(function (address) {
+                        $('#address-list').append('<div>' + address.complete_address + '</div>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching address data:', error);
+                    console.log('Response:', xhr.responseText); // Log the response
+                }
+            });
+        });
+    </script>
+{% endblock %}

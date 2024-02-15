@@ -159,6 +159,8 @@
             var indexToDelete = shoppingCart.findIndex(item => item.product_id === itemId);
             if (indexToDelete !== -1) {
                 var deletedItem = shoppingCart.splice(indexToDelete, 1)[0];
+                // Update the cookie
+                setCookie('shopping_cart', JSON.stringify(shoppingCart), 30);
                 // Repopulate the table
                 populateCartTable();
 
@@ -173,14 +175,10 @@
                     .then(response => {
                         if (!response.ok) {
                             console.error('Failed to delete item');
-                            shoppingCart.push(deletedItem);
-                            populateCartTable();
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        shoppingCart.push(deletedItem);
-                        populateCartTable();
                     });
             }
         }
