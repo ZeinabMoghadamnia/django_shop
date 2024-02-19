@@ -26,11 +26,12 @@ class Order(BaseModel):
         ('returned', 'بازگردانده شده'),
     )
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='order', verbose_name=_('user'))
-    total_price = models.PositiveIntegerField(verbose_name=_('total price'))
+    total_price = models.PositiveIntegerField(default=0, verbose_name=_('total price'))
     discounted_total_price = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('discounted total price'))
     status = models.CharField(choices=ORDER_STATUS, max_length=15, default='processing', verbose_name=_('order status'))
     is_paid = models.BooleanField(default=False, verbose_name=_('payment status'))
     address = models.TextField(verbose_name=_('address'))
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('discount'))
     class Meta:
         verbose_name_plural = _('order')
 

@@ -337,7 +337,12 @@
             const quantity = quantityInput.value;
             const name = "{{ object.name }}";
             const price = {{ object.price }};
-            const discounted_price = {{ object.discounted_price }};
+            let discounted_price = {{ object.discounted_price }};
+
+            // Convert None to null
+            if (discounted_price === "None") {
+                discounted_price = null;
+            }
 
             console.log('Product ID:', product_id);
             console.log('Quantity:', quantity);

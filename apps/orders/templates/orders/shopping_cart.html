@@ -8,15 +8,15 @@
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5 " dir="rtl">
             <div class="row text-center align-items-center d-flex justify-content-center ">
-                <h2 class="mt-5 rounded-top-5 text-white p-2 mb-0" style="background-color: #e5cfcf">سبد خرید</h2>
+                <h2 class="mt-5 rounded-top-5 text-dark p-2 mb-0" style="background-color: #f1edf5;">سبد خرید</h2>
                 <table class="table table-striped my-0">
                     <thead>
                     <tr>
-                        <th>محصول</th>
-                        <th>تعداد</th>
-                        <th>قیمت</th>
-                        <th>قیمت کل</th>
-                        <th class="col-3">حذف</th>
+                        <th class="text-secondary">محصول</th>
+                        <th class="text-secondary">تعداد</th>
+                        <th class="text-secondary">قیمت</th>
+                        <th class="text-secondary">قیمت کل</th>
+                        <th class="col-3 text-secondary">حذف</th>
                     </tr>
                     </thead>
                     <tbody id="cart-items">
@@ -26,13 +26,26 @@
                 {#                <div class="row" style="background-color: #e3d9d4">lll</div>#}
                 {#                <div class="row align-items-center py-5 text-center d-flex justify-content-center" style="background-color: #eee1e1;">#}
                 <div class="row align-items-center text-center d-flex justify-content-center rounded-bottom-5 mt-0 py-5"
-                     style="background-color: #e5cfcf;">
-                    <div class="col-3 align-items-center">
-                        <h4 class="text-white text-start">قیمت نهایی:</h4>
-                    </div>
+                     style="background-color: #f1edf5;">
                     <div class="col-4 align-items-center">
-                        <h4 class="text-end text-white align-items-center mt-2"><span class="align-items-center"
-                                                                                      id="total-price"></span></h4>
+
+                        <div class="input-group bg-transparent align-items-center">
+                            <h4 class="text-dark mb-0 ms-2 text-start">کد تخفیف:</h4>
+                            <input type="text" id="discount-code" class="form-control rounded-end"
+                                   aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append align-items-center">
+                                <button id="apply-discount-btn" class="btn btn-light border rounded-0 rounded-start"
+                                        type="button">ثبت
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 align-items-center">
+                        <h4 class="text-dark text-start">قیمت نهایی:</h4>
+                    </div>
+                    <div class="col-3 align-items-center">
+                        <h4 class="text-end text-dark align-items-center mt-2"><span class="align-items-center"
+                                                                                     id="total-price"></span></h4>
                     </div>
                     <div class="col align-items-center text-center">
                         <a class="btn rounded bg-white" href="{% url 'orders:select_address' %}">ثبت سفارش</a>
@@ -45,38 +58,8 @@
 {% endblock %}
 {% block scripts %}
 
-
-    {#    <script>#}
-    {#        // Get shopping cart data from Django template#}
-    {#        var shoppingCart = {{ shopping_cart|safe }};#}
-    {##}
-    {#        // Function to dynamically populate table with shopping cart data#}
-    {#        function populateCartTable() {#}
-    {#            var cartItems = document.getElementById('cart-items');#}
-    {#            cartItems.innerHTML = ''; // Clear existing data#}
-    {##}
-    {#            shoppingCart.forEach(function (item) {#}
-    {#                var row = document.createElement('tr');#}
-    {#                row.innerHTML = '<td>' + item.name + '</td>' +#}
-    {#                    '<td>' + item.quantity + '</td>' +#}
-    {#                    '<td>' + item.price + '</td>' +#}
-    {#                    '<td><button class="btn bg-danger-subtle text-secondary rounded" onclick="deleteItem(\'' + item.id + '\')">حذف</button></td>';#}
-    {#                cartItems.appendChild(row);#}
-    {#            });#}
-    {#        }#}
-    {##}
-    {#        // Call the function to populate table on page load#}
-    {#        populateCartTable();#}
-    {##}
-    {#        // Function to delete an item from the shopping cart#}
-    {#        function deleteItem(itemId) {#}
-    {#            // Implement delete functionality here#}
-    {#            console.log("Delete item with ID:", itemId);#}
-    {#        }#}
-    {#    </script>#}
-
-
     <script>
+
         var shoppingCart = {{ shopping_cart|safe }};
 
         function populateCartTable() {
@@ -87,15 +70,16 @@
                 var row = document.createElement('tr');
                 var itemTotalPrice = item.quantity * item.price;
                 totalPrice += itemTotalPrice;
+                console.log(item.product_id)
                 row.innerHTML = '<td>' + item.name + '</td>' +
                     '<td class="quantity-cell">' +
                     '<button class="btn btn-link text-dark px-2 increase-btn" onclick="incrementQuantity(' + item.product_id + ')"><i class="fas fa-plus"></i></button>' +
-                    '<input id="quantity_' + item.product_id + '" min="0" max="' + item.max_quantity + '" name="quantity" value="' + item.quantity + '" type="number" class="form-control form-control-sm w-30 quantity-input" onchange="updateQuantityInCookies(' + item.product_id + ', this.value)"/>' +
+                    '<input id="quantity_' + item.product_id + '" min="0" max="' + item.max_quantity + '" name="quantity" value="' + item.quantity + '" type="number" style="width: 20%;" class="form-control form-control-sm quantity-input" onchange="updateQuantityInCookies(' + item.product_id + ', this.value)"/>' +
                     '<button class="btn btn-link text-dark px-2 decrease-btn" onclick="decrementQuantity(' + item.product_id + ')"><i class="fas fa-minus"></i></button>' +
                     '</td>' +
                     '<td>' + item.price + '</td>' +
                     '<td id="item-total-price_' + item.product_id + '">' + itemTotalPrice + '</td>' +
-                    '<td><button class="col-2 btn p-1 rounded" style="color: #b36a60; border-color: #b36a60;" onclick="deleteItem(' + item.product_id + ')">حذف</button></td>';
+                    '<td><button class="col-2 btn p-1 text-white rounded" style="background-color: #816e9f; border-color: #816e9f;" onclick="deleteItem(' + item.product_id + ')">حذف</button></td>';
                 cartItems.appendChild(row);
             });
             document.getElementById('total-price').innerHTML = totalPrice;
@@ -132,6 +116,24 @@
                 document.getElementById('total-price').innerHTML = calculateTotalPrice(updatedCart);
                 document.getElementById('quantity_' + productId).value = updatedItem.quantity;
                 document.getElementById('item-total-price_' + productId).innerHTML = itemTotalPrice;
+
+                // Send AJAX request to update quantity in the database
+                fetch('/orders/cart/update/' + productId + '/', { // Adjust the URL as per your endpoint
+                    method: 'PATCH', // Or 'PUT' if you're replacing the entire item
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({quantity: updatedItem.quantity}) // Send the updated quantity
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error('Failed to update item quantity');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             }
         }
 
@@ -155,7 +157,9 @@
 
         populateCartTable();
 
+
         function deleteItem(itemId) {
+            console.log('Item ID:', itemId);
             var indexToDelete = shoppingCart.findIndex(item => item.product_id === itemId);
             if (indexToDelete !== -1) {
                 var deletedItem = shoppingCart.splice(indexToDelete, 1)[0];
@@ -164,9 +168,8 @@
                 // Repopulate the table
                 populateCartTable();
 
-                fetch('/orders/cart/delete/', {
-                    method: 'POST',
-                    body: JSON.stringify({product_id: itemId}),
+                fetch('/orders/cart/delete/' + itemId + '/', { // Modified URL to include itemId
+                    method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCookie('csrftoken')
@@ -197,6 +200,33 @@
             }
             return cookieValue;
         }
+    </script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("apply-discount-btn").addEventListener("click", function () {
+        var discountCode = document.getElementById("discount-code").value;
+        fetch("{% url 'orders:cart:apply_discount' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                discount_code: discountCode
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // اگر قیمت جدید موجود نباشد، از قیمت قبلی استفاده کنید
+            var newTotalPrice = data.total_price !== undefined ? data.total_price : document.getElementById('total-price').innerHTML;
+            // بروزرسانی UI با قیمت جدید
+            document.getElementById('total-price').innerHTML = newTotalPrice;
+        })
+        .catch(error => console.error("Error:", error));
+    });
+});
     </script>
 
     <style>

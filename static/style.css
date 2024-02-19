@@ -949,3 +949,28 @@ h5.widget-title {
 .post-navigation:focus svg {
   fill: var(--primary-color);
 }
+
+/*---------------------messages-------------------------*/
+.success-message {
+    background-color: #dff0d8;
+    border-color: #d0e9c6;
+    color: #3c763d;
+}
+
+.info-message {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+}
+
+.warning-message {
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
+}
+
+.error-message {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}

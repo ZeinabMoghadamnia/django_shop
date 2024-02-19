@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from ..models import Order, OrderItem
 
 class AddToCartSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
@@ -10,4 +11,8 @@ class AddToCartSerializer(serializers.Serializer):
 class DeleteFromCartSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
 
+# class DeleteFromCartSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = OrderItem
+#         fields = '__all__'
 

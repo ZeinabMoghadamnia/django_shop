@@ -87,19 +87,13 @@ class AddressCreateView(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-# Retrieve, Update, Delete views
+
 class AddressDetailView(APIView):
     serializer_class = AddressSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        try:
-            return Address.objects.get(pk=self.kwargs['pk'], user=self.request.user)
-        except Address.DoesNotExist:
-            raise NotFound()
 
     def get_serializer_context(self):
-        # Include request in serializer context
         return {'request': self.request}
 
     def get(self, request, *args, **kwargs):
@@ -107,15 +101,22 @@ class AddressDetailView(APIView):
         serialized_data = self.serializer_class(address, context=self.get_serializer_context()).data
         return Response(serialized_data)
 
-    def put(self, request, *args, **kwargs):
+
+    def get_object(self):
+        try:
+            return Address.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+        except Address.DoesNotExist:
+            raise NotFound()
+
+    def put(self, request, pk):
         address = self.get_object()
-        serializer = self.serializer_class(address, data=request.data, context=self.get_serializer_context())
+        serializer = AddressSerializer(address, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request, pk):
         address = self.get_object()
         address.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -78,7 +78,7 @@ class ProductAdmin(ProductAdminPanelPermission, CustomExtraButtonsMixin, ButtonM
 
 @admin.register(Discount)
 class DiscountAdmin(ProductAdminPanelPermission, CustomExtraButtonsMixin, ButtonMixin, admin.ModelAdmin,):
-    list_display = ('id', 'code', 'discount_type', 'value', 'activate_at', 'deactivate_at', 'change_button', 'delete_button')
+    list_display = ('id', 'code', 'discount_type', 'value', 'is_active', 'activate_at', 'deactivate_at', 'change_button', 'delete_button')
     fieldsets = [
         ('Discount Information', {
             'fields': (tuple([

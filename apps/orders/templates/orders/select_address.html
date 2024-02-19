@@ -8,11 +8,20 @@
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5 align-items-center d-flex justify-content-center " dir="rtl">
             <div class="row text-end ">
-                <form action="{% url 'orders:save_order' %}" method="post">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <form action="{% url 'orders:cart:order_registration' %}" method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <div class="row text-end ">
-                        <button class="btn btn-outline-dark" type="submit" %}">انتخاب</button>
+                        <button class="btn btn-outline-dark" type="submit" %}
+                        ">انتخاب</button>
                     </div>
                 </form>
             </div>
