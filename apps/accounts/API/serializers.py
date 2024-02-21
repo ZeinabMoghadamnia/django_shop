@@ -2,6 +2,17 @@ from rest_framework import serializers
 from ..models import Address
 from ...orders.models import Order, OrderItem
 from ...products.models import Image
+from ..models import User, Profile
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
 
 
 class OrderSerializer(serializers.ModelSerializer):

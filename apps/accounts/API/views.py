@@ -1,32 +1,32 @@
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import renderers, status
+from rest_framework import renderers, status, viewsets
 from rest_framework.response import Response
 from .permissions import IsOwnerOrReadOnly
 from ...orders.models import Order, OrderItem
-from ..models import Address
-from .serializers import OrderSerializer, AddressSerializer, OrderItemSerializer
+from ..models import Address, User, Profile
+from .serializers import OrderSerializer, AddressSerializer, OrderItemSerializer, UserSerializer, ProfileSerializer
 
-# class OrderListAPIView(ListAPIView):
+# class UserViewSet(ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 #     permission_classes = [IsAuthenticated]
-#     serializer_class = OrderSerializer
-#     renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer)
-#
 #     def get_queryset(self):
-#         return Order.objects.filter(user=self.request.user, status='delivered')
+#         queryset = User.objects.all()
+#         return queryset
 #
 #     def list(self, request, *args, **kwargs):
 #         queryset = self.get_queryset()
-#         serializer = self.get_serializer(queryset, many=True)
-#         data = serializer.data  # Serialized data
-#         context = {'order_data': data}
-#         return Response(context, template_name='accounts/order_history.html')
+#         serializer = UserSerializer(queryset, many=True)
+#         data = serializer.data
+#         return Response({'user_data': data}, status=status.HTTP_200_OK)
 
 class OrderListAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -133,6 +133,53 @@ class AddressListView(ListAPIView):
         addresses = self.get_queryset()
         serialized_data = self.serializer_class(addresses, many=True).data
         return JsonResponse({'addresses': serialized_data})
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=True, methods=['get', 'put'])
+    def profile(self, request, pk=None):
+        user = self.get_object()
+        profile = user.profile
+
+        if request.method == 'GET':
+            serializer = ProfileSerializer(profile)
+            return Response(serializer.data)
+        elif request.method == 'PUT':
+            serializer = ProfileSerializer(profile, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+class UserDetailView(RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+class ProfileDetailView(RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]  # You can change permissions as needed
+
+    def get_object(self):
+        return self.request.user.profile
 
 class PanelView(TemplateView):
     template_name = 'accounts/panel.html'

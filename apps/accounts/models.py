@@ -40,10 +40,13 @@ class Profile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name=_('profile'))
     date_of_birth = models.DateField(null=True, blank=True, verbose_name=_('birthday'))
     gender = models.CharField(max_length=20, choices=GENDER, verbose_name=_('gender'), null=True, blank=True)
-    image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
+    image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'), default='{% static "images/profile.jpg}')
 
     def img_preview(self):
-        return mark_safe('<img src="/media/%s" width="auto" height="100" />' % (self.image))
+        if self.image:
+            return mark_safe('<img src="/media/%s" width="auto" height="100" />' % (self.image))
+        else:
+            return mark_safe('<img src="static/images/profile.jpg" width="auto" height="100" />')
 
 
 class Address(BaseModel):

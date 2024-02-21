@@ -15,7 +15,7 @@
                         <li class="text-end mt-3"><a href="#" id="user-profile-link">اطلاعات من</a></li>
                         <li class="text-end mt-3"><a href="#" id="order-history-link">تاریخچه سفارشات</a></li>
                         <li class="text-end mt-3"><a href="#" id="order-status-link">وضعیت سفارشات</a></li>
-                        <li class="text-end mt-3"><a href="#" id="addresses-link">لیست آدرس های ثبت شده</a></li>
+                        <li class="text-end mt-3"><a href="#" id="addresses-link">لیست آدرس های من</a></li>
 
                     </ul>
                 </div>
@@ -30,6 +30,80 @@
 {% block scripts %}
 
     <script>
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("user-profile-link").addEventListener("click", function (event) {
+        event.preventDefault();
+        loadUserAndProfileInfo();
+    });
+
+    function loadUserAndProfileInfo() {
+        var xhrUser = new XMLHttpRequest();
+        xhrUser.onreadystatechange = function () {
+            if (xhrUser.readyState === XMLHttpRequest.DONE) {
+                if (xhrUser.status === 200) {
+                    var userData = JSON.parse(xhrUser.responseText);
+                    loadProfileInfo(userData);
+                } else {
+                    console.error("User request failed: " + xhrUser.status);
+                }
+            }
+        };
+        xhrUser.open("GET", "/accounts/panel/user-detail/", true);
+        xhrUser.send();
+    }
+
+    function loadProfileInfo(userData) {
+        var xhrProfile = new XMLHttpRequest();
+        xhrProfile.onreadystatechange = function () {
+            if (xhrProfile.readyState === XMLHttpRequest.DONE) {
+                if (xhrProfile.status === 200) {
+                    var profileData = JSON.parse(xhrProfile.responseText);
+                    displayUserInfo(userData, profileData);
+                } else {
+                    console.error("Profile request failed: " + xhrProfile.status);
+                }
+            }
+        };
+        xhrProfile.open("GET", "/accounts/panel/profile-detail/", true);
+        xhrProfile.send();
+    }
+
+    function displayUserInfo(userData, profileData) {
+        var container = document.getElementById("container");
+        container.innerHTML = ""; // Clear existing content
+
+        // Profile image
+        var profileImage = `<img class="rounded-circle mb-2 mt-5" style="width: 100px; height: auto;" src="${profileData.image ? profileData.image : 'static/images/profile.jpg'}" alt="Profile Image">`;
+        container.insertAdjacentHTML('beforeend', profileImage);
+
+        // User info
+        var userInfo = `
+            <p>نام: ${userData.first_name}</p>
+            <p>نام خانوادگی: ${userData.last_name}</p>
+            <p>ایمیل: ${userData.email}</p>
+            <p>شماره تماس: ${userData.phone_number}</p>
+            <!-- Add other user fields as needed -->
+        `;
+        container.insertAdjacentHTML('beforeend', userInfo);
+        const genderMapping = {
+                                    'female': 'خانم',
+                                    'male': 'آقا',
+                                };
+        // Profile info
+        if (profileData) {
+            var profileInfo = `
+                <p>تاریخ تولد: ${profileData.date_of_birth}</p>
+                <p class="mb-5">جنسیت: ${genderMapping[profileData.gender]}</p>
+                <!-- Add other profile fields as needed -->
+            `;
+            container.insertAdjacentHTML('beforeend', profileInfo);
+            }
+    }
+});
+
+
         function toggleOrderItems(orderId) {
             var orderItemsContainer = document.getElementById("order-items-container-" + orderId);
             var buttonText = document.getElementById("toggle-button-" + orderId);
@@ -295,185 +369,5 @@
             }
         });
     </script>
-
-    {#    <script>#}
-    {#        function toggleOrderItems(orderId) {#}
-    {#            var orderItemsContainer = document.getElementById("order-items-container-" + orderId);#}
-    {#            var buttonText = document.getElementById("toggle-button-" + orderId);#}
-    {##}
-    {#            if (orderItemsContainer.style.display === "none") {#}
-    {#                orderItemsContainer.style.display = "block";#}
-    {#                buttonText.textContent = "بستن جزئیات";#}
-    {#            } else {#}
-    {#                orderItemsContainer.style.display = "none";#}
-    {#                buttonText.textContent = "نمایش جزئیات";#}
-    {#            }#}
-    {#        }#}
-    {##}
-    {#        function showOrderItems(orderId) {#}
-    {#            var xhr = new XMLHttpRequest();#}
-    {#            xhr.onreadystatechange = function () {#}
-    {#                if (xhr.readyState === XMLHttpRequest.DONE) {#}
-    {#                    if (xhr.status === 200) {#}
-    {#                        // Parse response and display order items#}
-    {#                        var orderItems = JSON.parse(xhr.responseText);#}
-    {#                        var orderItemsContainer = document.getElementById("order-items-container-" + orderId);#}
-    {#                        orderItemsContainer.innerHTML = ""; // Clear existing content#}
-    {#                        orderItems.item_data.forEach(function (item) {#}
-    {#                            var itemDiv = document.createElement("div");#}
-    {#                            itemDiv.innerHTML = `#}
-    {#                            <p class="mb-3">محصول : ${item.product_name}</p>#}
-    {#                            <img style="width: 100px; height: auto;" src="${item.product_image !== null ? item.product_image.sub_image : 'path/to/placeholder/image.jpg'}" alt="Product Image">#}
-    {#                            <p>تعداد : ${item.quantity}</p>#}
-    {#                            <p>قیمت : ${item.product_price}</p>#}
-    {#                            <p class="mb-5">تخفیف : ${item.discount !== null ? item.discount : '-'}</p>#}
-    {#                        `;#}
-    {#                            orderItemsContainer.appendChild(itemDiv);#}
-    {#                        });#}
-    {#                        toggleOrderItems(orderId); // Toggle visibility#}
-    {#                    } else {#}
-    {#                        console.error("Request failed: " + xhr.status);#}
-    {#                    }#}
-    {#                }#}
-    {#            };#}
-    {#            xhr.open("GET", "/accounts/panel/order-detail/" + orderId + "/", true);#}
-    {#            xhr.send();#}
-    {#        }#}
-    {##}
-    {#        document.addEventListener("DOMContentLoaded", function () {#}
-    {#            document.getElementById("order-history-link").addEventListener("click", function (event) {#}
-    {#                event.preventDefault();#}
-    {#                loadOrderHistory();#}
-    {#            });#}
-    {##}
-    {#            function loadOrderHistory() {#}
-    {##}
-    {#                var xhr = new XMLHttpRequest();#}
-    {#                xhr.onreadystatechange = function () {#}
-    {#                    if (xhr.readyState === XMLHttpRequest.DONE) {#}
-    {#                        if (xhr.status === 200) {#}
-    {#                            // Parse response and create div elements for each order item#}
-    {#                            var orders = JSON.parse(xhr.responseText)['delivered_order_data'];#}
-    {#                            var orderHistoryContainer = document.getElementById("container");#}
-    {#                            orderHistoryContainer.innerHTML = ""; // Clear existing content#}
-    {#                            orders.forEach(function (order) {#}
-    {#                                var orderDiv = document.createElement("div");#}
-    {#                                orderDiv.classList.add("order-item"); // Add a class for styling#}
-    {#                                // Extracting date, hour, and minute from the created_at timestamp#}
-    {#                                var createdAt = new Date(order.created_at);#}
-    {#                                var date = createdAt.toLocaleDateString('en-US');#}
-    {#                                var time = createdAt.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});#}
-    {#                                const statusMapping = {#}
-    {#                                    'processing': 'در حال پردازش',#}
-    {#                                    'delivered': 'ارسال شده',#}
-    {#                                    'cancelled': 'لغو شده',#}
-    {#                                    'returned': 'بازگردانده شده'#}
-    {#                                };#}
-    {##}
-    {#                                orderDiv.innerHTML = `#}
-    {#                                <p class="mt-5">تاریخ سفارش : ${date} | ${time}</p>#}
-    {#                                <p>وضعیت : ${statusMapping[order.status]}</p>#}
-    {#                                <p>قیمت نهایی : ${order.total_price}</p>#}
-    {#                                <p>آدرس : ${order.address}</p>#}
-    {#                                <p class="mb-5"><button id="toggle-button-${order.id}" class="btn btn-outline-dark" onclick="showOrderItems(${order.id})">نمایش جزئیات</button></p>#}
-    {#                                <div id="order-items-container-${order.id}" style="display: none;"></div>#}
-    {#                                `;#}
-    {#                                orderHistoryContainer.appendChild(orderDiv);#}
-    {#                            });#}
-    {#                        } else {#}
-    {#                            console.error("Request failed: " + xhr.status);#}
-    {#                        }#}
-    {#                    }#}
-    {#                };#}
-    {#                xhr.open("GET", "/accounts/panel/order-history/", true);#}
-    {#                xhr.send();#}
-    {#            }#}
-    {#        });#}
-    {#        document.addEventListener("DOMContentLoaded", function () {#}
-    {#            document.getElementById("order-status-link").addEventListener("click", function (event) {#}
-    {#                event.preventDefault();#}
-    {#                loadOrderHistory();#}
-    {#            });#}
-    {##}
-    {#            function loadOrderHistory() {#}
-    {##}
-    {#                var xhr = new XMLHttpRequest();#}
-    {#                xhr.onreadystatechange = function () {#}
-    {#                    if (xhr.readyState === XMLHttpRequest.DONE) {#}
-    {#                        if (xhr.status === 200) {#}
-    {#                            // Parse response and create div elements for each order item#}
-    {#                            var orders = JSON.parse(xhr.responseText)['not_delivered_order_data'];#}
-    {#                            var orderHistoryContainer = document.getElementById("container");#}
-    {#                            orderHistoryContainer.innerHTML = ""; // Clear existing content#}
-    {#                            orders.forEach(function (order) {#}
-    {#                                var orderDiv = document.createElement("div");#}
-    {#                                orderDiv.classList.add("order-item"); // Add a class for styling#}
-    {#                                // Extracting date, hour, and minute from the created_at timestamp#}
-    {#                                var createdAt = new Date(order.created_at);#}
-    {#                                var date = createdAt.toLocaleDateString('en-US');#}
-    {#                                var time = createdAt.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});#}
-    {#                                const statusMapping = {#}
-    {#                                    'processing': 'در حال پردازش',#}
-    {#                                    'delivered': 'ارسال شده',#}
-    {#                                    'cancelled': 'لغو شده',#}
-    {#                                    'returned': 'بازگردانده شده'#}
-    {#                                };#}
-    {##}
-    {#                                orderDiv.innerHTML = `#}
-    {#                                <p class="mt-5">تاریخ سفارش : ${date} | ${time}</p>#}
-    {#                                <p>وضعیت : ${statusMapping[order.status]}</p>#}
-    {#                                <p>قیمت نهایی : ${order.total_price}</p>#}
-    {#                                <p>آدرس : ${order.address}</p>#}
-    {#                                <p class="mb-5"><button id="toggle-button-${order.id}" class="btn btn-outline-dark" onclick="showOrderItems(${order.id})">نمایش جزئیات</button></p>#}
-    {#                                <div id="order-items-container-${order.id}" style="display: none;"></div>#}
-    {#                                `;#}
-    {#                                orderHistoryContainer.appendChild(orderDiv);#}
-    {#                            });#}
-    {#                        } else {#}
-    {#                            console.error("Request failed: " + xhr.status);#}
-    {#                        }#}
-    {#                    }#}
-    {#                };#}
-    {#                xhr.open("GET", "/accounts/panel/order-history/", true);#}
-    {#                xhr.send();#}
-    {#            }#}
-    {#        });#}
-    {##}
-    {##}
-    {#        document.addEventListener("DOMContentLoaded", function () {#}
-    {#            document.getElementById("addresses-link").addEventListener("click", function (event) {#}
-    {#                event.preventDefault();#}
-    {#                loadAddresses();#}
-    {#            });#}
-    {##}
-    {#            function loadAddresses() {#}
-    {#                var xhr = new XMLHttpRequest();#}
-    {#                xhr.onreadystatechange = function () {#}
-    {#                    if (xhr.readyState === XMLHttpRequest.DONE) {#}
-    {#                        if (xhr.status === 200) {#}
-    {#                            var addressesContainer = document.getElementById("container");#}
-    {#                            addressesContainer.innerHTML = ""; // Clear existing content#}
-    {#                            var addresses = JSON.parse(xhr.responseText).addresses;#}
-    {#                            addresses.forEach(function (address) {#}
-    {#                                var addressDiv = document.createElement("div");#}
-    {#                                addressDiv.innerHTML = `#}
-    {#                                <p class="mt-5">${address.city}, ${address.province}, ${address.complete_address}</p>#}
-    {#                                <hr>#}
-    {#                            `;#}
-    {#                                addressesContainer.appendChild(addressDiv);#}
-    {#                            });#}
-    {#                        } else {#}
-    {#                            console.error("Request failed: " + xhr.status);#}
-    {#                        }#}
-    {#                    }#}
-    {#                };#}
-    {#                xhr.open("GET", "/accounts/panel/addresses/", true);#}
-    {#                xhr.send();#}
-    {#            }#}
-    {#        });#}
-    {##}
-    {##}
-    {#    </script>#}
-
 
 {% endblock %}

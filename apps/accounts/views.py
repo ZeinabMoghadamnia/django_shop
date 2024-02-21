@@ -106,6 +106,7 @@ class RegisterView(View):
             user.username = form.cleaned_data.get('email')
             user.is_active = False
             user.save()
+
             self.send_activation_email(request, user)
 
             return render(request, 'accounts/activate_email.html')
