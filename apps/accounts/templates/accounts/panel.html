@@ -71,57 +71,60 @@
             }
 
             function displayUserInfo(userData, profileData) {
-                var container = document.getElementById("container");
-                container.innerHTML = ""; // Clear existing content
+    var container = document.getElementById("container");
+    container.innerHTML = ""; // Clear existing content
 
-                // Profile image
-                var profileImage = `<img class="rounded-circle border mb-2 mt-5" style="width: 100px; height: auto;" src="${profileData.image ? profileData.image : 'static/images/profile.jpg'}" alt="Profile Image">`;
-                container.insertAdjacentHTML('beforeend', profileImage);
+    // Profile image
+    var profileImage = `<img class="rounded-circle border mb-2 mt-5" style="width: 100px; height: auto;" src="${profileData.image ? profileData.image : 'static/images/profile.jpg'}" alt="Profile Image">`;
+    container.insertAdjacentHTML('beforeend', profileImage);
 
-                // User info
-                var userInfo = `
-                
-                <div class="row mb-1 px-0 mx-0">
-                    <div class="col pe-0 mx-0">
-                    <label for="first-name" class="form-label">نام</label>
-                    <input type="text" id="first-name" class="form-control mb-2" value="${userData.first_name}">
-                    </div>
-                    <div class="col ps-0 mx-0">
-                    <label for="last-name" class="form-label ">نام خانوادگی</label>  
-                    <input type="text" id="last-name" class="form-control mb-2" value="${userData.last_name}">
-                    </div>
-                </div>
-                <div class="row mb-1 px-0 mx-0">
-                    <label for="email" class="form-label">ایمیل</label> 
-                    <input type="email" id="email" class="form-control mb-2" value="${userData.email}">
-                    <label for="phone-number" class="form-label">شماره تماس</label> 
-                    <input type="text" id="phone-number" class="form-control mb-2" value="${userData.phone_number}">
-                </div>
-                
-                `;
-                container.insertAdjacentHTML('beforeend', userInfo);
-                const genderMapping = {
-                    'female': 'خانم',
-                    'male': 'آقا',
-                };
-                // Profile info
-                if (profileData) {
-                    var profileInfo = `
-                    <div class="row mb-1 px-0 mx-0">
-                    <div class="col pe-0 mx-0">
+    // User info
+    var userInfo = `
+        <div class="row mb-1 px-0 mx-0">
+            <div class="col pe-0 mx-0">
+                <label for="first-name" class="form-label">نام</label>
+                <input type="text" id="first-name" class="form-control mb-2" value="${userData.first_name}">
+            </div>
+            <div class="col ps-0 mx-0">
+                <label for="last-name" class="form-label ">نام خانوادگی</label>  
+                <input type="text" id="last-name" class="form-control mb-2" value="${userData.last_name}">
+            </div>
+        </div>
+        <div class="row mb-1 px-0 mx-0">
+            <label for="email" class="form-label">ایمیل</label> 
+            <input type="email" id="email" class="form-control mb-2" value="${userData.email}">
+            <label for="phone-number" class="form-label">شماره تماس</label> 
+            <input type="text" id="phone-number" class="form-control mb-2" value="${userData.phone_number}">
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', userInfo);
+    const genderMapping = {
+        'female': 'خانم',
+        'male': 'آقا',
+    };
+    // Profile info
+    if (profileData) {
+        var profileInfo = `
+            <div class="row mb-1 px-0 mx-0">
+                <div class="col pe-0 mx-0">
                     <label for="date-of-birth" class="form-label text-end">تاریخ تولد</label>
                     <input type="text" id="date-of-birth" class="form-control mb-2" value="${profileData.date_of_birth}">
-                    </div>
-                    <div class="col ps-0 mx-0">
+                </div>
+                <div class="col ps-0 mx-0">
                     <label for="gender" class="form-label">جنسیت</label>  
                     <input type="text" id="gender" class="form-control mb-2" value="${genderMapping[profileData.gender]}">
-                    </div>
-                    </div>
-                    <button id="update-info-btn" class="btn btn-primary" onclick="updateProfileInfo()">به‌روزرسانی</button>     
-`;
-                    container.insertAdjacentHTML('beforeend', profileInfo);
-                }
-            }
+                </div>
+            </div>
+            <button id="update-info-btn" class="btn btn-primary">به‌روزرسانی</button>     
+        `;
+        container.insertAdjacentHTML('beforeend', profileInfo);
+
+        
+        document.getElementById("update-info-btn").addEventListener("click", function () {
+            updateProfileInfo(userData.id);
+        });
+    }
+}
         });
 
         function updateProfileInfo(userId) {
@@ -129,8 +132,8 @@
             var lastName = document.getElementById("last-name").value;
             var email = document.getElementById("email").value;
             var phoneNumber = document.getElementById("phone-number").value;
-            var dateOfBirth = document.getElementById("date-of-birth").value; // Assuming this is the correct ID for the date of birth input
-            var gender = document.getElementById("gender").value; // Assuming this is the correct ID for the gender input
+            var dateOfBirth = document.getElementById("date-of-birth").value;
+            var gender = document.getElementById("gender").value;
 
             var updatedData = {
                 first_name: firstName,
@@ -141,21 +144,20 @@
                 gender: gender
             };
 
-            fetch(`/accounts/panel/profile-edit/${userId}/`, { // Embedding userId in the URL
+            fetch(`/accounts/panel/profile-edit/${userId}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // Assuming you're using Django and need CSRF protection
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
                 body: JSON.stringify(updatedData)
             })
                 .then(response => {
                     if (response.ok) {
                         console.log('Profile updated successfully');
-                        // Optionally, you can reload the page or display a success message
                     } else {
                         console.error('Failed to update profile');
-                        // Optionally, you can display an error message to the user
+                        
                     }
                 })
                 .catch(error => {
@@ -163,7 +165,7 @@
                 });
         }
 
-        // Function to get CSRF token from cookie (if needed)
+        
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -197,10 +199,10 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Parse response and display order items
+                        
                         var orderItems = JSON.parse(xhr.responseText);
                         var orderItemsContainer = document.getElementById("order-items-container-" + orderId);
-                        orderItemsContainer.innerHTML = ""; // Clear existing content
+                        orderItemsContainer.innerHTML = ""; 
                         orderItems.item_data.forEach(function (item) {
                             var itemDiv = document.createElement("div");
                             itemDiv.innerHTML = `
@@ -212,7 +214,7 @@
                         `;
                             orderItemsContainer.appendChild(itemDiv);
                         });
-                        toggleOrderItems(orderId); // Toggle visibility
+                        toggleOrderItems(orderId); 
                     } else {
                         console.error("Request failed: " + xhr.status);
                     }

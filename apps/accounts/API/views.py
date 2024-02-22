@@ -149,15 +149,14 @@ class ProfileDetailView(RetrieveUpdateAPIView):
 
 class ProfileEditView(APIView):
     permission_classes = [IsAuthenticated]
+
     def put(self, request, user_id, format=None):
-
-        user_info = get_object_or_404(User, user=user_id)
-        profile_info = get_object_or_404(Profile, user__id=user_id)
-
+        # Filter users by their ID
+        user_info = get_object_or_404(User, id=user_id)
+        profile_info = get_object_or_404(Profile, user=user_info)
 
         user_serializer = UserSerializer(user_info, data=request.data)
         profile_serializer = ProfileSerializer(profile_info, data=request.data)
-
 
         if user_serializer.is_valid() and profile_serializer.is_valid() :
             user_serializer.save()
