@@ -80,49 +80,7 @@ class OrderItemListAPIView(ListAPIView):
         # return Order.objects.filter(user=self.request.user, status='delivered')
 
 
-class AddressCreateView(CreateAPIView):
-    serializer_class = AddressSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class AddressDetailView(APIView):
-    serializer_class = AddressSerializer
-    permission_classes = [IsAuthenticated]
-
-
-    def get_serializer_context(self):
-        return {'request': self.request}
-
-    def get(self, request, *args, **kwargs):
-        address = self.get_object()
-        serialized_data = self.serializer_class(address, context=self.get_serializer_context()).data
-        return Response(serialized_data)
-
-
-    def get_object(self):
-        try:
-            return Address.objects.get(pk=self.kwargs['pk'], user=self.request.user)
-        except Address.DoesNotExist:
-            raise NotFound()
-
-    def put(self, request, pk):
-        address = self.get_object()
-        serializer = AddressSerializer(address, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        address = self.get_object()
-        address.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class AddressListView(ListAPIView):
+class AddressListView(APIView):
     serializer_class = AddressSerializer
     permission_classes = [IsAuthenticated]
 
@@ -132,38 +90,45 @@ class AddressListView(ListAPIView):
     def get(self, request, *args, **kwargs):
         addresses = self.get_queryset()
         serialized_data = self.serializer_class(addresses, many=True).data
-        return JsonResponse({'addresses': serialized_data})
+        return Response({'addresses': serialized_data})
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class AddressCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @action(detail=True, methods=['get', 'put'])
-    def profile(self, request, pk=None):
-        user = self.get_object()
-        profile = user.profile
+    def post(self, request, format=None):
+        serializer = AddressSerializer(data=request.data)
+        if serializer.is_valid():
+            # Assign the user to the address being created
+            serializer.validated_data['user'] = request.user
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        if request.method == 'GET':
-            serializer = ProfileSerializer(profile)
-            return Response(serializer.data)
-        elif request.method == 'PUT':
-            serializer = ProfileSerializer(profile, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
+
+class AddressDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+    def delete(self, request, address_id, format=None):
+        address = get_object_or_404(Address, id=address_id)
+        address.delete()
+        return Response({'message': 'Address deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+
+class AddressEditView(APIView):
+    permission_classes = [IsAuthenticated]
+    def put(self, request, address_id, format=None):
+
+        address = get_object_or_404(Address, id=address_id)
+
+
+        serializer = AddressSerializer(address, data=request.data)
+
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
 
 class UserDetailView(RetrieveUpdateAPIView):
     queryset = User.objects.all()
@@ -173,13 +138,33 @@ class UserDetailView(RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
+
 class ProfileDetailView(RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]  # You can change permissions as needed
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user.profile
+
+class ProfileEditView(APIView):
+    permission_classes = [IsAuthenticated]
+    def put(self, request, user_id, format=None):
+
+        user_info = get_object_or_404(User, user=user_id)
+        profile_info = get_object_or_404(Profile, user__id=user_id)
+
+
+        user_serializer = UserSerializer(user_info, data=request.data)
+        profile_serializer = ProfileSerializer(profile_info, data=request.data)
+
+
+        if user_serializer.is_valid() and profile_serializer.is_valid() :
+            user_serializer.save()
+            profile_serializer.save()
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PanelView(TemplateView):
     template_name = 'accounts/panel.html'
