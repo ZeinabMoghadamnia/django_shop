@@ -93,14 +93,13 @@ class AddressListView(APIView):
         return Response({'addresses': serialized_data})
 
 class AddressCreateView(APIView):
+    serializer_class = AddressSerializer
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, format=None):
-        serializer = AddressSerializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            # Assign the user to the address being created
-            serializer.validated_data['user'] = request.user
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -158,7 +157,8 @@ class ProfileEditView(APIView):
         user_serializer = UserSerializer(user_info, data=request.data)
         profile_serializer = ProfileSerializer(profile_info, data=request.data)
 
-        if user_serializer.is_valid() and profile_serializer.is_valid() :
+        # if user_serializer.is_valid() and profile_serializer.is_valid() :
+        if user_serializer.is_valid() and profile_serializer.is_valid():
             user_serializer.save()
             profile_serializer.save()
             return Response(user_serializer.data, status=status.HTTP_200_OK)

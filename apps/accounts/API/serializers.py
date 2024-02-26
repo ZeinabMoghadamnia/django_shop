@@ -9,10 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'phone_number']
 
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['id', 'image', 'gender', 'date_of_birth']
+
 
 
 class OrderSerializer(serializers.ModelSerializer):

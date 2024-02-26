@@ -30,8 +30,6 @@
 {% block scripts %}
 
     <script>
-
-
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("user-profile-link").addEventListener("click", function (event) {
                 event.preventDefault();
@@ -71,60 +69,76 @@
             }
 
             function displayUserInfo(userData, profileData) {
-    var container = document.getElementById("container");
-    container.innerHTML = ""; // Clear existing content
+                var container = document.getElementById("container");
+                container.innerHTML = "";
 
-    // Profile image
-    var profileImage = `<img class="rounded-circle border mb-2 mt-5" style="width: 100px; height: auto;" src="${profileData.image ? profileData.image : 'static/images/profile.jpg'}" alt="Profile Image">`;
-    container.insertAdjacentHTML('beforeend', profileImage);
 
-    // User info
-    var userInfo = `
-        <div class="row mb-1 px-0 mx-0">
-            <div class="col pe-0 mx-0">
-                <label for="first-name" class="form-label">نام</label>
-                <input type="text" id="first-name" class="form-control mb-2" value="${userData.first_name}">
-            </div>
-            <div class="col ps-0 mx-0">
-                <label for="last-name" class="form-label ">نام خانوادگی</label>  
-                <input type="text" id="last-name" class="form-control mb-2" value="${userData.last_name}">
-            </div>
-        </div>
-        <div class="row mb-1 px-0 mx-0">
-            <label for="email" class="form-label">ایمیل</label> 
-            <input type="email" id="email" class="form-control mb-2" value="${userData.email}">
-            <label for="phone-number" class="form-label">شماره تماس</label> 
-            <input type="text" id="phone-number" class="form-control mb-2" value="${userData.phone_number}">
-        </div>
-    `;
-    container.insertAdjacentHTML('beforeend', userInfo);
-    const genderMapping = {
-        'female': 'خانم',
-        'male': 'آقا',
-    };
-    // Profile info
-    if (profileData) {
-        var profileInfo = `
-            <div class="row mb-1 px-0 mx-0">
-                <div class="col pe-0 mx-0">
-                    <label for="date-of-birth" class="form-label text-end">تاریخ تولد</label>
-                    <input type="text" id="date-of-birth" class="form-control mb-2" value="${profileData.date_of_birth}">
-                </div>
-                <div class="col ps-0 mx-0">
-                    <label for="gender" class="form-label">جنسیت</label>  
-                    <input type="text" id="gender" class="form-control mb-2" value="${genderMapping[profileData.gender]}">
-                </div>
-            </div>
-            <button id="update-info-btn" class="btn btn-primary">به‌روزرسانی</button>     
-        `;
-        container.insertAdjacentHTML('beforeend', profileInfo);
+                var userInfo = `
+                    <div class="row mb-1 d-flex justify-content-center align-items-center px-0 mx-0">
+                        <input type="file" id="image" class="form-control mb-2" style="display: none;">
+                        <img id="profile-image" class="rounded-circle border mb-2 mt-5" style="width: 110px; height:110px;" src="${profileData.image ? profileData.image : 'static/images/profile.jpg'}" alt="Profile Image">
+                        <i id="edit-icon" class="far fa-edit" style="cursor: pointer;"></i>
+                    </div>
+                    <div class="row mb-1 px-0 mx-0">
+                        <div class="col pe-0 mx-0">
+                            <label for="first-name" class="form-label">نام</label>
+                            <input type="text" id="first-name" class="form-control mb-2" value="${userData.first_name}">
+                        </div>
+                        <div class="col ps-0 mx-0">
+                            <label for="last-name" class="form-label ">نام خانوادگی</label>  
+                            <input type="text" id="last-name" class="form-control mb-2" value="${userData.last_name}">
+                        </div>
+                    </div>
+                    <div class="row mb-1 px-0 mx-0">
+                        <label for="email" class="form-label">ایمیل</label> 
+                        <input type="email" id="email" class="form-control mb-2" value="${userData.email}">
+                        <label for="phone-number" class="form-label">شماره تماس</label> 
+                        <input type="text" id="phone-number" class="form-control mb-2" value="${userData.phone_number}">
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', userInfo);
+                
+                if (profileData) {
+                    var profileInfo = `
+                        <div class="row mb-1 px-0 mx-0">
+                            <div class="col pe-0 mx-0">
+                                <label for="date-of-birth" class="form-label text-end">تاریخ تولد</label>
+                                <input type="text" id="date-of-birth" class="form-control mb-2" value="${profileData.date_of_birth}">
+                            </div>
+                            <div class="col ps-0 mx-0">
+                                <label for="gender" class="form-label">جنسیت</label>  
+                                    <select id="gender" class="form-select mb-2" dir="rtl">
+                                        <option value="male" ${profileData.gender === 'male' ? 'selected' : ''}>آقا</option>
+                                        <option value="female" ${profileData.gender === 'female' ? 'selected' : ''}>خانم</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <button id="update-info-btn" class="btn btn-outline-secondary my-5">به‌روزرسانی</button>     
+                    `;
+                    container.insertAdjacentHTML('beforeend', profileInfo);
 
-        
-        document.getElementById("update-info-btn").addEventListener("click", function () {
-            updateProfileInfo(userData.id);
-        });
-    }
-}
+
+                    document.getElementById("update-info-btn").addEventListener("click", function () {
+                        updateProfileInfo(userData.id);
+                    });
+                }
+
+                document.getElementById("edit-icon").addEventListener("click", function () {
+                    document.getElementById("image").click();
+                });
+
+
+                document.getElementById("image").addEventListener("change", function () {
+                    var file = this.files[0];
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        document.getElementById("profile-image").src = e.target.result;
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
         });
 
         function updateProfileInfo(userId) {
@@ -135,29 +149,33 @@
             var dateOfBirth = document.getElementById("date-of-birth").value;
             var gender = document.getElementById("gender").value;
 
-            var updatedData = {
-                first_name: firstName,
-                last_name: lastName,
-                email: email,
-                phone_number: phoneNumber,
-                date_of_birth: dateOfBirth,
-                gender: gender
-            };
+            var image = document.getElementById("image").files[0];
+
+            var formData = new FormData();
+            formData.append('first_name', firstName);
+            formData.append('last_name', lastName);
+            formData.append('email', email);
+            formData.append('phone_number', phoneNumber);
+            formData.append('date_of_birth', dateOfBirth);
+            formData.append('gender', gender);
+            if (image) {
+                formData.append('image', image);
+            }
 
             fetch(`/accounts/panel/profile-edit/${userId}/`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
                 },
-                body: JSON.stringify(updatedData)
+                body: formData
             })
                 .then(response => {
                     if (response.ok) {
+                        alert('اطلاعات شما با موفقیت به‌روزرسانی شد.')
                         console.log('Profile updated successfully');
                     } else {
+                        alert('به‌روزرسانی اطلاعات شما با خطا مواجه شد.')
                         console.error('Failed to update profile');
-                        
                     }
                 })
                 .catch(error => {
@@ -165,7 +183,6 @@
                 });
         }
 
-        
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -180,7 +197,8 @@
             }
             return cookieValue;
         }
-
+    </script>
+    <script>
         function toggleOrderItems(orderId) {
             var orderItemsContainer = document.getElementById("order-items-container-" + orderId);
             var buttonText = document.getElementById("toggle-button-" + orderId);
@@ -199,10 +217,10 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        
+
                         var orderItems = JSON.parse(xhr.responseText);
                         var orderItemsContainer = document.getElementById("order-items-container-" + orderId);
-                        orderItemsContainer.innerHTML = ""; 
+                        orderItemsContainer.innerHTML = "";
                         orderItems.item_data.forEach(function (item) {
                             var itemDiv = document.createElement("div");
                             itemDiv.innerHTML = `
@@ -214,7 +232,7 @@
                         `;
                             orderItemsContainer.appendChild(itemDiv);
                         });
-                        toggleOrderItems(orderId); 
+                        toggleOrderItems(orderId);
                     } else {
                         console.error("Request failed: " + xhr.status);
                     }
@@ -236,14 +254,12 @@
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
-                            // Parse response and create div elements for each order item
                             var orders = JSON.parse(xhr.responseText)['delivered_order_data'];
                             var orderHistoryContainer = document.getElementById("container");
-                            orderHistoryContainer.innerHTML = ""; // Clear existing content
+                            orderHistoryContainer.innerHTML = "";
                             orders.forEach(function (order) {
                                 var orderDiv = document.createElement("div");
-                                orderDiv.classList.add("order-item"); // Add a class for styling
-                                // Extracting date, hour, and minute from the created_at timestamp
+                                orderDiv.classList.add("order-item");
                                 var createdAt = new Date(order.created_at);
                                 var date = createdAt.toLocaleDateString('en-US');
                                 var time = createdAt.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
@@ -285,14 +301,12 @@
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
-                            // Parse response and create div elements for each order item
                             var orders = JSON.parse(xhr.responseText)['not_delivered_order_data'];
                             var orderHistoryContainer = document.getElementById("container");
-                            orderHistoryContainer.innerHTML = ""; // Clear existing content
+                            orderHistoryContainer.innerHTML = "";
                             orders.forEach(function (order) {
                                 var orderDiv = document.createElement("div");
-                                orderDiv.classList.add("order-item"); // Add a class for styling
-                                // Extracting date, hour, and minute from the created_at timestamp
+                                orderDiv.classList.add("order-item");
                                 var createdAt = new Date(order.created_at);
                                 var date = createdAt.toLocaleDateString('en-US');
                                 var time = createdAt.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
@@ -322,8 +336,6 @@
                 xhr.send();
             }
         });
-
-
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -336,11 +348,44 @@
                             var addresses = JSON.parse(xhr.responseText).addresses;
                             var addressesContainer = document.getElementById("container");
                             addressesContainer.innerHTML = "";
+
+                            var newAddresseDiv = document.createElement("div");
+                            newAddresseDiv.classList.add("text-center", "mb-4");
+                            newAddresseDiv.innerHTML = `
+                            <div class="row mb-1 px-0 mx-0 mt-5 ">
+                                <div class="col pe-0 mx-0">
+                                    <label for="province" class="form-label">استان</label>
+                                    <input type="text" id="province" class="form-control mb-2" value="">
+                                </div>
+                                <div class="col ps-0 mx-0">
+                                    <label for="city" class="form-label ">شهر</label>  
+                                    <input type="text" id="city" class="form-control mb-2" value="">
+                                </div>
+                            </div>
+                            <div class="row px-0 mx-0">
+                                <label for="complete-address" class="form-label">آدرس کامل</label> 
+                                <input type="text" id="complete-address" class="form-control mb-2" value="">
+                            </div>
+                            <div class="row px-0 mx-0">
+                                <label for="postal-code" class="form-label">کد پستی</label> 
+                                <input type="text" id="postal-code" class="form-control mb-2" value="">
+                            </div>
+                            <div class="row mt-2 mb-5 px-0 mx-0 d-flex justify-content-center align-items-center pb-3">
+                                <button class="col-2 ms-2 btn btn-outline-primary create-address-btn" id="create-address-btn">ثبت آدرس</button>
+                            </div>
+                            `;
+                            addressesContainer.appendChild(newAddresseDiv);
+
+                            var createAddressBtn = document.getElementById("create-address-btn");
+                            createAddressBtn.addEventListener("click", function () {
+                                createAddress();
+                            });
+
                             addresses.forEach(function (address) {
                                 var addressDiv = document.createElement("div");
                                 addressDiv.innerHTML = `
 
-                            <div class="row mb-1 px-0 mx-0 mt-5">
+                            <div class="row mb-1 px-0 mx-0 mt-5 border-top pt-5">
                                 <div class="col pe-0 mx-0">
                                     <label for="province-${address.id}" class="form-label">استان</label>
                                     <input type="text" id="province-${address.id}" class="form-control mb-2" value="${address.province}">
@@ -358,7 +403,7 @@
                                 <label for="postal-code-${address.id}" class="form-label">کد پستی</label> 
                                 <input type="text" id="postal-code-${address.id}" class="form-control mb-2" value="${address.postal_code}">
                             </div>
-                            <div class="row mt-2 mb-5 px-0 mx-0 d-flex justify-content-center align-items-center border-bottom pb-5">
+                            <div class="row mt-2 mb-5 px-0 mx-0 d-flex justify-content-center align-items-center pb-3">
                                 <button class="col-2 ms-2 btn btn-outline-secondary edit-address-btn" data-address-id="${address.id}">ویرایش</button>
                                 <button class="col-2 me-2 btn btn-outline-danger delete-address-btn" data-address-id="${address.id}">حذف</button>
                             </div>
@@ -367,7 +412,6 @@
                                 addressesContainer.appendChild(addressDiv);
                             });
 
-                            // Call attachEditDeleteEventListeners here, after addresses are loaded
                             attachEditDeleteEventListeners();
                         } else {
                             console.error("Request failed: " + xhr.status);
@@ -377,6 +421,40 @@
                 xhr.open("GET", "/accounts/panel/addresses/", true);
                 xhr.send();
             }
+
+            function createAddress() {
+                var province = document.getElementById("province").value;
+                var city = document.getElementById("city").value;
+                var completeAddress = document.getElementById("complete-address").value;
+                var postalCode = document.getElementById("postal-code").value;
+
+                var data = {
+                    "province": province,
+                    "city": city,
+                    "complete_address": completeAddress,
+                    "postal_code": postalCode
+                };
+
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 201) {
+                            alert('آدرس جدید شما با موفقیت ثبت شد.')
+                            loadAddresses();
+                        } else {
+                            alert('ثبت آدرس جدید با خطا مواجه شد.')
+                            console.error("Failed to create address: " + xhr.status);
+                        }
+                    }
+                };
+                xhr.open("POST", "/accounts/panel/addresses/create/", true);
+                
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify(data));
+            }
+
 
             function attachEditDeleteEventListeners() {
                 var editButtons = document.querySelectorAll(".edit-address-btn");
@@ -400,42 +478,46 @@
             }
 
             function editAddress(addressId) {
-                var provinceInput = document.getElementById(`province-${addressId}`).value;
-                var cityInput = document.getElementById(`city-${addressId}`).value;
-                var completeAddressInput = document.getElementById(`complete-address-${addressId}`).value;
-                var postalCodeInput = document.getElementById(`postal-code-${addressId}`).value;
+                var provinceInput = document.getElementById(`province-${addressId}`);
+                var cityInput = document.getElementById(`city-${addressId}`);
+                var completeAddressInput = document.getElementById(`complete-address-${addressId}`);
+                var postalCodeInput = document.getElementById(`postal-code-${addressId}`);
 
-                var addressData = {
-                    province: provinceInput,
-                    city: cityInput,
-                    complete_address: completeAddressInput,
-                    postal_code: postalCodeInput
-                };
+                if (provinceInput && cityInput && completeAddressInput && postalCodeInput) {
+                    var province = provinceInput.value;
+                    var city = cityInput.value;
+                    var completeAddress = completeAddressInput.value;
+                    var postalCode = postalCodeInput.value;
+
+                    var addressData = {
+                        province: province,
+                        city: city,
+                        complete_address: completeAddress,
+                        postal_code: postalCode
+                    };
+                    
+                } else {
+                    console.error("One or more input elements not found.");
+                }
 
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
                             alert("آدرس با موفقیت به روزرسانی شد.");
-                            // Optionally, you can update the UI to reflect the changes made.
                         } else {
-                            // Handle edit failure
                             alert("خطا در به روزرسانی آدرس.");
                             console.error(xhr.responseText);
                         }
                     }
                 };
 
-                // Open the PUT request
                 xhr.open("PUT", `/accounts/panel/addresses/edit/${addressId}/`, true);
 
-                // Set the Content-Type header
                 xhr.setRequestHeader("Content-Type", "application/json");
 
-                // Set the CSRF token in the request headers
                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
 
-                // Send the request with the updated address data
                 xhr.send(JSON.stringify(addressData));
             }
 
@@ -445,42 +527,33 @@
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 204) {
-                            // Address deleted successfully
                             var deletedAddressElement = document.getElementById("address-" + addressId);
                             if (deletedAddressElement) {
-                                // Remove the deleted address element from the DOM
                                 deletedAddressElement.remove();
                             }
                             alert("آدرس با موفقیت حذف شد.");
 
-                            // After deletion, reload the address list to update the UI
                             loadAddresses();
                         } else {
-                            // Handle deletion failure
                             alert("خطا در حذف آدرس.");
                             console.error(xhr.responseText);
                         }
                     }
                 };
 
-                // Open the DELETE request
-                xhr.open("DELETE", "/accounts/panel/addresses/" + addressId + "/", true);
+                xhr.open("DELETE", "/accounts/panel/addresses/delete/" + addressId + "/", true);
 
-                // Set the CSRF token in the request headers
                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
 
-                // Send the request
                 xhr.send();
             }
 
-// Function to get CSRF token from cookie
             function getCookie(name) {
                 var cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
                     var cookies = document.cookie.split(';');
                     for (var i = 0; i < cookies.length; i++) {
                         var cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
                         if (cookie.substring(0, name.length + 1) === (name + '=')) {
                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                             break;
@@ -490,54 +563,12 @@
                 return cookieValue;
             }
 
-            // Load addresses when the addresses link is clicked
             document.getElementById("addresses-link").addEventListener("click", function (event) {
                 event.preventDefault();
                 loadAddresses();
             });
 
-
-            function addAddress() {
-                // Extract values from input fields
-                var provinceInput = document.getElementById("province").value;
-                var cityInput = document.getElementById("city").value;
-                var completeAddressInput = document.getElementById("complete-address").value;
-                var postalCodeInput = document.getElementById("postal-code").value;
-
-                // Create address data object
-                var addressData = {
-                    province: provinceInput,
-                    city: cityInput,
-                    complete_address: completeAddressInput,
-                    postal_code: postalCodeInput
-                };
-
-                // Send data to server using XMLHttpRequest
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 201) {
-                            // Address added successfully
-                            alert("Address added successfully.");
-                            // Optionally, you can clear the input fields or update the UI.
-                            loadAddresses(); // Reload addresses after adding a new one
-                        } else {
-                            // Handle add failure
-                            alert("Error adding address.");
-                            console.error(xhr.responseText);
-                        }
-                    }
-                };
-
-                xhr.open("POST", "/accounts/panel/addresses/add/", true); // Endpoint for adding address
-                xhr.setRequestHeader("Content-Type", "application/json"); // Set content type header
-                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken')); // Set CSRF token header
-                xhr.send(JSON.stringify(addressData)); // Send data to server
-            }
-
-
         });
-
     </script>
 
 {% endblock %}
