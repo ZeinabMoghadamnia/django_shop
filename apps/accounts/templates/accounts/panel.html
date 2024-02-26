@@ -72,51 +72,50 @@
                 var container = document.getElementById("container");
                 container.innerHTML = "";
 
-
                 var userInfo = `
-                    <div class="row mb-1 d-flex justify-content-center align-items-center px-0 mx-0">
-                        <input type="file" id="image" class="form-control mb-2" style="display: none;">
-                        <img id="profile-image" class="rounded-circle border mb-2 mt-5" style="width: 110px; height:110px;" src="${profileData.image ? profileData.image : 'static/images/profile.jpg'}" alt="Profile Image">
-                        <i id="edit-icon" class="far fa-edit" style="cursor: pointer;"></i>
-                    </div>
-                    <div class="row mb-1 px-0 mx-0">
-                        <div class="col pe-0 mx-0">
-                            <label for="first-name" class="form-label">نام</label>
-                            <input type="text" id="first-name" class="form-control mb-2" value="${userData.first_name}">
-                        </div>
-                        <div class="col ps-0 mx-0">
-                            <label for="last-name" class="form-label ">نام خانوادگی</label>  
-                            <input type="text" id="last-name" class="form-control mb-2" value="${userData.last_name}">
-                        </div>
-                    </div>
-                    <div class="row mb-1 px-0 mx-0">
-                        <label for="email" class="form-label">ایمیل</label> 
-                        <input type="email" id="email" class="form-control mb-2" value="${userData.email}">
-                        <label for="phone-number" class="form-label">شماره تماس</label> 
-                        <input type="text" id="phone-number" class="form-control mb-2" value="${userData.phone_number}">
-                    </div>
-                `;
+        <div class="row mb-1 d-flex justify-content-center align-items-center px-0 mx-0">
+            <input type="file" id="image" class="form-control mb-2" style="display: none;">
+            <img id="profile-image" class="rounded-circle border mb-2 mt-5" style="width: 110px; height:110px;" src="${profileData.image ? profileData.image : '/static/images/profile.jpg'}" alt="Profile Image">
+            <i id="edit-icon" class="far fa-edit" style="cursor: pointer;"></i>
+        </div>
+        <div class="row mb-1 px-0 mx-0">
+            <div class="col pe-0 mx-0">
+                <label for="first-name" class="form-label">نام</label>
+                <input type="text" id="first-name" class="form-control mb-2" value="${userData.first_name}">
+            </div>
+            <div class="col ps-0 mx-0">
+                <label for="last-name" class="form-label ">نام خانوادگی</label>  
+                <input type="text" id="last-name" class="form-control mb-2" value="${userData.last_name}">
+            </div>
+        </div>
+        <div class="row mb-1 px-0 mx-0">
+            <label for="email" class="form-label">ایمیل</label> 
+            <input type="email" id="email" class="form-control mb-2" value="${userData.email}">
+            <label for="phone-number" class="form-label">شماره تماس</label> 
+            <input type="text" id="phone-number" class="form-control mb-2" value="${userData.phone_number}">
+        </div>
+    `;
                 container.insertAdjacentHTML('beforeend', userInfo);
-                
+
                 if (profileData) {
                     var profileInfo = `
-                        <div class="row mb-1 px-0 mx-0">
-                            <div class="col pe-0 mx-0">
-                                <label for="date-of-birth" class="form-label text-end">تاریخ تولد</label>
-                                <input type="text" id="date-of-birth" class="form-control mb-2" value="${profileData.date_of_birth}">
-                            </div>
-                            <div class="col ps-0 mx-0">
-                                <label for="gender" class="form-label">جنسیت</label>  
-                                    <select id="gender" class="form-select mb-2" dir="rtl">
-                                        <option value="male" ${profileData.gender === 'male' ? 'selected' : ''}>آقا</option>
-                                        <option value="female" ${profileData.gender === 'female' ? 'selected' : ''}>خانم</option>
-                                    </select>
-                            </div>
-                        </div>
-                        <button id="update-info-btn" class="btn btn-outline-secondary my-5">به‌روزرسانی</button>     
-                    `;
+            <div class="row mb-1 px-0 mx-0">
+                <div class="col pe-0 mx-0">
+                    <label for="date-of-birth" class="form-label text-end">تاریخ تولد</label>
+                    <input type="text" id="date-of-birth" class="form-control mb-2" placeholder="2024-01-01 :مثال" onchange="checkDateOfBirth()" ${profileData.date_of_birth ? `value="${profileData.date_of_birth}"` : 'placeholder="تاریخ تولد را وارد کنید"'} >
+                </div>
+                <div class="col ps-0 mx-0">
+                    <label for="gender" class="form-label">جنسیت</label>  
+                    <select id="gender" class="form-select mb-2" dir="rtl">
+                        <option value="male" ${profileData.gender === null ? 'selected' : ''}>انتخاب کنید</option>
+                        <option value="male" ${profileData.gender === 'male' ? 'selected' : ''}>آقا</option>
+                        <option value="female" ${profileData.gender === 'female' ? 'selected' : ''}>خانم</option>
+                    </select>
+                </div>
+            </div>
+            <button id="update-info-btn" class="btn btn-outline-secondary my-5">به‌روزرسانی</button>     
+        `;
                     container.insertAdjacentHTML('beforeend', profileInfo);
-
 
                     document.getElementById("update-info-btn").addEventListener("click", function () {
                         updateProfileInfo(userData.id);
@@ -126,7 +125,6 @@
                 document.getElementById("edit-icon").addEventListener("click", function () {
                     document.getElementById("image").click();
                 });
-
 
                 document.getElementById("image").addEventListener("change", function () {
                     var file = this.files[0];
@@ -139,6 +137,7 @@
                     reader.readAsDataURL(file);
                 });
             }
+            
         });
 
         function updateProfileInfo(userId) {
@@ -448,7 +447,7 @@
                     }
                 };
                 xhr.open("POST", "/accounts/panel/addresses/create/", true);
-                
+
                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
 
                 xhr.setRequestHeader("Content-Type", "application/json");
@@ -495,7 +494,7 @@
                         complete_address: completeAddress,
                         postal_code: postalCode
                     };
-                    
+
                 } else {
                     console.error("One or more input elements not found.");
                 }

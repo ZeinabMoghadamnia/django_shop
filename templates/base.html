@@ -114,44 +114,41 @@
                         <ul class="col-5 list-unstyled d-lg-flex justify-content-md-between align-items-center">
                             <li class="col-4 nav-item search-item">
                                 <div id="search-bar" class="d-none d-lg-block">
-                                    <form action="" autocomplete="on">
-                                        <input id="search" class="text-dark" name="search" type="text"
-                                               placeholder="Search Here...">
-                                        <a type="submit" class="nav-link me-0" href="#">جستجو</a>
+                                    {#                                    <form action="{% url 'products:product_search' %} autocomplete="on">#}
+                                    {#                                        <input id="search" class="text-dark" name="search" type="text"#}
+                                    {#                                               placeholder="Search Here...">#}
+                                    {#                                        <a type="submit" class="nav-link me-0" href="#">جستجو</a>#}
+                                    {#                                    </form>#}
+                                    {#                                </div>#}
+                                    <form method="GET" class="text-end" action="{% url 'products:product_search' %}">
+                                        <input type="text" name="q" value="{{ query }}" placeholder="Search products">
+                                        <button class="align-items-end text-end p-0 m-0" type="submit">جستجو</button>
                                     </form>
-                                </div>
                             </li>
-                            <li class="col-4 nav-item">
+                            <li class="col-4 nav-item text-center">
                                 <a class="nav-link mx-5 text-center" href="{% url 'products:products' %}">محصولات</a>
                             </li>
-                            <li class="col-4 nav-item dropdown">
+                            <li class="col-4 nav-item dropdown text-end">
                                 <div class="btn-group">
                                     <button type="button" class="btn border-0 bg-transparent"
                                     ><a href="{% url 'products:categories' %}">دسته بندی ها</a>
                                     </button>
 
-                                    <button type="button"
-                                            class="btn bg-transparent dropdown-toggle dropdown-toggle-split border-0 text-end"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                    </button>
-
-                                    <ul class="dropdown-menu dropdown-menu-end text-end rounded">
-                                        {% if subcategories %}
-                                            {% for subcategory in subcategories %}
-                                                <li>
-                                                    <a class="px-3"
-                                                       href="{% url 'products:category_details' subcategory.slug %}">{{ subcategory.name }}</a>
-                                                </li>
-                                            {% endfor %}
-                                        {% elif products %}
-                                            {% for product in products %}
-                                                <li>
-                                                    <a class="px-3"
-                                                       href="{% url 'products:category_details' product.slug %}">{{ product.name }}</a>
-                                                </li>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </ul>
+                                    {#                                    <button type="button"#}
+                                    {#                                            class="btn bg-transparent dropdown-toggle dropdown-toggle-split border-0 text-end"#}
+                                    {#                                            data-bs-toggle="dropdown" aria-expanded="false">#}
+                                    {#                                    </button>#}
+                                    {##}
+                                    {#                                    <ul class="dropdown-menu dropdown-menu-end text-end rounded">#}
+                                    {#                                        {% if categories %}#}
+                                    {#                                            {% for category in categories %}#}
+                                    {#                                                <li>#}
+                                    {#                                                    <a class="px-3"#}
+                                    {#                                                       href="{% url 'products:category_details' category.slug %}">{{ category.name }}</a>#}
+                                    {#                                                </li>#}
+                                    {#                                            {% endfor %}#}
+                                    {#                                        {% endif %}#}
+                                    {#                                    </ul>#}
                                 </div>
                             </li>
                         </ul>
@@ -164,7 +161,7 @@
                         <ul class="col-5 list-unstyled d-lg-flex justify-content-between align-items-center">
 
                             <li class="col-4 nav-item">
-                                <a class="nav-link mx-0" href="about.html">درباره ما</a>
+                                <a id="contactUsLink" class="nav-link mx-0" href="#">تماس با ما</a>
                             </li>
                             <li class="col-4 cart-dropdown nav-item dropdown mx-2">
                                 <div class="btn-group">
@@ -230,7 +227,8 @@
                                         {{ user.first_name }}
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark text-end rounded">
-                                        <li><a class="dropdown-item" href="{% url 'accounts:panel:user_panel' %}">پروفایل من</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'accounts:panel:user_panel' %}">پروفایل
+                                            من</a></li>
                                         <li><a class="dropdown-item" href="{% url 'accounts:logout' %}"> خروج</a></li>
                                     </ul>
 
@@ -402,6 +400,19 @@
 <script type="text/javascript" src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/plugins.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $("#contactUsLink").click(function (event) {
+            event.preventDefault();
+            toggleFooter();
+        });
+    });
+
+    function toggleFooter() {
+        $("#footer").toggle();
+    }
+</script>
 {% block scripts %}
 {% endblock %}
 </body>

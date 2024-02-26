@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView, DetailView
@@ -110,3 +111,26 @@ class ProductLikeView(View):
             like.toggle_like()
             like_count = product.likes.count()
             return JsonResponse({'is_liked': like.is_liked, 'like_count': like_count})
+
+
+class ProductSearchView(ListView):
+    model = Product
+    template_name = 'products/search.html'
+    context_object_name = 'results'
+    paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Product.objects.filter(
+                Q(name__icontains=query) |
+                Q(description__icontains=query) |
+                Q(category__name__icontains=query) |
+                Q(brand__name__icontains=query)
+            ).distinct()
+        return Product.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q', '')
+        return context

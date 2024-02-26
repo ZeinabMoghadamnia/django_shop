@@ -1,24 +1,19 @@
 from ..accounts.forms import LoginForm, CustomUserCreationForm, OTPForm
-from ..accounts.backends import EmailBackend
-from .models import User
+from .models import User, Profile
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.views import FormView
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import render
 from .forms import OTPForm, VerifyOTPForm
 from .tasks import send_otp_email_task, send_activation_email_task
 from config.redis import RedisDB
-from django.contrib.auth import authenticate, login, get_user_model
-from django.core.mail import send_mail
+from django.contrib.auth import login, get_user_model
 import random
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
+
 class SendOTPCodeView(View):
     template_name = 'accounts/otp_form.html'
     form_class = OTPForm
@@ -106,6 +101,8 @@ class RegisterView(View):
             user.username = form.cleaned_data.get('email')
             user.is_active = False
             user.save()
+
+            Profile.objects.create(user=user)
 
             self.send_activation_email(request, user)
 

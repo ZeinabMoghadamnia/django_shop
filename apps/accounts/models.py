@@ -40,7 +40,7 @@ class Profile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name=_('profile'))
     date_of_birth = models.DateField(null=True, blank=True, verbose_name=_('birthday'))
     gender = models.CharField(max_length=20, choices=GENDER, verbose_name=_('gender'), null=True, blank=True)
-    image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'), default='{% static "images/profile.jpg}')
+    image = models.ImageField(upload_to='users_profile_pics/', null=True, blank=True, verbose_name=_('image'))
 
     def img_preview(self):
         if self.image:
