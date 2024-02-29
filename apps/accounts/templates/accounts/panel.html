@@ -223,11 +223,11 @@
                         orderItems.item_data.forEach(function (item) {
                             var itemDiv = document.createElement("div");
                             itemDiv.innerHTML = `
-                            <p class="mb-3">محصول : ${item.product_name}</p>
+                            <p class="mt-3">محصول : ${item.product_name}</p>
                             <img style="width: 100px; height: auto;" src="${item.product_image !== null ? item.product_image.sub_image : 'path/to/placeholder/image.jpg'}" alt="Product Image">
                             <p>تعداد : ${item.quantity}</p>
-                            <p>قیمت : ${item.product_price}</p>
-                            <p class="mb-5">تخفیف : ${item.discount !== null ? item.discount : '-'}</p>
+                            <p class="border-bottom">قیمت : ${item.product_price}</p>
+{#                            <p class="mb-5">تخفیف : ${item.discount !== null ? item.discount : '-'}</p>#}
                         `;
                             orderItemsContainer.appendChild(itemDiv);
                         });

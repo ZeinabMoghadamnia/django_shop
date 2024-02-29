@@ -155,7 +155,7 @@
 
                                             <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center rounded-bottom w-100">
                                                 <div class="row text-end text-white mb-3 text-center">
-                                                    <p class="pt-2 fs-6">{{ comment.context }}</p>
+                                                    <p class="pt-2 fs-6 text-end">{{ comment.context }}</p>
                                                     <form id="reply-form-{{ comment.id }}" class="reply-form"
                                                           style="display: none;"
                                                           method="post"
@@ -181,6 +181,7 @@
                                     {% endif %}
                                 {% endfor %}
                                 {#-------------------------------------comments------------------------------------------#}
+                            {% endif %}
                                 <div class="row justify-content-center text-end rounded">
                                     <div class="col-12 col-md-8 col-sm-12 rounded py-3 text-center "
                                          style="background-color: #f5f5f5">
@@ -197,7 +198,7 @@
                             </div>
                         </div>
                     </div>
-                {% endif %}
+
 
             </div>
 
