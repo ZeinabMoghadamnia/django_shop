@@ -287,9 +287,11 @@
                     },
                     success: function (data) {
                         if (data.is_liked) {
-                            $('#like').attr('src', '{% static "images/like.png" %}');
-                        } else {
                             $('#like').attr('src', '{% static "images/unlike.png" %}');
+                            $('#unlike').attr('src', '{% static "images/like.png" %}');
+                        } else {
+                            $('#like').attr('src', '{% static "images/like.png" %}');
+                            $('#unlike').attr('src', '{% static "images/unlike.png" %}');
                         }
                         $('#like-count').text(data.like_count);
                     },
@@ -337,9 +339,10 @@
             const quantity = quantityInput.value;
             const name = "{{ object.name }}";
             const price = {{ object.price }};
-            let discounted_price = {{ object.discounted_price }};
 
-            // Convert None to null
+            let discounted_price = "{{ object.discounted_price }}";
+
+// Convert "None" to null
             if (discounted_price === "None") {
                 discounted_price = null;
             }

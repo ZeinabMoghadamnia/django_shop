@@ -6,7 +6,7 @@ class AddToCartSerializer(serializers.Serializer):
     name = serializers.CharField()
     quantity = serializers.IntegerField()
     price = serializers.IntegerField(min_value=0)
-    discounted_price = serializers.IntegerField(min_value=0)
+    discounted_price = serializers.IntegerField(min_value=0, allow_null=True)
 
 class DeleteFromCartSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
