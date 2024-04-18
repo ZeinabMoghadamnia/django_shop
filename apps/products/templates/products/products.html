@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    products
+{% endblock %}
+
+{% block content %}
+    <style>
+        .pagination {
+            /* Add any additional styling for the pagination container here */
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #f6efea; /* Set your desired background color for the active page */
+            border-color: #decfc5; /* Set your desired border color for the active page */
+            color: #ffffff; /* Set your desired text color for the active page */
+        }
+
+        .pagination .page-item.disabled .page-link {
+            /* Add styling for disabled page links if needed */
+        }
+
+        /* Add any other custom styles as needed */
+    </style>
+    <section id="billboard" class="position-relative overflow-hidden">
+        <div class="d-flex align-items-center text-center"
+             style="background-image: url('{% static 'images/header_bg2.jpg' %}'); background-size: cover; background-repeat: no-repeat; height: 50vh; background-position: center;">
+            <div class="container ">
+                <div class="row h-100 pt-5 justify-content-center text-center">
+                    <div class="banner-content mt-0" dir="rtl">
+                        <h2 style="color: #303030">همه محصولات</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="products" class="product-store position-relative px-5 mx-3 my-5" dir="rtl">
+        <div class="row m-5">
+            {% for product in products %}
+                <div class="col-lg-2 col-md-4 mb-4 pb-2">
+                    <div class="product-card bg-gray position-relative rounded">
+                        <div class="image-holder zoom-effect">
+                            {% for image in product.image.all %}
+                                {% if image.is_main %}
+                                    <img src="{{ image.sub_image.url }}" alt="product-item"
+                                         class="img-fluid zoom-in rounded-top">
+                                {% endif %}
+                            {% endfor %}
+                            <div class="cart-concern position-absolute">
+                                <div class="cart-button">
+                                    <a href="{% url 'products:details' product.slug %}"
+                                       class="btn rounded-0 bg-light bg-opacity-50 w-100">اضافه کردن به سبد
+                                        خرید</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-detail text-center pt-3 pb-2" style="height: 125px;">
+                            <h5 class="card-title fs-3 text-capitalize">
+                                {{ product.name }}
+                            </h5>
+                            {% if not product.discounted_price %}
+                                <div><span class="item-price text-secondary fs-3 fw-light">{{ product.price }}</span>
+                                </div>
+                            {% else %}
+                                <div class="cancel-link">
+                                    <del class="opacity-50"><span
+                                            class="item-price text-secondary fs-5 fw-light">{{ product.price }}</span>
+                                    </del>
+                                </div>
+                                <div><span
+                                        class="item-price text-secondary fs-3 fw-light">{{ product.discounted_price }}</span>
+                                </div>
+                            {% endif %}
+                            {#                            <span class="item-price text-secondary fs-3 fw-light">{{ product.price }}</span>#}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if page_obj.has_other_pages %}
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link rounded-circle" href="?page=1" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item me-3">
+                        <a class="page-link rounded-circle" href="?page={{ page_obj.previous_page_number }}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                {% endif %}
+
+                {% for page in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link rounded-circle" href="?page={{ page }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item ms-3">
+                        <a class="page-link rounded-circle" href="?page={{ page_obj.next_page_number }}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded-circle" href="?page={{ page_obj.paginator.num_pages }}"
+                           aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+
+
+    {#    <nav aria-label="Page navigation example">#}
+    {#  <ul class="pagination justify-content-center">#}
+    {#      {% if page_obj.has_previous %}#}
+    {#            <a href="?page=1">&laquo; first</a>#}
+    {#          <li class="page-item">#}
+    {#      <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">#}
+    {#        <span aria-hidden="true">&laquo;</span>#}
+    {#      </a>#}
+    {#    </li>#}
+    {#        {% endif %}#}
+    {##}
+    {#  {% for page in page_obj.paginator.page_range %}#}
+    {#      <li>{{  }}</li>#}
+    {##}
+    {#    <li class="page-item"><a class="page-link" href="#">{{ page }}</a></li>#}
+    {#  {% endfor %}#}
+    {##}
+    {#    <li class="page-item">#}
+    {#      <a class="page-link" href="#" aria-label="Next">#}
+    {#        <span aria-hidden="true">&raquo;</span>#}
+    {#      </a>#}
+    {#    </li>#}
+    {#  </ul>#}
+    {#</nav>#}
+{% endblock %}

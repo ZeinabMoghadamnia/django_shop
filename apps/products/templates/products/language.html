@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>اطلاعات مدل</h1>
+  <p>زبان انتخابی: {{ language }}</p>
+
+  {% for item in my_model_data %}
+    <h2>{{ item.title }}</h2>
+    {# دیگر اطلاعات مدل #}
+  {% endfor %}
+{% endblock %}

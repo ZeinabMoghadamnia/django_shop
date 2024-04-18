@@ -1,0 +1,51 @@
+{% load crispy_forms_tags %}
+
+
+<div class="row d-flex justify-content-center text-dark px-0 rounded mb-3" style="background-color: #f3eeed">
+    <div class="col-6 text-end ps-2 py-2">
+        <strong>{{ comment.author.first_name }}</strong>
+    </div>
+    <div class="col-6 text-start ps-2 py-2">
+        <button class="reply-button bg-transparent border-0" data-comment-id="{{ comment.id }}">پاسخ</button>
+    </div>
+
+    <div class="row text-center bg-white text-white pb-3 d-flex justify-content-center rounded-bottom w-100">
+        <div class="row text-end text-white mb-3 text-center">
+            <p class="pt-2 fs-6">{{ comment.context }}</p>
+            <form id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;"
+                  method="post" action="{% url 'products:details' slug=details.slug %}">
+                {% csrf_token %}
+                <input type="hidden" name="reply_to" value="{{ comment.id }}">
+                {{ comment_form | crispy }}
+                <button class="rounded border-0 text-light bg-dark" type="submit">ثبت پاسخ</button>
+            </form>
+        </div>
+
+        {% if comment.replies.all %}
+            {% for reply in comment.replies.all %}
+                {% if reply.status == 'approved' %}
+                    <div class="px-5 mb-3 text-end">
+                        <div class="row text-end mb-1 rounded-top" style="background-color: #f6f6f6 !important;">
+                            <div class="col-6 text-dark text-end ps-2 py-2">
+                                <strong>{{ reply.author.first_name }}</strong>
+                            </div>
+                            <div class="col-6 text-start ps-2 py-2">
+{#                                <button class="reply-button bg-transparent border-0" data-comment-id="{{ reply.id }}">پاسخ</button>#}
+                            </div>
+                        </div>
+                        <div class="row text-end py-2 border-2 border-bottom rounded" style="border-color: #e7e7e7 !important;">
+                            <p>{{ reply.context }}</p>
+                            <form id="reply-form-{{ reply.id }}" class="reply-form" style="display: none;"
+                                  method="post" action="{% url 'products:details' slug=details.slug %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="reply_to" value="{{ reply.id }}">
+                                {{ comment_form | crispy }}
+                                <button class="rounded border-0 text-light bg-dark" type="submit">ثبت پاسخ</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
